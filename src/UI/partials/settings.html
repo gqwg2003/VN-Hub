@@ -1,0 +1,210 @@
+<h2 data-i18n="settings">Settings</h2>
+<div class="settings-tabs">
+    <button class="settings-tab active" data-tab="general" data-i18n="tabGeneral">General</button>
+    <button class="settings-tab" data-tab="library" data-i18n="tabLibrary">Library</button>
+    <button class="settings-tab" data-tab="vndb" data-i18n="tabVndb">VNDB</button>
+    <button class="settings-tab" data-tab="data" data-i18n="tabData">Data</button>
+    <button class="settings-tab" data-tab="scan" data-i18n="tabScan">Scan</button>
+    <button class="settings-tab" data-tab="shortcuts" data-i18n="tabShortcuts">Shortcuts</button>
+    <button class="settings-tab" data-tab="about" data-i18n="tabAbout">About</button>
+</div>
+
+<div class="settings-tab-content active" data-tab-content="general">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="theme">Theme</label>
+    <div class="settings-row">
+        <button class="theme-btn active" data-theme="dark">Dark</button>
+        <button class="theme-btn" data-theme="light">Light</button>
+    </div>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="language">Language</label>
+    <div class="settings-row">
+        <select id="settingsLanguage" class="detail-select">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+            <option value="ja">日本語</option>
+        </select>
+    </div>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="system">System</label>
+    <div class="settings-row">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsAutoStart">
+            <span data-i18n="autoStart">Start with Windows</span>
+        </label>
+    </div>
+    <div class="settings-row" style="margin-top: 8px;">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsMinimizeToTray" checked>
+            <span data-i18n="minimizeToTray">Minimize to tray on close</span>
+        </label>
+    </div>
+    <div class="settings-row" style="margin-top: 8px;">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsStartMinimized">
+            <span data-i18n="startMinimized">Start minimized</span>
+        </label>
+    </div>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="library">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="defaultFolder">Default Folder for Adding VNs</label>
+    <div class="settings-row">
+        <input type="text" id="settingsDefaultFolder" class="settings-input" placeholder="No default folder set" readonly>
+        <button class="btn-secondary" id="btnPickDefaultFolder">Browse</button>
+    </div>
+    <p class="settings-hint" data-i18n="defaultFolderHint">When adding a VN, the folder picker will start here.</p>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="librarySection">Library</label>
+    <div class="settings-row" style="gap: 12px;">
+        <button class="btn-secondary" id="btnExportLibrary" data-i18n="exportJson">Export to JSON</button>
+        <button class="btn-secondary" id="btnImportLibrary" data-i18n="importJson">Import from JSON</button>
+    </div>
+    <div class="settings-row" style="gap: 12px; margin-top: 8px;">
+        <button class="btn-secondary" id="btnExportCsv" data-i18n="exportCsv">Export to CSV</button>
+        <button class="btn-secondary" id="btnExportHtml" data-i18n="exportHtml">Export to HTML</button>
+    </div>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="vndb">
+<div class="settings-group">
+    <div class="settings-row">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsVndb" checked>
+            <span data-i18n="vndbAutoFetch">Auto-fetch metadata from VNDB</span>
+        </label>
+    </div>
+    <p class="settings-hint" data-i18n="vndbHint">When enabled, adding a VN will search vndb.org for cover, description, tags, and rating. Only the VN title is sent.</p>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="proxyAddress">Proxy</label>
+    <div class="settings-row">
+        <input type="text" id="settingsProxy" class="settings-input" placeholder="http://host:port" data-i18n-placeholder="proxyPlaceholder">
+    </div>
+    <p class="settings-hint" data-i18n="proxyHint">Optional HTTP proxy for VNDB API requests (e.g. http://127.0.0.1:1080).</p>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="data">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="dbLocation">Database Location</label>
+    <div class="settings-row">
+        <input type="text" id="settingsDbPath" class="settings-input" readonly>
+        <button class="btn-secondary" id="btnOpenDbFolder" data-i18n="openFolder">Open Folder</button>
+    </div>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="coversLocation">Covers Location</label>
+    <div class="settings-row">
+        <input type="text" id="settingsCoversPath" class="settings-input" readonly>
+        <button class="btn-secondary" id="btnOpenCoversFolder" data-i18n="openFolder">Open Folder</button>
+    </div>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="backups">Backups</label>
+    <div class="settings-row" style="gap: 12px;">
+        <button class="btn-secondary" id="btnBackupNow" data-i18n="backupNow">Backup Now</button>
+        <button class="btn-secondary" id="btnShowBackups" data-i18n="showBackups">Show Backups</button>
+    </div>
+    <div class="settings-row" style="margin-top: 8px; gap: 12px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="backupInterval">Backup Interval</label>
+            <select id="settingsBackupInterval" class="detail-select">
+                <option value="startup" data-i18n="backupOnStartup">Every Startup</option>
+                <option value="daily" data-i18n="backupDaily">Daily</option>
+                <option value="weekly" data-i18n="backupWeekly">Weekly</option>
+                <option value="never" data-i18n="backupNever">Never</option>
+            </select>
+        </div>
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="maxBackups">Max Backups</label>
+            <input type="number" id="settingsMaxBackups" class="settings-input" min="1" max="50" value="5" style="font-family:inherit;">
+        </div>
+    </div>
+    <div class="backup-list" id="backupList" style="display:none;"></div>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="scan">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="scanBlacklistExe">Blacklisted Executables</label>
+    <div class="settings-row">
+        <textarea id="settingsScanBlacklistExe" class="settings-textarea" rows="4" placeholder="uninstall&#10;setup&#10;config" data-i18n-placeholder="scanBlacklistExePlaceholder"></textarea>
+    </div>
+    <p class="settings-hint" data-i18n="scanBlacklistExeHint">One pattern per line. Executables starting with these names will be ignored. Built-in defaults are always applied.</p>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="scanBlacklistDirs">Blacklisted Directories</label>
+    <div class="settings-row">
+        <textarea id="settingsScanBlacklistDirs" class="settings-textarea" rows="4" placeholder="_redist&#10;DirectX&#10;DotNetFX" data-i18n-placeholder="scanBlacklistDirsPlaceholder"></textarea>
+    </div>
+    <p class="settings-hint" data-i18n="scanBlacklistDirsHint">One directory name per line. Executables inside matching directories will be ignored.</p>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="scanSortLabel">Sort Scan Results</label>
+    <div class="settings-row" style="gap: 12px;">
+        <select id="settingsScanSortBy" class="detail-select">
+            <option value="title" data-i18n="sortByName">Name</option>
+            <option value="folder" data-i18n="sortByFolder">Folder Path</option>
+            <option value="exeCount" data-i18n="sortByExeCount">Exe Count</option>
+        </select>
+        <select id="settingsScanSortDir" class="detail-select">
+            <option value="asc" data-i18n="ascending">Ascending</option>
+            <option value="desc" data-i18n="descending">Descending</option>
+        </select>
+    </div>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="scanOptions">Options</label>
+    <div class="settings-row">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsScanSkipExisting" checked>
+            <span data-i18n="scanSkipExisting">Hide entries already in library</span>
+        </label>
+    </div>
+    <div class="settings-row" style="margin-top: 8px;">
+        <label class="toggle-label">
+            <input type="checkbox" id="settingsScanRecursive">
+            <span data-i18n="scanRecursive">Scan subdirectories (one level deeper)</span>
+        </label>
+    </div>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="shortcuts">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="keyboardShortcuts">Keyboard Shortcuts</label>
+    <div class="shortcuts-list">
+        <div class="shortcut-row"><span data-i18n="shortcutDescAdd">Add new VN</span><button class="shortcut-key-btn" data-action="addVn"><kbd>Ctrl</kbd>+<kbd>N</kbd></button></div>
+        <div class="shortcut-row"><span data-i18n="shortcutDescSearch">Focus search bar</span><button class="shortcut-key-btn" data-action="search"><kbd>Ctrl</kbd>+<kbd>F</kbd></button></div>
+        <div class="shortcut-row"><span data-i18n="shortcutDescDelete">Delete selected entry</span><button class="shortcut-key-btn" data-action="delete"><kbd>Delete</kbd></button></div>
+        <div class="shortcut-row"><kbd>Escape</kbd><span data-i18n="shortcutDescClose">Close panels / modals</span></div>
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>Click</kbd><span data-i18n="shortcutDescMulti">Multi-select cards</span></div>
+    </div>
+    <p class="settings-hint" data-i18n="shortcutHint">Click a shortcut button and press a new key combination to rebind.</p>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="about">
+<div class="settings-group">
+    <label class="settings-label" data-i18n="about">About</label>
+    <p class="settings-about" data-i18n="aboutText">VN-Hub v1.0 — Visual Novel Library Manager</p>
+</div>
+<div class="settings-group">
+    <label class="settings-label" data-i18n="logs">Logs</label>
+    <div class="settings-row" style="gap: 12px;">
+        <button class="btn-secondary" id="btnOpenLogsFolder" data-i18n="openLogsFolder">Open Logs Folder</button>
+        <button class="btn-danger btn-small" id="btnClearLogs" data-i18n="clearLogs">Clear Logs</button>
+    </div>
+</div>
+<div class="settings-group">
+    <button class="btn-danger" id="btnResetSettings" data-i18n="resetSettings">Reset Settings to Defaults</button>
+    <p class="settings-hint" data-i18n="resetSettingsHint">This will reset all settings to their default values. Your library data will not be affected.</p>
+</div>
+</div>

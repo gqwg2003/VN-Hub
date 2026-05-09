@@ -1,0 +1,70 @@
+/* ===== Context Menu ===== */
+.ctx-menu {
+    position: fixed;
+    z-index: 9000;
+    min-width: 180px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.ctx-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s;
+}
+
+.ctx-menu-item:hover {
+    background: var(--bg-hover);
+}
+
+.ctx-menu-item svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+}
+
+.ctx-menu-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+}
+
+.ctx-menu-item.danger { color: var(--danger); }
+
+.ctx-submenu {
+    position: relative;
+}
+
+.ctx-submenu > .ctx-sub-list {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: -4px;
+    min-width: 160px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    padding: 4px 0;
+}
+
+.ctx-submenu:hover > .ctx-sub-list {
+    display: block;
+}
+
+.ctx-menu-item .check-mark {
+    margin-left: auto;
+    opacity: 0.7;
+}

@@ -1,0 +1,160 @@
+<div class="detail-header">
+    <button class="detail-close" id="detailClose">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+</div>
+<div class="detail-body">
+    <div class="detail-cover-wrap">
+        <img class="detail-cover" id="detailCover" src="" alt="">
+        <button class="btn-cover-change" id="btnChangeCover">Change Cover</button>
+    </div>
+    <div class="detail-field">
+        <label>Title</label>
+        <input type="text" id="detailTitle" class="detail-input">
+    </div>
+    <div class="detail-field">
+        <label>Status</label>
+        <select id="detailStatus" class="detail-select">
+            <option value="0">Reading</option>
+            <option value="1">Completed</option>
+            <option value="2">On Hold</option>
+            <option value="3">Dropped</option>
+            <option value="4">Plan to Read</option>
+        </select>
+    </div>
+    <div class="detail-actions-row">
+        <button class="detail-toggle" id="detailFav" title="Favorite">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span>Favorite</span>
+        </button>
+        <button class="detail-toggle" id="detailPin" title="Pin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Pin</span>
+        </button>
+    </div>
+    <div class="detail-field">
+        <label>Executable</label>
+        <div class="detail-exe-row">
+            <input type="text" id="detailExe" class="detail-input" readonly>
+            <button class="btn-secondary btn-small" id="btnBrowseExe">Browse</button>
+            <button class="btn-secondary btn-small" id="btnOpenVnFolder" title="Open Folder">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button class="btn-accent btn-small" id="btnLaunch">
+                <svg class="launch-icon-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg class="launch-icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <span id="btnLaunchText">Launch</span>
+            </button>
+        </div>
+    </div>
+    <div class="detail-field">
+        <label>Notes</label>
+        <textarea id="detailNotes" class="detail-textarea" rows="4" placeholder="Add notes..."></textarea>
+    </div>
+    <div class="detail-field">
+        <label>Tags</label>
+        <div class="tags-container" id="tagsContainer"></div>
+        <input type="text" id="detailTagInput" class="detail-input" placeholder="Add tag, press Enter">
+    </div>
+    <div class="detail-field">
+        <label data-i18n="links">Links</label>
+        <div class="links-container" id="linksContainer"></div>
+        <div class="detail-link-add-row">
+            <input type="text" id="detailLinkLabel" class="detail-input detail-link-input" placeholder="Label" data-i18n-placeholder="linkLabelPlaceholder">
+            <input type="text" id="detailLinkUrl" class="detail-input detail-link-input" placeholder="https://..." data-i18n-placeholder="linkUrlPlaceholder">
+            <button class="btn-secondary btn-small" id="btnAddLink" title="Add link">+</button>
+        </div>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="dateAdded">Date Added</label>
+        <span class="detail-date" id="detailDate"></span>
+    </div>
+    <div class="detail-field" id="detailCompletedWrap" style="display:none">
+        <label data-i18n="completedAt">Completed</label>
+        <span class="detail-date" id="detailCompleted"></span>
+    </div>
+    <div class="detail-field" id="detailDescWrap" style="display:none">
+        <label data-i18n="description">Description</label>
+        <p class="detail-description" id="detailDesc"></p>
+    </div>
+    <div class="detail-field" id="detailRatingWrap" style="display:none">
+        <label data-i18n="vndbRating">VNDB Rating</label>
+        <span class="detail-rating" id="detailRating"></span>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="userRating">Your Rating</label>
+        <div class="star-rating" id="starRating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+            <span class="star" data-value="6">★</span>
+            <span class="star" data-value="7">★</span>
+            <span class="star" data-value="8">★</span>
+            <span class="star" data-value="9">★</span>
+            <span class="star" data-value="10">★</span>
+            <span class="star-clear" id="starClear" title="Clear rating">&times;</span>
+        </div>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="categoryRatings">Category Ratings</label>
+        <div class="category-ratings">
+            <div class="cat-rating-row">
+                <span data-i18n="storyRating">Story</span>
+                <div class="cat-stars" data-field="storyRating">
+                    <span class="cat-star" data-value="1">★</span><span class="cat-star" data-value="2">★</span><span class="cat-star" data-value="3">★</span><span class="cat-star" data-value="4">★</span><span class="cat-star" data-value="5">★</span>
+                </div>
+            </div>
+            <div class="cat-rating-row">
+                <span data-i18n="artRating">Art</span>
+                <div class="cat-stars" data-field="artRating">
+                    <span class="cat-star" data-value="1">★</span><span class="cat-star" data-value="2">★</span><span class="cat-star" data-value="3">★</span><span class="cat-star" data-value="4">★</span><span class="cat-star" data-value="5">★</span>
+                </div>
+            </div>
+            <div class="cat-rating-row">
+                <span data-i18n="musicRating">Music</span>
+                <div class="cat-stars" data-field="musicRating">
+                    <span class="cat-star" data-value="1">★</span><span class="cat-star" data-value="2">★</span><span class="cat-star" data-value="3">★</span><span class="cat-star" data-value="4">★</span><span class="cat-star" data-value="5">★</span>
+                </div>
+            </div>
+            <div class="cat-rating-row">
+                <span data-i18n="characterRating">Characters</span>
+                <div class="cat-stars" data-field="characterRating">
+                    <span class="cat-star" data-value="1">★</span><span class="cat-star" data-value="2">★</span><span class="cat-star" data-value="3">★</span><span class="cat-star" data-value="4">★</span><span class="cat-star" data-value="5">★</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="readingProgress">Reading Progress</label>
+        <div class="detail-progress-row">
+            <input type="range" id="detailProgress" class="detail-progress-slider" min="0" max="100" value="0">
+            <span class="detail-progress-value" id="detailProgressValue">0%</span>
+        </div>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="playTime">Play Time</label>
+        <span class="detail-date" id="detailPlayTime"></span>
+    </div>
+    <div class="detail-field">
+        <label>Last Launched</label>
+        <span class="detail-date" id="detailLastLaunched"></span>
+    </div>
+    <div class="detail-field">
+        <label data-i18n="sessionHistory">Session History</label>
+        <button class="btn-secondary btn-small" id="btnShowSessions" data-i18n="showSessions">Show Sessions</button>
+        <div class="session-list" id="sessionList" style="display:none;"></div>
+    </div>
+    <div class="detail-field" id="detailSkipVndbWrap">
+        <label class="toggle-label">
+            <input type="checkbox" id="detailSkipVndb">
+            <span data-i18n="skipVndbLabel">Don't fetch data from VNDB</span>
+        </label>
+        <p class="settings-hint" data-i18n="skipVndbHint">When enabled, VNDB metadata will not be automatically fetched for this entry.</p>
+    </div>
+    <div class="detail-danger">
+        <button class="btn-secondary btn-small" id="btnFetchVndb" data-i18n="vndbSearch">Search VNDB</button>
+        <button class="btn-danger" id="btnDeleteVn" data-i18n="deleteEntry">Delete Entry</button>
+    </div>
+</div>

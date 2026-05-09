@@ -1,0 +1,345 @@
+/* ===== Card Grid ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+}
+
+/* Grid size: small */
+.card-grid.grid-small {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+.card-grid.grid-small .vn-card-info { padding: 6px 8px; }
+.card-grid.grid-small .vn-card-title { font-size: 11px; }
+.card-grid.grid-small .vn-card-playtime { display: none; }
+
+/* Grid size: medium (default) */
+.card-grid.grid-medium {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+}
+
+/* Responsive card grid */
+@media (max-width: 600px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
+/* Grid size: list */
+.card-grid.grid-list {
+    grid-template-columns: 1fr;
+    gap: 4px;
+}
+.card-grid.grid-list .vn-card {
+    display: flex;
+    flex-direction: row;
+    border-radius: var(--radius);
+    height: 56px;
+}
+.card-grid.grid-list .vn-card-cover {
+    width: 40px;
+    height: 56px;
+    aspect-ratio: unset;
+    border-radius: var(--radius) 0 0 var(--radius);
+    flex-shrink: 0;
+}
+.card-grid.grid-list .vn-card-cover-placeholder {
+    width: 40px;
+    height: 56px;
+    aspect-ratio: unset;
+    flex-shrink: 0;
+}
+.card-grid.grid-list .vn-card-cover-placeholder svg { width: 20px; height: 20px; }
+.card-grid.grid-list .vn-card-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    padding: 0 12px;
+    min-width: 0;
+}
+.card-grid.grid-list .vn-card-title {
+    flex: 1;
+    min-width: 0;
+}
+.card-grid.grid-list .vn-card-meta {
+    margin-top: 0;
+    flex-shrink: 0;
+}
+.card-grid.grid-list .vn-card-play {
+    position: static;
+    opacity: 1;
+    transform: none;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+.card-grid.grid-list .vn-card-icons {
+    position: static;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.vn-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+    border: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+}
+
+.vn-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: var(--accent-soft);
+}
+
+.vn-card-cover {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    background: var(--bg-elevated);
+}
+
+.vn-card-cover-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+}
+
+.vn-card-info {
+    padding: 10px 12px;
+}
+
+.vn-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vn-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.status-badge {
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.status-badge[data-status="0"] { background: var(--status-reading); color: #000; }
+.status-badge[data-status="1"] { background: var(--status-completed); color: #000; }
+.status-badge[data-status="2"] { background: var(--status-onhold); color: #000; }
+.status-badge[data-status="3"] { background: var(--status-dropped); color: #000; }
+.status-badge[data-status="4"] { background: var(--status-plan); color: #000; }
+
+.vn-card-icons {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    gap: 4px;
+}
+
+.vn-card-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+
+.vn-card-icon.heart svg { stroke: var(--heart); fill: var(--heart); width: 12px; height: 12px; }
+.vn-card-icon.star svg { stroke: var(--star); fill: var(--star); width: 12px; height: 12px; }
+
+/* Play button on card */
+.vn-card-play {
+    position: absolute;
+    bottom: 52px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity var(--transition), transform var(--transition), background var(--transition);
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.vn-card:hover .vn-card-play {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.vn-card-play:hover {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+/* Running game indicator */
+.vn-card.is-running {
+    border-color: var(--status-reading);
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.3);
+}
+
+.vn-card-play.is-running {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    background: var(--status-reading);
+    color: #000;
+}
+
+.vn-card-icon.running {
+    background: var(--status-reading);
+    animation: pulse-running 1.5s ease-in-out infinite;
+}
+
+.vn-card-icon.running svg {
+    fill: #000;
+    width: 10px;
+    height: 10px;
+}
+
+@keyframes pulse-running {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 60%;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+/* Play time label on card */
+.vn-card-playtime {
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* VNDB indicator badge */
+.vn-card-vndb {
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    background: #2a6bba;
+    padding: 0 5px;
+    border-radius: 6px;
+    line-height: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ===== Skeleton Loading ===== */
+.skeleton-card {
+    pointer-events: none;
+}
+.skeleton-cover {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--bg-elevated);
+}
+.skeleton-title {
+    height: 14px;
+    width: 70%;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    margin-bottom: 6px;
+}
+.skeleton-meta {
+    height: 10px;
+    width: 40%;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+}
+@keyframes shimmer {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+.shimmer {
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.card-grid.grid-small .vn-card-vndb { display: none; }
+
+/* Active tag filter badge */
+.active-tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    background: var(--accent-soft);
+    color: var(--text-primary);
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 8px;
+    white-space: nowrap;
+    cursor: default;
+}
+
+.active-tag-clear {
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.7;
+    margin-left: 2px;
+}
+.active-tag-clear:hover {
+    opacity: 1;
+}
+
+.search-result-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.vn-card-title mark {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 2px;
+    padding: 0 1px;
+}

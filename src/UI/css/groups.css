@@ -1,0 +1,166 @@
+/* ===== Groups Sidebar ===== */
+.group-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    padding: 12px 14px 4px;
+}
+
+.group-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+}
+
+.group-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.group-item.active {
+    color: var(--accent);
+    background: var(--bg-hover);
+}
+
+.group-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.group-delete-btn {
+    display: none;
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+}
+
+.group-edit-btn,
+.group-color-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+}
+
+.group-color-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.group-item:hover .group-delete-btn,
+.group-item:hover .group-edit-btn,
+.group-item:hover .group-color-btn {
+    display: block;
+}
+
+.group-edit-btn:hover {
+    color: var(--accent);
+}
+
+.group-color-btn:hover {
+    color: var(--accent);
+}
+
+.group-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.group-count {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 8px;
+    min-width: 18px;
+    text-align: center;
+    margin-left: auto;
+}
+
+.group-item:hover .group-count {
+    display: none;
+}
+
+/* ===== Group Color Picker ===== */
+.group-color-picker {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 176px;
+    z-index: 90;
+}
+
+.gcp-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, transform 0.15s;
+}
+
+.gcp-swatch:hover,
+.gcp-swatch.active {
+    border-color: white;
+    transform: scale(1.15);
+}
+
+.gcp-custom {
+    width: 20px;
+    height: 20px;
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.group-delete-btn:hover {
+    color: var(--danger);
+}
+
+.group-add {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: color 0.15s;
+}
+
+.group-add:hover {
+    color: var(--accent);
+}

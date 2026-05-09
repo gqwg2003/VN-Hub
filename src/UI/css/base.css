@@ -1,0 +1,98 @@
+/* ===== CSS Variables ===== */
+:root {
+    --bg-base: #0D0D1A;
+    --bg-surface: #13132A;
+    --bg-elevated: #1C1C3A;
+    --bg-hover: #1E1E40;
+    --border: rgba(255,255,255,0.08);
+    --accent: #2E5FA3;
+    --accent-soft: #1A3A6B;
+    --accent-hover: #3A70B8;
+    --plum: #3D1A5A;
+    --text-primary: #F0F0FF;
+    --text-secondary: #9090B0;
+    --heart: #E05080;
+    --star: #F0B429;
+    --status-reading: #4ADE80;
+    --status-completed: #60A5FA;
+    --status-onhold: #FACC15;
+    --status-dropped: #F87171;
+    --status-plan: #A78BFA;
+    --danger: #E04050;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --sidebar-width: 220px;
+    --topbar-height: 60px;
+    --transition: 150ms ease;
+    --transition-slow: 250ms ease;
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+/* Light theme */
+:root[data-theme="light"] {
+    --bg-base: #F0F0F5;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #E8E8F0;
+    --bg-hover: #E0E0EC;
+    --border: #D0D0E0;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6060A0;
+    --accent: #2E5FA3;
+    --accent-soft: #D0DFFF;
+    --accent-hover: #3A70B8;
+    --plum: #EAD0FF;
+    --heart: #D83060;
+    --star: #C89820;
+    --danger: #D03040;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-base);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    display: flex;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-elevated);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-soft);
+}
+
+/* ===== Responsive: narrow sidebar ===== */
+@media (max-width: 800px) {
+    :root {
+        --sidebar-width: 56px;
+    }
+}
+@media (max-width: 600px) {
+    :root {
+        --sidebar-width: 0px;
+    }
+}
+

@@ -1,0 +1,327 @@
+/* ===== Main ===== */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ===== Marked Sub-tabs ===== */
+.marked-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+}
+
+.marked-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.marked-tab:hover {
+    color: var(--text-primary);
+}
+
+.marked-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* ===== Top Bar ===== */
+.topbar {
+    height: var(--topbar-height);
+    min-height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.topbar-search {
+    flex: 1;
+    max-width: 480px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--bg-elevated);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+}
+
+.topbar-search input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+}
+
+.topbar-search input::placeholder {
+    color: var(--text-secondary);
+}
+
+.btn-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition);
+    margin-left: auto;
+}
+
+.btn-add:hover {
+    background: var(--accent-hover);
+}
+
+/* ===== Sort & Grid Controls ===== */
+.topbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-select {
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+}
+
+.topbar-select:focus {
+    border-color: var(--accent);
+}
+
+.grid-toggle {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.grid-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+
+.grid-toggle-btn:hover {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+.grid-toggle-btn.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* ===== Tags Dropdown ===== */
+.tag-dropdown-wrap {
+    position: relative;
+}
+
+.btn-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.btn-tags:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+.tag-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 200px;
+    max-width: 300px;
+    max-height: 360px;
+    overflow-y: auto;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 80;
+    padding: 6px;
+}
+
+.tag-dropdown.open {
+    display: flex;
+    flex-direction: column;
+}
+
+.tag-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: background var(--transition);
+}
+
+.tag-dropdown-item:hover {
+    background: var(--bg-hover);
+}
+
+.tag-dropdown-item.active {
+    background: var(--accent-soft);
+    color: var(--accent-hover);
+}
+
+.tag-dropdown-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tag-dropdown-count {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    padding: 1px 6px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.tag-dropdown-empty {
+    padding: 12px 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ===== Content ===== */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* Responsive topbar */
+@media (max-width: 800px) {
+    .topbar {
+        padding: 0 12px;
+        gap: 8px;
+    }
+    .topbar-search {
+        max-width: none;
+    }
+    .btn-add span {
+        display: none;
+    }
+    .btn-add {
+        padding: 8px;
+    }
+    .content {
+        padding: 16px;
+    }
+}
+@media (max-width: 600px) {
+    .topbar {
+        flex-wrap: wrap;
+        height: auto;
+        min-height: auto;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    .topbar-search {
+        order: -1;
+        flex-basis: 100%;
+    }
+    .content {
+        padding: 10px;
+    }
+}
+
+/* ===== Sort Direction Button ===== */
+.btn-sort-dir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-sort-dir:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+.btn-sort-dir.sort-desc svg {
+    transform: rotate(180deg);
+}
+
+.btn-sort-dir svg {
+    transition: transform 0.2s;
+}
+
+/* ===== Status filter ===== */
+.topbar-status-filter {
+    min-width: 120px;
+}
