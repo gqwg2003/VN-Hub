@@ -45,17 +45,30 @@ function initMarkedTabs() {
             document.querySelectorAll('.marked-tab').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             state.markedSubTab = btn.dataset.subtab;
-            renderGrid();
+            refreshLibrary();
         });
     });
 }
 
 function loadTabData() {
-    if (state.searchQuery) {
-        send('searchVn', { query: state.searchQuery });
-        return;
-    }
-    send('getLibrary');
+    refreshLibrary();
+}
+
+function refreshLibrary() {
+    send('getLibrary', buildLibraryQuery());
+}
+
+function buildLibraryQuery() {
+    return {
+        tab: state.activeTab,
+        markedSubTab: state.markedSubTab,
+        status: typeof state.filterStatus === 'number' ? state.filterStatus : -1,
+        groupId: state.activeGroupId || null,
+        tag: state.activeTag || null,
+        search: state.searchQuery || null,
+        sortBy: state.sortBy || 'title',
+        sortDir: state.sortDir || 'asc'
+    };
 }
 
 /* ===== Search ===== */
@@ -66,11 +79,7 @@ function initSearch() {
         clearTimeout(state.searchTimer);
         state.searchTimer = setTimeout(() => {
             state.searchQuery = input.value.trim();
-            if (state.searchQuery) {
-                send('searchVn', { query: state.searchQuery });
-            } else {
-                send('getLibrary');
-            }
+            refreshLibrary();
         }, 300);
     });
 

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using VnHub.Models;
 
@@ -6,9 +7,15 @@ namespace VnHub.Common;
 public static class Validation
 {
     private static readonly Regex VndbIdRegex = new(@"^v\d{1,9}$", RegexOptions.Compiled);
+    private static readonly Regex ProxyRegex = new(@"^https?://[^/\s]+:\d{1,5}/?$", RegexOptions.Compiled);
     private const int MaxTitleLength = 500;
     private const int MaxNotesLength = 50_000;
     private const int MaxIdLength = 200;
+    private const int MaxTagLength = 100;
+    private const int MaxTagsPerEntry = 100;
+    private const int MaxLinkLabelLength = 200;
+    private const int MaxLinkUrlLength = 2048;
+    private const int MaxLinksPerEntry = 50;
 
     public static bool IsValidVnStatus(int status)
         => Enum.IsDefined(typeof(VnStatus), status);
@@ -66,7 +73,78 @@ public static class Validation
         entry.MusicRating = ClampRating(entry.MusicRating);
         entry.CharacterRating = ClampRating(entry.CharacterRating);
         entry.ReadingProgress = ClampProgress(entry.ReadingProgress);
+        entry.Tags = NormalizeTags(entry.Tags);
+        entry.Links = NormalizeLinks(entry.Links);
         if (!IsValidVnStatus((int)entry.Status))
             entry.Status = VnStatus.PlanToRead;
+    }
+
+    public static bool IsValidHttpUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url) || url.Length > MaxLinkUrlLength) return false;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
+        return uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps;
+    }
+
+    public static string SanitizeProxy(string? addr)
+    {
+        if (string.IsNullOrWhiteSpace(addr)) return "";
+        var trimmed = addr.Trim();
+        return ProxyRegex.IsMatch(trimmed) ? trimmed : "";
+    }
+
+    public static string NormalizeTags(string? tagsJson)
+    {
+        if (string.IsNullOrWhiteSpace(tagsJson)) return "[]";
+        List<string>? tags;
+        try { tags = JsonSerializer.Deserialize<List<string>>(tagsJson); }
+        catch { return "[]"; }
+        if (tags == null) return "[]";
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var result = new List<string>(Math.Min(tags.Count, MaxTagsPerEntry));
+        foreach (var raw in tags)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) continue;
+            var t = raw.Trim();
+            if (t.Length > MaxTagLength) t = t.Substring(0, MaxTagLength);
+            if (seen.Add(t)) result.Add(t);
+            if (result.Count >= MaxTagsPerEntry) break;
+        }
+        return JsonSerializer.Serialize(result);
+    }
+
+    public static string NormalizeLinks(string? linksJson)
+    {
+        if (string.IsNullOrWhiteSpace(linksJson)) return "[]";
+        List<LinkDto>? links;
+        try { links = JsonSerializer.Deserialize<List<LinkDto>>(linksJson, LinkOpts); }
+        catch { return "[]"; }
+        if (links == null) return "[]";
+
+        var result = new List<LinkDto>(Math.Min(links.Count, MaxLinksPerEntry));
+        foreach (var l in links)
+        {
+            if (l == null) continue;
+            var url = l.Url?.Trim() ?? "";
+            if (!IsValidHttpUrl(url)) continue;
+            var label = string.IsNullOrWhiteSpace(l.Label) ? url : l.Label.Trim();
+            if (label.Length > MaxLinkLabelLength) label = label.Substring(0, MaxLinkLabelLength);
+            result.Add(new LinkDto { Label = label, Url = url });
+            if (result.Count >= MaxLinksPerEntry) break;
+        }
+        return JsonSerializer.Serialize(result, LinkOpts);
+    }
+
+    private static readonly JsonSerializerOptions LinkOpts = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true
+    };
+
+    private class LinkDto
+    {
+        public string Label { get; set; } = "";
+        public string Url { get; set; } = "";
     }
 }

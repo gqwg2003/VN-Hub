@@ -19,5 +19,6 @@ const state = {
     activeTag: null,
     filterStatus: -1,
     _statsCache: null,
+    _tagsCache: null,
     _deletedStack: []
 };

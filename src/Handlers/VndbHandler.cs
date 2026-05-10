@@ -1,4 +1,5 @@
 using System.Text.Json;
+using VnHub.Common;
 using VnHub.Database;
 using VnHub.Services;
 
@@ -68,10 +69,7 @@ public static class VndbHandler
             {
                 if (!string.IsNullOrEmpty(entry.CoverPath))
                 {
-                    var coversDir = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "VnHub", "covers");
-                    var oldCoverPath = Path.Combine(coversDir, entry.CoverPath);
+                    var oldCoverPath = Path.Combine(AppPaths.CoversDir, entry.CoverPath);
                     if (File.Exists(oldCoverPath))
                     {
                         try { File.Delete(oldCoverPath); }
@@ -86,6 +84,7 @@ public static class VndbHandler
                     coverError = err;
             }
 
+            VnHub.Common.Validation.Normalize(entry);
             VnRepository.Update(entry);
 
             Bridge.InvokeOnUiThread(() =>

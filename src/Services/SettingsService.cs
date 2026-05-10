@@ -35,8 +35,7 @@ public class AppSettings
 
 public static class SettingsService
 {
-    private static readonly string SettingsDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnHub");
+    private static readonly string SettingsDir = VnHub.Common.AppPaths.Root;
     private static readonly string SettingsPath = Path.Combine(SettingsDir, "settings.json");
 
     private static readonly JsonSerializerOptions JsonOpts = new()

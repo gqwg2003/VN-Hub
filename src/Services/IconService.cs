@@ -25,10 +25,7 @@ public static class IconService
             return null;
         }
 
-        var coversDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "VnHub", "covers");
-        Directory.CreateDirectory(coversDir);
+        var coversDir = AppPaths.EnsureCoversDir();
         var destName = $"{vnId}_icon.png";
         var destPath = PathGuard.EnsureWithin(coversDir, Path.Combine(coversDir, destName));
         if (destPath == null)

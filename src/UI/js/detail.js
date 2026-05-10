@@ -4,6 +4,15 @@ function initDetail() {
     document.getElementById('detailClose').addEventListener('click', closeDetail);
     document.getElementById('detailOverlay').addEventListener('click', closeDetail);
 
+    initDetailHeader();
+    initDetailFields();
+    initTagEditor();
+    initLinkEditor();
+    initStarRating();
+    initDetailActions();
+}
+
+function initDetailHeader() {
     document.getElementById('detailFav').addEventListener('click', () => {
         if (state.detailEntry) send('toggleFavorite', { id: state.detailEntry.id });
     });
@@ -16,6 +25,24 @@ function initDetail() {
         if (state.detailEntry) send('setStatus', { id: state.detailEntry.id, status: parseInt(e.target.value) });
     });
 
+    document.getElementById('btnLaunch').addEventListener('click', () => {
+        if (state.detailEntry) send('launchVn', { id: state.detailEntry.id });
+    });
+
+    document.getElementById('btnBrowseExe').addEventListener('click', () => send('pickExe'));
+    document.getElementById('btnChangeCover').addEventListener('click', () => send('pickImage'));
+    document.getElementById('btnFetchVndb').addEventListener('click', () => {
+        if (state.detailEntry) {
+            send('fetchVndb', { id: state.detailEntry.id });
+            showToast(t('vndbSearching'), 'info');
+        }
+    });
+    document.getElementById('btnOpenVnFolder').addEventListener('click', () => {
+        if (state.detailEntry) send('openFolder', { id: state.detailEntry.id });
+    });
+}
+
+function initDetailFields() {
     document.getElementById('detailTitle').addEventListener('input', () => debouncedSaveDetail());
     document.getElementById('detailTitle').addEventListener('change', () => saveDetail());
 
@@ -25,54 +52,52 @@ function initDetail() {
         notesTimer = setTimeout(() => debouncedSaveDetail(), 800);
     });
 
-    document.getElementById('btnLaunch').addEventListener('click', () => {
-        if (state.detailEntry) send('launchVn', { id: state.detailEntry.id });
+    document.getElementById('detailProgress').addEventListener('input', (e) => {
+        document.getElementById('detailProgressValue').textContent = e.target.value + '%';
     });
-
-    document.getElementById('btnBrowseExe').addEventListener('click', () => {
-        send('pickExe');
-    });
-
-    document.getElementById('btnChangeCover').addEventListener('click', () => {
-        send('pickImage');
-    });
-
-    document.getElementById('detailTagInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const input = e.target;
-            const tag = input.value.trim();
-            if (tag && state.detailEntry) {
-                const tags = parseTags(state.detailEntry.tags);
-                if (!tags.includes(tag)) {
-                    tags.push(tag);
-                    state.detailEntry.tags = JSON.stringify(tags);
-                    saveDetail();
-                    renderDetail();
-                }
-            }
-            input.value = '';
+    document.getElementById('detailProgress').addEventListener('change', (e) => {
+        if (state.detailEntry) {
+            state.detailEntry.readingProgress = parseInt(e.target.value);
+            saveDetail();
         }
     });
 
-    document.getElementById('btnDeleteVn').addEventListener('click', () => {
-        document.getElementById('deleteModal').style.display = '';
+    document.getElementById('detailSkipVndb').addEventListener('change', (e) => {
+        if (state.detailEntry) {
+            state.detailEntry.skipVndb = e.target.checked;
+            saveDetail();
+        }
     });
+}
 
+function initTagEditor() {
+    document.getElementById('detailTagInput').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const input = e.target;
+        const tag = input.value.trim();
+        if (tag && state.detailEntry) {
+            const tags = parseTags(state.detailEntry.tags);
+            if (!tags.includes(tag)) {
+                tags.push(tag);
+                state.detailEntry.tags = JSON.stringify(tags);
+                saveDetail();
+                renderDetail();
+            }
+        }
+        input.value = '';
+    });
+}
+
+function initLinkEditor() {
     document.getElementById('btnAddLink').addEventListener('click', () => {
         const labelInput = document.getElementById('detailLinkLabel');
         const urlInput = document.getElementById('detailLinkUrl');
         const label = labelInput.value.trim();
         const url = urlInput.value.trim();
         if (!url || !state.detailEntry) return;
-        try {
-            const parsed = new URL(url);
-            if (!['http:', 'https:'].includes(parsed.protocol)) {
-                showToast(t('invalidUrl') || 'Only http/https URLs are allowed.', 'error');
-                return;
-            }
-        } catch {
-            showToast(t('invalidUrl') || 'Invalid URL format.', 'error');
+        if (!safeHttpUrl(url)) {
+            showToast(t('invalidUrl') || 'Only http/https URLs are allowed.', 'error');
             return;
         }
         const links = parseLinks(state.detailEntry.links);
@@ -90,18 +115,9 @@ function initDetail() {
             document.getElementById('btnAddLink').click();
         }
     });
+}
 
-    document.getElementById('btnFetchVndb').addEventListener('click', () => {
-        if (state.detailEntry) {
-            send('fetchVndb', { id: state.detailEntry.id });
-            showToast(t('vndbSearching'), 'info');
-        }
-    });
-
-    document.getElementById('btnOpenVnFolder').addEventListener('click', () => {
-        if (state.detailEntry) send('openFolder', { id: state.detailEntry.id });
-    });
-
+function initStarRating() {
     document.querySelectorAll('#starRating .star').forEach(star => {
         star.addEventListener('click', () => {
             if (!state.detailEntry) return;
@@ -123,17 +139,18 @@ function initDetail() {
                 if (!state.detailEntry) return;
                 const field = group.dataset.field;
                 const val = parseInt(star.dataset.value);
-                if (state.detailEntry[field] === val) {
-                    state.detailEntry[field] = null;
-                } else {
-                    state.detailEntry[field] = val;
-                }
+                state.detailEntry[field] = state.detailEntry[field] === val ? null : val;
                 renderCategoryRatings();
                 saveDetail();
             });
         });
     });
+}
 
+function initDetailActions() {
+    document.getElementById('btnDeleteVn').addEventListener('click', () => {
+        document.getElementById('deleteModal').style.display = '';
+    });
     document.getElementById('btnDeleteCancel').addEventListener('click', closeDeleteModal);
     document.getElementById('btnDeleteConfirm').addEventListener('click', () => {
         if (state.detailEntry) {
@@ -149,23 +166,6 @@ function initDetail() {
             list.style.display = '';
         } else {
             list.style.display = 'none';
-        }
-    });
-
-    document.getElementById('detailProgress').addEventListener('input', (e) => {
-        document.getElementById('detailProgressValue').textContent = e.target.value + '%';
-    });
-    document.getElementById('detailProgress').addEventListener('change', (e) => {
-        if (state.detailEntry) {
-            state.detailEntry.readingProgress = parseInt(e.target.value);
-            saveDetail();
-        }
-    });
-
-    document.getElementById('detailSkipVndb').addEventListener('change', (e) => {
-        if (state.detailEntry) {
-            state.detailEntry.skipVndb = e.target.checked;
-            saveDetail();
         }
     });
 }

@@ -27,17 +27,27 @@ public static class Bridge
                 map[action] = handler;
         }
 
-        // Library
+        // Library (CRUD + list/search/tags)
         Register(new[]
         {
             "getLibrary", "addVn", "updateVn", "deleteVn",
             "toggleFavorite", "togglePin", "setStatus",
-            "launchVn", "getRunningGames", "getStats",
-            "pickFolder", "pickImage", "pickExe",
-            "setCover", "extractIcon", "searchVn", "openFolder",
-            "getSessions", "getPlayStats",
-            "scanFolder", "bulkAddScanned"
+            "launchVn", "getRunningGames",
+            "searchVn", "getTags"
         }, LibraryHandler.Handle);
+
+        // Media (file/folder pickers, covers, icons, OS folder)
+        Register(new[]
+        {
+            "pickFolder", "pickImage", "pickExe",
+            "setCover", "extractIcon", "openFolder"
+        }, MediaHandler.Handle);
+
+        // Sessions / play stats / aggregate stats
+        Register(new[] { "getSessions", "getPlayStats", "getStats" }, SessionHandler.Handle);
+
+        // Scan
+        Register(new[] { "scanFolder", "bulkAddScanned" }, ScanHandler.Handle);
 
         // Groups
         Register(new[] { "getGroups", "addGroup", "updateGroup", "deleteGroup", "setVnGroup" },
@@ -217,6 +227,18 @@ public static class Bridge
     internal class SearchPayload
     {
         public string Query { get; set; } = "";
+    }
+
+    internal class LibraryQueryPayload
+    {
+        public string? Tab { get; set; }
+        public string? MarkedSubTab { get; set; }
+        public int Status { get; set; } = -1;
+        public string? GroupId { get; set; }
+        public string? Tag { get; set; }
+        public string? Search { get; set; }
+        public string SortBy { get; set; } = "title";
+        public string SortDir { get; set; } = "asc";
     }
 
     internal class SetVnGroupPayload

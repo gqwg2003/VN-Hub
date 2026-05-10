@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json;
 using Microsoft.Win32;
 using VnHub.Common;
@@ -18,9 +17,7 @@ public static class SettingsHandler
             {
                 var settings = SettingsService.Load();
                 settings.DbPath = AppDb.DbPath;
-                var coversDir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "VnHub", "covers");
+                var coversDir = AppPaths.CoversDir;
                 Bridge.SendToJs("receiveSettings", new
                 {
                     settings.Theme,
@@ -59,9 +56,10 @@ public static class SettingsHandler
             {
                 var s = Bridge.Deserialize<AppSettings>(payload);
                 if (s == null) break;
+                s.ProxyAddress = Validation.SanitizeProxy(s.ProxyAddress);
                 SettingsService.Save(s);
                 VndbService.ConfigureProxy(s.ProxyAddress);
-                Bridge.SendToJs("settingsSaved", new { ok = true });
+                Bridge.SendToJs("settingsSaved", new { ok = true, proxyAddress = s.ProxyAddress });
                 break;
             }
 
@@ -208,10 +206,7 @@ public static class SettingsHandler
 
             case "openCoversFolder":
             {
-                var coversDir = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "VnHub", "covers");
-                Directory.CreateDirectory(coversDir);
+                var coversDir = AppPaths.EnsureCoversDir();
                 if (Directory.Exists(coversDir))
                 {
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -248,18 +243,7 @@ public static class SettingsHandler
             case "exportCsv":
             {
                 var entries = await Task.Run(() => VnRepository.GetAll());
-                var sb = new StringBuilder();
-                sb.AppendLine("Title,Status,Rating,UserRating,PlayTimeHours,DateAdded,CompletedAt,IsFavorite,IsPinned,ReadingProgress,VndbId,ExePath");
-                foreach (var e in entries)
-                {
-                    var title = EscapeCsv(e.Title);
-                    var hours = Math.Round(e.PlayTimeSeconds / 3600.0, 1);
-                    sb.AppendLine($"{title},{e.Status},{e.Rating?.ToString() ?? ""},{e.UserRating?.ToString() ?? ""},{hours},{e.DateAdded:yyyy-MM-dd},{e.CompletedAt ?? ""},{e.IsFavorite},{e.IsPinned},{e.ReadingProgress},{e.VndbId ?? ""},{EscapeCsv(e.ExePath ?? "")}");
-                }
-                var path = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "VnHub", $"vnhub_export_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
-                File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+                var path = await Task.Run(() => ExportService.WriteCsv(entries));
                 Bridge.SendToJs("exportDone", new { path, format = "csv" });
                 LogService.Info($"Exported CSV: {path}");
                 break;
@@ -268,33 +252,11 @@ public static class SettingsHandler
             case "exportHtml":
             {
                 var entries = await Task.Run(() => VnRepository.GetAll());
-                var sb = new StringBuilder();
-                sb.AppendLine("<!DOCTYPE html><html><head><meta charset='utf-8'><title>VN-Hub Export</title>");
-                sb.AppendLine("<style>body{font-family:system-ui;background:#1a1a2e;color:#e0e0e0;padding:2rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #333;padding:8px;text-align:left}th{background:#16213e}tr:nth-child(even){background:#1a1a3e}img{height:40px;border-radius:4px}</style></head><body>");
-                sb.AppendLine("<h1>VN-Hub Library</h1>");
-                sb.AppendLine($"<p>Exported: {DateTime.Now:yyyy-MM-dd HH:mm}</p>");
-                sb.AppendLine("<table><thead><tr><th>Title</th><th>Status</th><th>Rating</th><th>User Rating</th><th>Play Time</th><th>Progress</th><th>Date Added</th></tr></thead><tbody>");
-                foreach (var e in entries)
-                {
-                    var hours = Math.Round(e.PlayTimeSeconds / 3600.0, 1);
-                    sb.AppendLine($"<tr><td>{System.Net.WebUtility.HtmlEncode(e.Title)}</td><td>{e.Status}</td><td>{e.Rating?.ToString() ?? "-"}</td><td>{e.UserRating?.ToString() ?? "-"}</td><td>{hours}h</td><td>{e.ReadingProgress}%</td><td>{e.DateAdded:yyyy-MM-dd}</td></tr>");
-                }
-                sb.AppendLine("</tbody></table></body></html>");
-                var htmlPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "VnHub", $"vnhub_export_{DateTime.Now:yyyyMMdd_HHmmss}.html");
-                File.WriteAllText(htmlPath, sb.ToString(), Encoding.UTF8);
-                Bridge.SendToJs("exportDone", new { path = htmlPath, format = "html" });
-                LogService.Info($"Exported HTML: {htmlPath}");
+                var path = await Task.Run(() => ExportService.WriteHtml(entries));
+                Bridge.SendToJs("exportDone", new { path, format = "html" });
+                LogService.Info($"Exported HTML: {path}");
                 break;
             }
         }
-    }
-
-    private static string EscapeCsv(string val)
-    {
-        if (val.Contains(',') || val.Contains('"') || val.Contains('\n'))
-            return "\"" + val.Replace("\"", "\"\"") + "\"";
-        return val;
     }
 }

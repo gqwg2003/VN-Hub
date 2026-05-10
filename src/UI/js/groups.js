@@ -47,7 +47,7 @@ function renderGroupsSidebar() {
             const gid = el.dataset.group || null;
             state.activeGroupId = gid;
             renderGroupsSidebar();
-            renderGrid();
+            refreshLibrary();
         });
     });
 
@@ -128,9 +128,4 @@ function showGroupColorPicker(anchor, group) {
 
     anchor.parentElement.appendChild(picker);
     setTimeout(() => document.addEventListener('click', () => picker.remove(), { once: true }), 0);
-}
-
-function filterByGroup(entries) {
-    if (!state.activeGroupId) return entries;
-    return entries.filter(e => e.groupId === state.activeGroupId);
 }

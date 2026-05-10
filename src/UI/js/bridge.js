@@ -4,6 +4,12 @@ function send(action, payload) {
     window.chrome.webview.postMessage(JSON.stringify({ action, payload }));
 }
 
+const bridgeHandlers = {};
+
+function registerBridgeHandler(name, fn) {
+    bridgeHandlers[name] = fn;
+}
+
 window.chrome.webview.addEventListener('message', (event) => {
     try {
         const msg = event.data;
@@ -18,16 +24,25 @@ window.chrome.webview.addEventListener('message', (event) => {
     }
 });
 
-const bridgeHandlers = {
+Object.assign(bridgeHandlers, {
     receiveLibrary(entries) {
         state.entries = entries || [];
+        state._tagsCache = null;
         renderGrid();
         renderGroupsSidebar();
         updateSearchResultCount();
     },
+    receiveTags(tags) {
+        state._tagsCache = Array.isArray(tags) ? tags : [];
+        const dd = document.getElementById('tagDropdown');
+        if (dd && dd.classList.contains('open') && typeof renderTagDropdown === 'function') {
+            renderTagDropdown(dd);
+        }
+    },
     vnAdded(entry) {
         if (!entry) return;
         state.entries.unshift(entry);
+        state._tagsCache = null;
         renderGrid();
         closeAddModal();
         state._statsCache = null;
@@ -37,6 +52,7 @@ const bridgeHandlers = {
         const idx = state.entries.findIndex(e => e.id === entry.id);
         if (idx >= 0) state.entries[idx] = entry;
         else state.entries.unshift(entry);
+        state._tagsCache = null;
         patchCard(entry);
         if (state.detailEntry?.id === entry.id) {
             state.detailEntry = entry;
@@ -48,6 +64,7 @@ const bridgeHandlers = {
         if (!data) return;
         const entry = state.entries.find(e => e.id === data.id);
         state.entries = state.entries.filter(e => e.id !== data.id);
+        state._tagsCache = null;
         renderGrid();
         closeDetail();
         state._statsCache = null;
@@ -107,7 +124,7 @@ const bridgeHandlers = {
         if (data?.id) {
             state.runningGames.delete(data.id);
             state._statsCache = null;
-            send('getLibrary');
+            refreshLibrary();
             updateLaunchButton();
         }
     },
@@ -134,14 +151,20 @@ const bridgeHandlers = {
         restoreSortAndGridUI();
         renderSettings();
     },
-    settingsSaved() { },
+    settingsSaved(data) {
+        if (data && typeof data.proxyAddress === 'string' && state.settings) {
+            state.settings.proxyAddress = data.proxyAddress;
+            const input = document.getElementById('settingsProxy');
+            if (input && input.value !== data.proxyAddress) input.value = data.proxyAddress;
+        }
+    },
     exportDone(data) {
         if (data?.path) showToast(t('exportDone') + ' ' + data.path, 'success');
     },
     importDone(data) {
         if (data?.count >= 0) {
             showToast(t('importDone').replace('{0}', data.count), 'success');
-            send('getLibrary');
+            refreshLibrary();
             state._statsCache = null;
         }
     },
@@ -196,7 +219,7 @@ const bridgeHandlers = {
     },
     backupRestored() {
         showToast(t('backupRestoredOk'), 'success');
-        send('getLibrary');
+        refreshLibrary();
         state._statsCache = null;
     },
     backupDone(data) {
@@ -223,4 +246,4 @@ const bridgeHandlers = {
         document.getElementById('scanModal').style.display = 'none';
         showToast((t('bulkAddDone') || '{0} VNs added.').replace('{0}', data?.count || 0), 'success');
     }
-};
+});

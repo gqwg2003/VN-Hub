@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using VnHub.Common;
 
 namespace VnHub.Services;
 
@@ -49,12 +50,6 @@ public static class VndbService
     private static readonly TimeSpan ApiTimeout = TimeSpan.FromSeconds(15);
     private static readonly TimeSpan DownloadTimeout = TimeSpan.FromSeconds(60);
 
-    private static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true
-    };
-
     public static async Task<VndbResult?> SearchAsync(string title, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
@@ -69,7 +64,7 @@ public static class VndbService
                 results = 5
             };
 
-            var json = JsonSerializer.Serialize(body, JsonOpts);
+            var json = JsonSerializer.Serialize(body, Bridge.JsonOpts);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             using var apiCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -78,7 +73,7 @@ public static class VndbService
             if (!response.IsSuccessStatusCode) return null;
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<VndbApiResponse>(responseJson, JsonOpts);
+            var result = JsonSerializer.Deserialize<VndbApiResponse>(responseJson, Bridge.JsonOpts);
 
             if (result?.Results == null || result.Results.Count == 0) return null;
 
@@ -134,10 +129,7 @@ public static class VndbService
             if (bytes.Length < 100)
                 return (null, $"Image too small ({bytes.Length} bytes)");
 
-            var coversDir = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "VnHub", "covers");
-            Directory.CreateDirectory(coversDir);
+            var coversDir = VnHub.Common.AppPaths.EnsureCoversDir();
 
             var ext = ".jpg";
             if (imageUrl.Contains(".png", StringComparison.OrdinalIgnoreCase)) ext = ".png";

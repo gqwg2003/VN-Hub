@@ -10,9 +10,7 @@ public static class AppDb
 
     public static void Initialize(string? overridePath = null)
     {
-        var folder = overridePath ?? Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "VnHub");
+        var folder = overridePath ?? VnHub.Common.AppPaths.Root;
         Directory.CreateDirectory(folder);
 
         _dbPath = Path.Combine(folder, "vnhub.db");
@@ -86,6 +84,15 @@ public static class AppDb
                 started_at TEXT NOT NULL,
                 ended_at   TEXT NOT NULL,
                 seconds    INTEGER NOT NULL
+            );
+            """;
+        cmd.ExecuteNonQuery();
+
+        // Achievements table
+        cmd.CommandText = """
+            CREATE TABLE IF NOT EXISTS achievements (
+                key         TEXT PRIMARY KEY,
+                unlocked_at TEXT NOT NULL
             );
             """;
         cmd.ExecuteNonQuery();

@@ -1,4 +1,5 @@
 using Microsoft.Web.WebView2.WinForms;
+using VnHub.Common;
 using VnHub.Database;
 using VnHub.Services;
 
@@ -180,10 +181,7 @@ public class MainWindow : Form
             "vnhub.local", uiPath,
             Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow);
 
-        var coversPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "VnHub", "covers");
-        Directory.CreateDirectory(coversPath);
+        var coversPath = AppPaths.EnsureCoversDir();
         _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
             "covers.vnhub.local", coversPath,
             Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow);

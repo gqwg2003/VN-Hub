@@ -1,3 +1,4 @@
+using VnHub.Common;
 using VnHub.Database;
 using VnHub.Models;
 
@@ -41,6 +42,7 @@ public static class LibraryService
 
     public static VnEntry? UpdateVn(VnEntry entry)
     {
+        Validation.Normalize(entry);
         VnRepository.Update(entry);
         return VnRepository.GetById(entry.Id);
     }
@@ -57,10 +59,7 @@ public static class LibraryService
 
     public static string? SetCover(string vnId, string sourcePath)
     {
-        var coversDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "VnHub", "covers");
-        Directory.CreateDirectory(coversDir);
+        var coversDir = AppPaths.EnsureCoversDir();
 
         var safeId = Path.GetFileName(vnId);
         if (string.IsNullOrEmpty(safeId) || safeId != vnId)

@@ -28,52 +28,20 @@ function formatPlayTime(totalSeconds) {
     return `${m}m`;
 }
 
-function showPromptModal(title, defaultValue = '') {
-    return new Promise(resolve => {
-        const overlay = document.getElementById('promptModal');
-        const input = document.getElementById('promptModalInput');
-        const okBtn = document.getElementById('promptModalOk');
-        const cancelBtn = document.getElementById('promptModalCancel');
-        document.getElementById('promptModalTitle').textContent = title;
-        input.value = defaultValue;
-        overlay.style.display = '';
-        input.focus();
-        input.select();
-
-        const cleanup = () => {
-            overlay.style.display = 'none';
-            okBtn.removeEventListener('click', onOk);
-            cancelBtn.removeEventListener('click', onCancel);
-            input.removeEventListener('keydown', onKey);
-        };
-        const onOk = () => { cleanup(); resolve(input.value.trim() || null); };
-        const onCancel = () => { cleanup(); resolve(null); };
-        const onKey = (e) => { if (e.key === 'Enter') onOk(); else if (e.key === 'Escape') onCancel(); };
-        okBtn.addEventListener('click', onOk);
-        cancelBtn.addEventListener('click', onCancel);
-        input.addEventListener('keydown', onKey);
-    });
+function safeHttpUrl(url) {
+    if (!url) return false;
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
 }
 
-function showConfirmModal(title, text, okLabel) {
-    return new Promise(resolve => {
-        const overlay = document.getElementById('confirmModal');
-        document.getElementById('confirmModalTitle').textContent = title;
-        document.getElementById('confirmModalText').textContent = text;
-        const okBtn = document.getElementById('confirmModalOk');
-        const cancelBtn = document.getElementById('confirmModalCancel');
-        if (okLabel) okBtn.textContent = okLabel;
-
-        overlay.style.display = '';
-
-        const cleanup = () => {
-            overlay.style.display = 'none';
-            okBtn.removeEventListener('click', onOk);
-            cancelBtn.removeEventListener('click', onCancel);
-        };
-        const onOk = () => { cleanup(); resolve(true); };
-        const onCancel = () => { cleanup(); resolve(false); };
-        okBtn.addEventListener('click', onOk);
-        cancelBtn.addEventListener('click', onCancel);
+function delegate(root, selector, eventName, handler) {
+    if (!root) return;
+    root.addEventListener(eventName, (e) => {
+        const match = e.target.closest(selector);
+        if (match && root.contains(match)) handler(e, match);
     });
 }

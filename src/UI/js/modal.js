@@ -113,3 +113,55 @@ function renderScanResults(results) {
     container.innerHTML = html;
     addBtn.style.display = newResults.length > 0 ? '' : 'none';
 }
+
+/* ===== Generic Prompt / Confirm Modals ===== */
+
+function showPromptModal(title, defaultValue = '') {
+    return new Promise(resolve => {
+        const overlay = document.getElementById('promptModal');
+        const input = document.getElementById('promptModalInput');
+        const okBtn = document.getElementById('promptModalOk');
+        const cancelBtn = document.getElementById('promptModalCancel');
+        document.getElementById('promptModalTitle').textContent = title;
+        input.value = defaultValue;
+        overlay.style.display = '';
+        input.focus();
+        input.select();
+
+        const cleanup = () => {
+            overlay.style.display = 'none';
+            okBtn.removeEventListener('click', onOk);
+            cancelBtn.removeEventListener('click', onCancel);
+            input.removeEventListener('keydown', onKey);
+        };
+        const onOk = () => { cleanup(); resolve(input.value.trim() || null); };
+        const onCancel = () => { cleanup(); resolve(null); };
+        const onKey = (e) => { if (e.key === 'Enter') onOk(); else if (e.key === 'Escape') onCancel(); };
+        okBtn.addEventListener('click', onOk);
+        cancelBtn.addEventListener('click', onCancel);
+        input.addEventListener('keydown', onKey);
+    });
+}
+
+function showConfirmModal(title, text, okLabel) {
+    return new Promise(resolve => {
+        const overlay = document.getElementById('confirmModal');
+        document.getElementById('confirmModalTitle').textContent = title;
+        document.getElementById('confirmModalText').textContent = text;
+        const okBtn = document.getElementById('confirmModalOk');
+        const cancelBtn = document.getElementById('confirmModalCancel');
+        if (okLabel) okBtn.textContent = okLabel;
+
+        overlay.style.display = '';
+
+        const cleanup = () => {
+            overlay.style.display = 'none';
+            okBtn.removeEventListener('click', onOk);
+            cancelBtn.removeEventListener('click', onCancel);
+        };
+        const onOk = () => { cleanup(); resolve(true); };
+        const onCancel = () => { cleanup(); resolve(false); };
+        okBtn.addEventListener('click', onOk);
+        cancelBtn.addEventListener('click', onCancel);
+    });
+}

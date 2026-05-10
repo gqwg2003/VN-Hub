@@ -219,24 +219,9 @@ function renderPlayTimeChart(elId, dayData, days) {
 
 /* ===== Achievements ===== */
 
-function getAchievements() {
-    try { return JSON.parse(localStorage.getItem('vnhub_achievements') || '{}'); }
-    catch { return {}; }
-}
-
-function saveAchievements(data) {
-    localStorage.setItem('vnhub_achievements', JSON.stringify(data));
-}
-
 function renderAchievements(data) {
     const el = document.getElementById('statsAchievements');
     if (!el) return;
-
-    const totalHours = (data.totalPlayTime || 0) / 3600;
-    const completed = data.byStatus?.[1] || 0;
-    const totalVn = data.totalVn || 0;
-    const favCount = data.favCount || 0;
-    const hasRating = data.topRated && data.topRated.length > 0;
 
     const achIcons = {
         book: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
@@ -253,44 +238,34 @@ function renderAchievements(data) {
         star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
     };
 
-    const defs = [
-        { key: 'achFirstVn', icon: achIcons.book, check: totalVn >= 1 },
-        { key: 'ach10Vn', icon: achIcons.books, check: totalVn >= 10 },
-        { key: 'ach50Vn', icon: achIcons.library, check: totalVn >= 50 },
-        { key: 'ach100Vn', icon: achIcons.archive, check: totalVn >= 100 },
-        { key: 'achFirstComplete', icon: achIcons.check, check: completed >= 1 },
-        { key: 'ach10Complete', icon: achIcons.award, check: completed >= 10 },
-        { key: 'ach25Complete', icon: achIcons.crown, check: completed >= 25 },
-        { key: 'ach10Hours', icon: achIcons.clock, check: totalHours >= 10 },
-        { key: 'ach100Hours', icon: achIcons.flame, check: totalHours >= 100 },
-        { key: 'ach500Hours', icon: achIcons.gem, check: totalHours >= 500 },
-        { key: 'achFirstFav', icon: achIcons.heart, check: favCount >= 1 },
-        { key: 'achFirstRating', icon: achIcons.star, check: hasRating },
-    ];
+    const iconMap = {
+        achFirstVn: achIcons.book,
+        ach10Vn: achIcons.books,
+        ach50Vn: achIcons.library,
+        ach100Vn: achIcons.archive,
+        achFirstComplete: achIcons.check,
+        ach10Complete: achIcons.award,
+        ach25Complete: achIcons.crown,
+        ach10Hours: achIcons.clock,
+        ach100Hours: achIcons.flame,
+        ach500Hours: achIcons.gem,
+        achFirstFav: achIcons.heart,
+        achFirstRating: achIcons.star,
+    };
 
-    const stored = getAchievements();
-    let newUnlocks = [];
+    const list = Array.isArray(data.achievements) ? data.achievements : [];
+    const newlyUnlocked = Array.isArray(data.newlyUnlocked) ? data.newlyUnlocked : [];
 
-    for (const a of defs) {
-        if (a.check && !stored[a.key]) {
-            stored[a.key] = new Date().toISOString();
-            newUnlocks.push(a.key);
-        }
+    for (const key of newlyUnlocked) {
+        showToast(t('achievementUnlocked') + ' ' + t(key), 'success');
     }
 
-    if (newUnlocks.length > 0) {
-        saveAchievements(stored);
-        for (const key of newUnlocks) {
-            showToast(t('achievementUnlocked') + ' ' + t(key), 'success');
-        }
-    }
-
-    el.innerHTML = defs.map(a => {
-        const unlocked = !!stored[a.key];
-        const dateStr = stored[a.key] ? new Date(stored[a.key]).toLocaleDateString() : '';
+    el.innerHTML = list.map(a => {
+        const icon = iconMap[a.key] || achIcons.star;
+        const dateStr = a.unlockedAt ? new Date(a.unlockedAt).toLocaleDateString() : '';
         return `
-        <div class="achievement${unlocked ? ' unlocked' : ''}">
-            <span class="achievement-icon">${a.icon}</span>
+        <div class="achievement${a.unlocked ? ' unlocked' : ''}">
+            <span class="achievement-icon">${icon}</span>
             <div class="achievement-info">
                 <span class="achievement-title">${t(a.key)}</span>
                 <span class="achievement-desc">${t(a.key + 'Desc')}</span>

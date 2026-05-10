@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initScanModal();
     showSkeletonGrid();
     send('getSettings');
-    send('getLibrary');
+    refreshLibrary();
     send('getRunningGames');
     send('getGroups');
     // Fallback poll at 10s (primary detection is via Process.Exited event)
@@ -42,7 +42,7 @@ function initSortAndGrid() {
         state.sortBy = sortSelect.value;
         state.settings.sortBy = sortSelect.value;
         saveSettingsFromUI();
-        renderGrid();
+        refreshLibrary();
     });
 
     const sortDirBtn = document.getElementById('btnSortDir');
@@ -52,7 +52,7 @@ function initSortAndGrid() {
             state.settings.sortDir = state.sortDir;
             sortDirBtn.classList.toggle('sort-desc', state.sortDir === 'desc');
             saveSettingsFromUI();
-            renderGrid();
+            refreshLibrary();
         });
     }
 
@@ -87,6 +87,6 @@ function initStatusFilter() {
     const sel = document.getElementById('statusFilter');
     if (sel) sel.addEventListener('change', () => {
         state.filterStatus = parseInt(sel.value, 10);
-        renderGrid();
+        refreshLibrary();
     });
 }

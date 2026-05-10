@@ -2,8 +2,7 @@ namespace VnHub.Services;
 
 public static class LogService
 {
-    private static readonly string LogDir = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnHub", "logs");
+    private static readonly string LogDir = VnHub.Common.AppPaths.LogsDir;
     private static string _logPath = null!;
     private static readonly object _lock = new();
 

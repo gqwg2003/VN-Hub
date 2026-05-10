@@ -23,6 +23,13 @@ public static class PathGuard
         return null;
     }
 
+    private static readonly char[] UnsafeArgChars = { '"', '\0', '\r', '\n' };
+
+    public static bool IsSafeArg(string? value)
+    {
+        return !string.IsNullOrEmpty(value) && value.IndexOfAny(UnsafeArgChars) < 0;
+    }
+
     public static bool IsSafeFileName(string fileName, params string[] allowedExtensions)
     {
         if (string.IsNullOrWhiteSpace(fileName)) return false;

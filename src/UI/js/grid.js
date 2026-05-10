@@ -57,7 +57,7 @@ function renderGrid() {
     const grid = document.getElementById('cardGrid');
     const empty = document.getElementById('emptyState');
 
-    let filtered = filterByStatus(filterByTag(filterByGroup(filterByTab(state.entries))));
+    const filtered = state.entries;
 
     if (filtered.length === 0) {
         grid.innerHTML = '';
@@ -69,38 +69,6 @@ function renderGrid() {
     }
 
     empty.style.display = 'none';
-
-    filtered.sort((a, b) => {
-        if (a.isPinned !== b.isPinned) return b.isPinned ? 1 : -1;
-        const dir = state.sortDir === 'desc' ? -1 : 1;
-        let cmp = 0;
-        switch (state.sortBy) {
-            case 'title':
-                cmp = (a.title || '').localeCompare(b.title || '');
-                break;
-            case 'dateAdded':
-                cmp = (a.dateAdded || '').localeCompare(b.dateAdded || '');
-                break;
-            case 'status':
-                cmp = (a.status || 0) - (b.status || 0);
-                break;
-            case 'playTime':
-                cmp = (a.playTimeSeconds || 0) - (b.playTimeSeconds || 0);
-                break;
-            case 'lastLaunched':
-                cmp = (a.lastLaunchedAt || '').localeCompare(b.lastLaunchedAt || '');
-                break;
-            case 'rating':
-                cmp = (a.rating || 0) - (b.rating || 0);
-                break;
-            case 'userRating':
-                cmp = (a.userRating || 0) - (b.userRating || 0);
-                break;
-            default:
-                cmp = 0;
-        }
-        return cmp * dir;
-    });
 
     grid.className = 'card-grid grid-' + state.gridSize;
 
@@ -203,43 +171,16 @@ function renderEmptyState(el) {
     el.innerHTML = `${svgBook}<h3>${escapeHTML(title)}</h3><p>${escapeHTML(hint)}</p>`;
 }
 
-function filterByTab(entries) {
-    switch (state.activeTab) {
-        case 'marked':
-            switch (state.markedSubTab) {
-                case 'favorites': return entries.filter(e => e.isFavorite);
-                case 'priority': return entries.filter(e => e.isPinned);
-                case 'completed': return entries.filter(e => e.status === 1);
-                default: return entries.filter(e => e.isFavorite || e.isPinned);
-            }
-        case 'reading': return entries.filter(e => e.status === 0);
-        default: return [...entries];
-    }
-}
-
-function filterByStatus(entries) {
-    if (state.filterStatus < 0) return entries;
-    return entries.filter(e => e.status === state.filterStatus);
-}
-
-function filterByTag(entries) {
-    if (!state.activeTag) return entries;
-    return entries.filter(e => {
-        const tags = parseTags(e.tags);
-        return tags.some(t => t.toLowerCase() === state.activeTag.toLowerCase());
-    });
-}
-
 function clearTagFilter() {
     state.activeTag = null;
     const badge = document.getElementById('activeTagBadge');
     if (badge) badge.style.display = 'none';
-    renderGrid();
+    refreshLibrary();
 }
 
 function setTagFilter(tag) {
     state.activeTag = tag;
-    renderGrid();
+    refreshLibrary();
 
     let badge = document.getElementById('activeTagBadge');
     if (!badge) {
@@ -261,16 +202,8 @@ function setTagFilter(tag) {
 }
 
 function getAllTags() {
-    const tagMap = {};
-    for (const entry of state.entries) {
-        const tags = parseTags(entry.tags);
-        for (const tag of tags) {
-            const key = tag.toLowerCase();
-            if (!tagMap[key]) tagMap[key] = { name: tag, count: 0 };
-            tagMap[key].count++;
-        }
-    }
-    return Object.values(tagMap).sort((a, b) => b.count - a.count);
+    if (Array.isArray(state._tagsCache)) return state._tagsCache;
+    return [];
 }
 
 function toggleTagDropdown() {
@@ -282,6 +215,19 @@ function toggleTagDropdown() {
         return;
     }
 
+    if (!Array.isArray(state._tagsCache)) {
+        send('getTags');
+        dd.innerHTML = `<div class="tag-dropdown-empty">${escapeHTML(t('loading') || '...')}</div>`;
+        dd.classList.add('open');
+        return;
+    }
+
+    renderTagDropdown(dd);
+}
+
+function renderTagDropdown(dd) {
+    dd = dd || document.getElementById('tagDropdown');
+    if (!dd) return;
     const tags = getAllTags();
     if (tags.length === 0) {
         dd.innerHTML = `<div class="tag-dropdown-empty">${escapeHTML(t('noTags'))}</div>`;
