@@ -1,5 +1,3 @@
-/* ===== Settings ===== */
-
 function initSettings() {
     document.querySelectorAll('.settings-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -228,8 +226,6 @@ function saveSettingsFromUI() {
     state.settings.defaultFolder = document.getElementById('settingsDefaultFolder').value;
     send('saveSettings', state.settings);
 }
-
-/* ===== Configurable Shortcuts ===== */
 
 const DEFAULT_SHORTCUTS = {
     addVn: 'Ctrl+N',

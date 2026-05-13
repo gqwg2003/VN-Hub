@@ -279,4 +279,13 @@ const LANG_EN = {
     statsNoRatingData: 'Rate some VNs to see distribution.',
     statsNoTagData: 'No tags added yet.',
     statsNoCategoryData: 'No category ratings set.',
+
+    relativeToday: 'Today',
+    relativeYesterday: 'Yesterday',
+    relativeDaysAgo: 'd ago',
+    relativeWeeksAgo: 'w ago',
+    relativeMonthsAgo: 'mo ago',
+    readingStripInProgress: 'in progress',
+    readingStripTotal: 'total',
+    readingStripAvg: 'Avg.',
 };

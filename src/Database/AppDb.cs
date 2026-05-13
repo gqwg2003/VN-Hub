@@ -66,7 +66,6 @@ public static class AppDb
         AddColumnIfMissing(conn, "vn_entries", "links", "TEXT DEFAULT '[]'");
         AddColumnIfMissing(conn, "vn_entries", "reading_progress", "INTEGER DEFAULT 0");
         AddColumnIfMissing(conn, "vn_entries", "skip_vndb", "INTEGER DEFAULT 0");
-        // Groups table
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS groups (
                 id    TEXT PRIMARY KEY,
@@ -76,7 +75,6 @@ public static class AppDb
             """;
         cmd.ExecuteNonQuery();
 
-        // Play sessions table
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS play_sessions (
                 id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,7 +86,6 @@ public static class AppDb
             """;
         cmd.ExecuteNonQuery();
 
-        // Achievements table
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS achievements (
                 key         TEXT PRIMARY KEY,
@@ -97,7 +94,6 @@ public static class AppDb
             """;
         cmd.ExecuteNonQuery();
 
-        // FTS5 virtual table (with description)
         cmd.CommandText = """
             CREATE VIRTUAL TABLE IF NOT EXISTS vn_fts USING fts5(
                 title, notes, tags, description, content='vn_entries', content_rowid='rowid'

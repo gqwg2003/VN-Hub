@@ -1,5 +1,3 @@
-/* ===== VN-Hub Init ===== */
-
 async function loadPartials() {
     const partials = [
         { id: 'detailPanel', src: 'partials/detail-panel.html' },
@@ -32,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     refreshLibrary();
     send('getRunningGames');
     send('getGroups');
-    // Fallback poll at 10s (primary detection is via Process.Exited event)
     setInterval(() => send('getRunningGames'), 10000);
 });
 

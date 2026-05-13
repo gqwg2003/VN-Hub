@@ -280,4 +280,13 @@ const LANG_RU = {
     statsNoRatingData: 'Оцените VN, чтобы увидеть распределение.',
     statsNoTagData: 'Теги пока не добавлены.',
     statsNoCategoryData: 'Оценки по категориям не заданы.',
+
+    relativeToday: 'Сегодня',
+    relativeYesterday: 'Вчера',
+    relativeDaysAgo: 'д назад',
+    relativeWeeksAgo: 'нед назад',
+    relativeMonthsAgo: 'мес назад',
+    readingStripInProgress: 'в процессе',
+    readingStripTotal: 'всего',
+    readingStripAvg: 'Ср.',
 };

@@ -1,5 +1,3 @@
-/* ===== Utility Functions ===== */
-
 function parseTags(tagsStr) {
     try { return JSON.parse(tagsStr || '[]'); } catch { return []; }
 }
@@ -36,4 +34,15 @@ function safeHttpUrl(url) {
     } catch {
         return false;
     }
+}
+
+function relativeTime(isoStr) {
+    if (!isoStr) return '';
+    const diff = Date.now() - new Date(isoStr).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) return t('relativeToday') || 'Today';
+    if (days === 1) return t('relativeYesterday') || 'Yesterday';
+    if (days < 7)  return days + (t('relativeDaysAgo') || 'd ago');
+    if (days < 30) return Math.floor(days / 7) + (t('relativeWeeksAgo') || 'w ago');
+    return Math.floor(days / 30) + (t('relativeMonthsAgo') || 'mo ago');
 }

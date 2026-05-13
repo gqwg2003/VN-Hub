@@ -1,5 +1,3 @@
-/* ===== Application State ===== */
-
 const state = {
     entries: [],
     activeTab: 'library',

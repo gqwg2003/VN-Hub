@@ -1,5 +1,3 @@
-/* ===== Statistics ===== */
-
 function initStatsTabs() {
     const tabs = document.querySelectorAll('.stats-tab');
     if (!tabs.length || tabs[0].dataset.bound) return;
@@ -19,7 +17,6 @@ function renderStats(data) {
     const statusLabels = getStatusLabels();
     const statusColors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)', 'var(--status-plan)'];
 
-    /* ── Summary cards ── */
     const icons = {
         library: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
         clock: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
@@ -83,7 +80,6 @@ function renderStats(data) {
     `;
 
     renderRanking('statsTopPlayed', data.topPlayed, 'playTime');
-
     renderRanking('statsTopRated', data.topRated, 'userRating');
 
     const barsEl = document.getElementById('statsStatusBars');
@@ -243,8 +239,6 @@ function renderPlayTimeChart(elId, dayData, days) {
     html += '</div>';
     el.innerHTML = html;
 }
-
-/* ===== Achievements ===== */
 
 function renderAchievements(data) {
     const el = document.getElementById('statsAchievements');

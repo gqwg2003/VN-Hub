@@ -1,5 +1,3 @@
-/* ===== Context Menu ===== */
-
 let _ctxMenu = null;
 
 function showContextMenu(x, y, entry) {

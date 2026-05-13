@@ -257,6 +257,33 @@
     white-space: nowrap;
 }
 
+/* Last-played label on card (Reading tab only) */
+.vn-card-lastplayed {
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0.75;
+}
+
+/* Progress bar at bottom of card */
+.vn-card-progress {
+    height: 3px;
+    background: var(--bg-elevated);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.vn-card-progress-fill {
+    height: 100%;
+    background: var(--status-reading);
+    transition: width 0.3s ease;
+}
+
+.card-grid.grid-list .vn-card-progress {
+    height: 2px;
+    margin-top: 4px;
+}
+
 /* VNDB indicator badge */
 .vn-card-vndb {
     font-size: 9px;

@@ -1,5 +1,3 @@
-/* ===== Grid Rendering with Virtual Scrolling ===== */
-
 function highlightText(text, query) {
     if (!query) return escapeHTML(text);
     const escaped = escapeHTML(text);
@@ -65,14 +63,15 @@ function renderGrid() {
         VIRTUAL.rendered.clear();
         renderEmptyState(empty);
         empty.style.display = '';
+        renderReadingStrip([]);
         return;
     }
 
     empty.style.display = 'none';
+    renderReadingStrip(filtered);
 
     grid.className = 'card-grid grid-' + state.gridSize;
 
-    // Virtual scrolling: render in batches
     VIRTUAL.allItems = filtered;
     VIRTUAL.rendered.clear();
     grid.innerHTML = '';
@@ -87,7 +86,6 @@ function renderGrid() {
 
     appendBatch(grid, 0, VIRTUAL.batchSize);
 
-    // Set up IntersectionObserver for lazy loading
     if (VIRTUAL.allItems.length > VIRTUAL.batchSize) {
         VIRTUAL.sentinel = document.createElement('div');
         VIRTUAL.sentinel.className = 'grid-sentinel';
@@ -126,7 +124,6 @@ function appendBatch(grid, start, end) {
 
     grid.appendChild(fragment);
 
-    // Bind events for newly added cards
     grid.querySelectorAll('.vn-card:not([data-bound])').forEach(card => {
         bindCardEvents(card);
     });
@@ -296,8 +293,16 @@ function cardHTML(entry) {
         ? `<span class="vn-card-playtime">${formatPlayTime(entry.playTimeSeconds)}</span>`
         : '';
 
+    const lastPlayedStr = state.activeTab === 'reading' && entry.lastLaunchedAt
+        ? `<span class="vn-card-lastplayed">${relativeTime(entry.lastLaunchedAt)}</span>`
+        : '';
+
     const vndbBadge = entry.vndbId
         ? '<span class="vn-card-vndb" title="VNDB">V</span>'
+        : '';
+
+    const progressBar = entry.readingProgress > 0
+        ? `<div class="vn-card-progress"><div class="vn-card-progress-fill" style="width:${entry.readingProgress}%"></div></div>`
         : '';
 
     return `
@@ -310,15 +315,40 @@ function cardHTML(entry) {
             <div class="vn-card-meta">
                 <span class="status-badge" data-status="${entry.status}">${statusLabels[entry.status] || ''}</span>
                 ${playTimeStr}
+                ${lastPlayedStr}
                 ${vndbBadge}
             </div>
         </div>
+        ${progressBar}
     </div>`;
 }
 
-/* ===== DOM Patching ===== */
+function renderReadingStrip(entries) {
+    const strip = document.getElementById('readingStrip');
+    if (!strip) return;
+    if (state.activeTab !== 'reading' || entries.length === 0) {
+        strip.style.display = 'none';
+        return;
+    }
 
-/** Replace a single card in-place without full re-render */
+    const totalSec = entries.reduce((s, e) => s + (e.playTimeSeconds || 0), 0);
+    const withProgress = entries.filter(e => e.readingProgress > 0);
+    const avgProgress = withProgress.length > 0
+        ? Math.round(withProgress.reduce((s, e) => s + e.readingProgress, 0) / withProgress.length)
+        : 0;
+
+    const svgBook = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+    const svgClock = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    const svgTarget = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>';
+
+    strip.innerHTML = `
+        <span class="reading-strip-stat">${svgBook} <strong>${entries.length}</strong> ${t('readingStripInProgress') || 'in progress'}</span>
+        ${totalSec > 0 ? `<span class="reading-strip-stat">${svgClock} <strong>${formatPlayTime(totalSec)}</strong> ${t('readingStripTotal') || 'total'}</span>` : ''}
+        ${avgProgress > 0 ? `<span class="reading-strip-stat">${svgTarget} ${t('readingStripAvg') || 'Avg.'} <strong>${avgProgress}%</strong></span>` : ''}
+    `;
+    strip.style.display = 'flex';
+}
+
 function patchCard(entry) {
     const grid = document.getElementById('cardGrid');
     if (!grid) return;
@@ -334,7 +364,6 @@ function patchCard(entry) {
     bindCardEvents(newCard);
 }
 
-/** Patch only the running-state on specific card IDs */
 function patchRunningCards(ids) {
     const grid = document.getElementById('cardGrid');
     if (!grid) return;

@@ -1,5 +1,3 @@
-/* ===== Detail Panel ===== */
-
 function initDetail() {
     document.getElementById('detailClose').addEventListener('click', closeDetail);
     document.getElementById('detailOverlay').addEventListener('click', closeDetail);
@@ -212,7 +210,6 @@ function renderDetail() {
     } else {
         completedWrap.style.display = 'none';
     }
-    // VNDB
     const descWrap = document.getElementById('detailDescWrap');
     const descEl = document.getElementById('detailDesc');
     if (e.description) {

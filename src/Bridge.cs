@@ -27,7 +27,6 @@ public static class Bridge
                 map[action] = handler;
         }
 
-        // Library (CRUD + list/search/tags)
         Register(new[]
         {
             "getLibrary", "addVn", "updateVn", "deleteVn",
@@ -36,24 +35,17 @@ public static class Bridge
             "searchVn", "getTags"
         }, LibraryHandler.Handle);
 
-        // Media (file/folder pickers, covers, icons, OS folder)
         Register(new[]
         {
             "pickFolder", "pickImage", "pickExe",
             "setCover", "extractIcon", "openFolder"
         }, MediaHandler.Handle);
 
-        // Sessions / play stats / aggregate stats
         Register(new[] { "getSessions", "getPlayStats", "getStats" }, SessionHandler.Handle);
-
-        // Scan
         Register(new[] { "scanFolder", "bulkAddScanned" }, ScanHandler.Handle);
-
-        // Groups
         Register(new[] { "getGroups", "addGroup", "updateGroup", "deleteGroup", "setVnGroup" },
             GroupHandler.Handle);
 
-        // Settings
         Register(new[]
         {
             "getSettings", "saveSettings",
@@ -64,10 +56,8 @@ public static class Bridge
             "exportCsv", "exportHtml"
         }, SettingsHandler.Handle);
 
-        // VNDB
         Register(new[] { "fetchVndb" }, VndbHandler.Handle);
 
-        // Utility
         map["openUrl"] = (_, payload) =>
         {
             var u = Deserialize<UrlPayload>(payload);
@@ -161,8 +151,8 @@ public static class Bridge
             else
                 _webView.CoreWebView2.PostWebMessageAsJson(json);
         }
-        catch (ObjectDisposedException) { /* shutting down */ }
-        catch (InvalidOperationException) { /* webview may not yet have a handle */ }
+        catch (ObjectDisposedException) { }
+        catch (InvalidOperationException) { }
     }
 
     internal static void InvokeOnUiThread(Action action) => _webView.Invoke(action);
@@ -181,7 +171,6 @@ public static class Bridge
         }
     }
 
-    // Message DTOs
     internal class BridgeMessage
     {
         public string Action { get; set; } = "";

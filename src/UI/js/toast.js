@@ -1,5 +1,3 @@
-/* ===== Toast Notifications ===== */
-
 function showToast(message, type = 'info', duration = 3500) {
     let container = document.getElementById('toastContainer');
     if (!container) {

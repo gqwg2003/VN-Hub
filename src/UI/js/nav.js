@@ -1,5 +1,3 @@
-/* ===== Navigation ===== */
-
 function initNavigation() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -70,8 +68,6 @@ function buildLibraryQuery() {
         sortDir: state.sortDir || 'asc'
     };
 }
-
-/* ===== Search ===== */
 
 function initSearch() {
     const input = document.getElementById('searchInput');

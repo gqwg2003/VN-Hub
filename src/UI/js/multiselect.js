@@ -1,5 +1,3 @@
-/* ===== Multi-Select ===== */
-
 function initMultiSelect() {
     state.selectedIds = new Set();
 

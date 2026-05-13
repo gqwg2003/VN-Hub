@@ -280,4 +280,13 @@ const LANG_JA = {
     statsNoRatingData: 'VNを評価して分布を確認しましょう。',
     statsNoTagData: 'タグがまだ追加されていません。',
     statsNoCategoryData: 'カテゴリ評価が設定されていません。',
+
+    relativeToday: '今日',
+    relativeYesterday: '昨日',
+    relativeDaysAgo: '日前',
+    relativeWeeksAgo: '週前',
+    relativeMonthsAgo: 'か月前',
+    readingStripInProgress: '進行中',
+    readingStripTotal: '合計',
+    readingStripAvg: '平均',
 };

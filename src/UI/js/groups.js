@@ -1,5 +1,3 @@
-/* ===== Groups / Categories ===== */
-
 function initGroups() {
     state.groups = [];
     state.activeGroupId = null;

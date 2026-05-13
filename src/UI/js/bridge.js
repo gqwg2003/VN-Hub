@@ -1,5 +1,3 @@
-/* ===== Bridge Communication ===== */
-
 function send(action, payload) {
     window.chrome.webview.postMessage(JSON.stringify({ action, payload }));
 }

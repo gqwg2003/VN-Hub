@@ -10,11 +10,6 @@ function t(key) {
     return LANG[currentLang]?.[key] || LANG.en[key] || key;
 }
 
-/**
- * Pluralized translation.
- * Looks up key_one / key_few / key_many (ru) or key_one / key_other (en/ja).
- * Falls back to key if no plural form found.
- */
 function tp(key, count) {
     let form;
     if (currentLang === 'ru') {

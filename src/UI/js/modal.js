@@ -1,5 +1,3 @@
-/* ===== Add Modal ===== */
-
 function initAddModal() {
     document.getElementById('btnAdd').addEventListener('click', openAddModal);
     document.getElementById('btnAddCancel').addEventListener('click', closeAddModal);
@@ -40,8 +38,6 @@ function confirmAdd() {
     }
     send('addVn', { title, path: null, exePath, skipVndb });
 }
-
-/* ===== Scan Modal ===== */
 
 function initScanModal() {
     document.getElementById('btnScanFolder').addEventListener('click', () => {
@@ -113,8 +109,6 @@ function renderScanResults(results) {
     container.innerHTML = html;
     addBtn.style.display = newResults.length > 0 ? '' : 'none';
 }
-
-/* ===== Generic Prompt / Confirm Modals ===== */
 
 function showPromptModal(title, defaultValue = '') {
     return new Promise(resolve => {
