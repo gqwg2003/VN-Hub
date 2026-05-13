@@ -78,6 +78,7 @@ const LANG_RU = {
     gridList: 'Список',
 
     statistics: 'Статистика',
+    statsTabOverview: 'Обзор',
     statsTotalVn: 'Всего VN',
     statsTotalPlayTime: 'Общее время игры',
     statsByStatus: 'По статусу',

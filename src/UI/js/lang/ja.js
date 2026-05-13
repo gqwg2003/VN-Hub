@@ -78,6 +78,7 @@ const LANG_JA = {
     gridList: 'リスト',
 
     statistics: '統計',
+    statsTabOverview: '概要',
     statsTotalVn: 'VN総数',
     statsTotalPlayTime: '合計プレイ時間',
     statsByStatus: 'ステータス別',

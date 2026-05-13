@@ -1,5 +1,20 @@
 /* ===== Statistics ===== */
 
+function initStatsTabs() {
+    const tabs = document.querySelectorAll('.stats-tab');
+    if (!tabs.length || tabs[0].dataset.bound) return;
+    tabs.forEach(tab => {
+        tab.dataset.bound = '1';
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.stats-tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            const content = document.querySelector(`.stats-tab-content[data-tab-content="${tab.dataset.tab}"]`);
+            if (content) content.classList.add('active');
+        });
+    });
+}
+
 function renderStats(data) {
     const statusLabels = getStatusLabels();
     const statusColors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)', 'var(--status-plan)'];
@@ -106,6 +121,7 @@ function renderStats(data) {
     }
 
     renderAchievements(data);
+    initStatsTabs();
 }
 
 function renderRanking(elId, items, mode) {

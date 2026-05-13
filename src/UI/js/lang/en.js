@@ -78,6 +78,7 @@ const LANG_EN = {
     gridList: 'List view',
 
     statistics: 'Statistics',
+    statsTabOverview: 'Overview',
     statsTotalVn: 'Total VNs',
     statsTotalPlayTime: 'Total Play Time',
     statsByStatus: 'By Status',
