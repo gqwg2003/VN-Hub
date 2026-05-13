@@ -273,4 +273,11 @@ const LANG_RU = {
 
     skipVndbLabel: 'Не загружать данные с VNDB',
     skipVndbHint: 'Если включено, метаданные с VNDB не будут автоматически загружаться для этой записи.',
+
+    statsRatingDist: 'Распределение оценок',
+    statsTopTags: 'Популярные теги',
+    statsAvgCompletion: 'Ср. время прохождения',
+    statsNoRatingData: 'Оцените VN, чтобы увидеть распределение.',
+    statsNoTagData: 'Теги пока не добавлены.',
+    statsNoCategoryData: 'Оценки по категориям не заданы.',
 };

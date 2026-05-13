@@ -273,4 +273,11 @@ const LANG_JA = {
 
     skipVndbLabel: 'VNDBからデータを取得しない',
     skipVndbHint: '有効にすると、このエントリのVNDBメタデータは自動的に取得されません。',
+
+    statsRatingDist: '評価分布',
+    statsTopTags: '人気タグ',
+    statsAvgCompletion: '平均クリア時間',
+    statsNoRatingData: 'VNを評価して分布を確認しましょう。',
+    statsNoTagData: 'タグがまだ追加されていません。',
+    statsNoCategoryData: 'カテゴリ評価が設定されていません。',
 };

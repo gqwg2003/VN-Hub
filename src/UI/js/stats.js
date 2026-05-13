@@ -26,7 +26,8 @@ function renderStats(data) {
         check: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
         book: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
         heart: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
-        star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+        star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+        target: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
     };
     const cardsEl = document.getElementById('statsCards');
     cardsEl.innerHTML = `
@@ -70,6 +71,13 @@ function renderStats(data) {
             <div class="stat-card-body">
                 <div class="stat-card-value">${data.avgRating || '—'}</div>
                 <div class="stat-card-label">${t('statsAvgRating')}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon">${icons.target}</div>
+            <div class="stat-card-body">
+                <div class="stat-card-value">${data.avgCompletionTime > 0 ? formatPlayTime(data.avgCompletionTime) : '—'}</div>
+                <div class="stat-card-label">${t('statsAvgCompletion')}</div>
             </div>
         </div>
     `;
@@ -121,6 +129,9 @@ function renderStats(data) {
     }
 
     renderAchievements(data);
+    renderRatingDistribution(data.byRating);
+    renderTopTags(data.topTags);
+    renderCategoryRatings(data.categoryAvgs);
     initStatsTabs();
 }
 
@@ -289,4 +300,78 @@ function renderAchievements(data) {
             </div>
         </div>
     `}).join('');
+}
+
+function renderRatingDistribution(byRating) {
+    const el = document.getElementById('statsRatingDist');
+    if (!el) return;
+    const total = Object.values(byRating || {}).reduce((s, v) => s + v, 0);
+    if (total === 0) {
+        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><p>${t('statsNoRatingData')}</p></div>`;
+        return;
+    }
+    const maxCount = Math.max(...Object.values(byRating), 1);
+    let html = '';
+    for (let r = 10; r >= 1; r--) {
+        const count = byRating[r] || 0;
+        const pct = (count / maxCount * 100).toFixed(1);
+        html += `
+        <div class="stats-bar-row">
+            <span class="stats-bar-label">${r}</span>
+            <div class="stats-bar-track">
+                <div class="stats-bar-fill" style="width: ${pct}%; background: var(--accent);"></div>
+            </div>
+            <span class="stats-bar-count">${count}</span>
+        </div>`;
+    }
+    el.innerHTML = html;
+}
+
+function renderTopTags(topTags) {
+    const el = document.getElementById('statsTopTags');
+    if (!el) return;
+    if (!topTags || topTags.length === 0) {
+        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><p>${t('statsNoTagData')}</p></div>`;
+        return;
+    }
+    const maxCount = topTags[0].count || 1;
+    el.innerHTML = topTags.map(({ tag, count }) => {
+        const pct = (count / maxCount * 100).toFixed(1);
+        return `
+        <div class="stats-bar-row">
+            <span class="stats-bar-label">${escapeHTML(tag)}</span>
+            <div class="stats-bar-track">
+                <div class="stats-bar-fill" style="width: ${pct}%; background: var(--accent);"></div>
+            </div>
+            <span class="stats-bar-count">${count}</span>
+        </div>`;
+    }).join('');
+}
+
+function renderCategoryRatings(categoryAvgs) {
+    const el = document.getElementById('statsCategoryRatings');
+    if (!el) return;
+    const cats = [
+        { label: t('storyRating'),     val: categoryAvgs?.story },
+        { label: t('artRating'),       val: categoryAvgs?.art },
+        { label: t('musicRating'),     val: categoryAvgs?.music },
+        { label: t('characterRating'), val: categoryAvgs?.character },
+    ];
+    if (!cats.some(c => c.val != null)) {
+        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>${t('statsNoCategoryData')}</p></div>`;
+        return;
+    }
+    const colors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)'];
+    el.innerHTML = cats.map(({ label, val }, i) => {
+        const pct = val != null ? (val / 10 * 100).toFixed(1) : 0;
+        const display = val != null ? val.toFixed(1) : '—';
+        return `
+        <div class="stats-bar-row">
+            <span class="stats-bar-label">${label}</span>
+            <div class="stats-bar-track">
+                <div class="stats-bar-fill" style="width: ${pct}%; background: ${colors[i]};"></div>
+            </div>
+            <span class="stats-bar-count">${display}</span>
+        </div>`;
+    }).join('');
 }

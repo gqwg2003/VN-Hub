@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using VnHub.Models;
 
 namespace VnHub.Services;
@@ -15,13 +16,28 @@ public static class StatsService
         double ratingSum = 0;
         int ratingCount = 0;
         var monthlyAdds = new Dictionary<string, int>();
+        var byRating = new Dictionary<int, int>();
+        var tagFreq = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        long completionTimeSum = 0;
+        int completionCount = 0;
+        double storySum = 0; int storyCount = 0;
+        double artSum = 0;   int artCount = 0;
+        double musicSum = 0; int musicCount = 0;
+        double charSum = 0;  int charCount = 0;
 
         foreach (var e in entries)
         {
             byStatus[(int)e.Status]++;
             totalPlayTime += e.PlayTimeSeconds;
             if (e.IsFavorite) favCount++;
-            if (e.UserRating.HasValue) { ratingSum += e.UserRating.Value; ratingCount++; }
+            if (e.UserRating.HasValue)
+            {
+                ratingSum += e.UserRating.Value;
+                ratingCount++;
+                int r = Math.Clamp((int)Math.Round(e.UserRating.Value), 1, 10);
+                byRating.TryGetValue(r, out int rc);
+                byRating[r] = rc + 1;
+            }
             if (!string.IsNullOrEmpty(e.DateAdded))
             {
                 try
@@ -33,6 +49,30 @@ public static class StatsService
                 }
                 catch { }
             }
+            if (!string.IsNullOrEmpty(e.Tags) && e.Tags != "[]")
+            {
+                try
+                {
+                    var tags = JsonSerializer.Deserialize<List<string>>(e.Tags);
+                    if (tags != null)
+                        foreach (var tag in tags)
+                        {
+                            if (string.IsNullOrWhiteSpace(tag)) continue;
+                            tagFreq.TryGetValue(tag, out int tc);
+                            tagFreq[tag] = tc + 1;
+                        }
+                }
+                catch { }
+            }
+            if (e.Status == VnStatus.Completed && e.PlayTimeSeconds > 0)
+            {
+                completionTimeSum += e.PlayTimeSeconds;
+                completionCount++;
+            }
+            if (e.StoryRating.HasValue)     { storySum += e.StoryRating.Value;     storyCount++; }
+            if (e.ArtRating.HasValue)       { artSum   += e.ArtRating.Value;       artCount++;   }
+            if (e.MusicRating.HasValue)     { musicSum += e.MusicRating.Value;     musicCount++; }
+            if (e.CharacterRating.HasValue) { charSum  += e.CharacterRating.Value; charCount++;  }
         }
 
         var topPlayed = entries
@@ -48,6 +88,20 @@ public static class StatsService
             .Select(e => new { id = e.Id, title = e.Title, cover = e.CoverPath, playTime = e.PlayTimeSeconds, userRating = e.UserRating })
             .ToList();
         var avgRating = ratingCount > 0 ? Math.Round(ratingSum / ratingCount, 1) : 0.0;
+
+        var topTags = tagFreq
+            .OrderByDescending(kv => kv.Value)
+            .Take(12)
+            .Select(kv => new { tag = kv.Key, count = kv.Value })
+            .ToList();
+        var avgCompletionTime = completionCount > 0 ? completionTimeSum / completionCount : 0L;
+        var categoryAvgs = new
+        {
+            story     = storyCount > 0 ? (double?)Math.Round(storySum / storyCount, 1) : null,
+            art       = artCount   > 0 ? (double?)Math.Round(artSum   / artCount,   1) : null,
+            music     = musicCount > 0 ? (double?)Math.Round(musicSum / musicCount, 1) : null,
+            character = charCount  > 0 ? (double?)Math.Round(charSum  / charCount,  1) : null,
+        };
 
         var ctx = new AchievementService.StatsContext
         {
@@ -69,6 +123,10 @@ public static class StatsService
             topRated,
             favCount,
             avgRating,
+            byRating,
+            topTags,
+            avgCompletionTime,
+            categoryAvgs,
             achievements,
             newlyUnlocked
         };

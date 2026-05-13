@@ -272,4 +272,11 @@ const LANG_EN = {
 
     skipVndbLabel: "Don't fetch data from VNDB",
     skipVndbHint: 'When enabled, VNDB metadata will not be automatically fetched for this entry.',
+
+    statsRatingDist: 'Rating Distribution',
+    statsTopTags: 'Top Tags',
+    statsAvgCompletion: 'Avg. Completion',
+    statsNoRatingData: 'Rate some VNs to see distribution.',
+    statsNoTagData: 'No tags added yet.',
+    statsNoCategoryData: 'No category ratings set.',
 };
