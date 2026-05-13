@@ -37,11 +37,3 @@ function safeHttpUrl(url) {
         return false;
     }
 }
-
-function delegate(root, selector, eventName, handler) {
-    if (!root) return;
-    root.addEventListener(eventName, (e) => {
-        const match = e.target.closest(selector);
-        if (match && root.contains(match)) handler(e, match);
-    });
-}

@@ -6,10 +6,6 @@ function send(action, payload) {
 
 const bridgeHandlers = {};
 
-function registerBridgeHandler(name, fn) {
-    bridgeHandlers[name] = fn;
-}
-
 window.chrome.webview.addEventListener('message', (event) => {
     try {
         const msg = event.data;
