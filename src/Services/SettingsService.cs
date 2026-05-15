@@ -10,8 +10,8 @@ public class AppSettings
     public string DbPath { get; set; } = "";
     public bool VndbEnabled { get; set; } = true;
     public bool AutoStart { get; set; } = false;
-    public bool MinimizeToTray { get; set; } = true;
-    public bool StartMinimized { get; set; } = true;
+    public bool MinimizeToTray { get; set; } = false;
+    public bool StartMinimized { get; set; } = false;
     public int MaxBackups { get; set; } = 5;
     public string BackupInterval { get; set; } = "startup";
     public string ProxyAddress { get; set; } = "";

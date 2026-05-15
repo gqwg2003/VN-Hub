@@ -160,8 +160,8 @@ function initSettings() {
             language: 'en',
             vndbEnabled: true,
             autoStart: false,
-            minimizeToTray: true,
-            startMinimized: true,
+            minimizeToTray: false,
+            startMinimized: false,
             maxBackups: 5,
             backupInterval: 'startup',
             shortcuts: {},
@@ -204,7 +204,7 @@ function renderSettings() {
     });
     document.getElementById('settingsVndb').checked = s.vndbEnabled !== false;
     document.getElementById('settingsAutoStart').checked = s.autoStart === true;
-    document.getElementById('settingsMinimizeToTray').checked = s.minimizeToTray !== false;
+    document.getElementById('settingsMinimizeToTray').checked = s.minimizeToTray === true;
     document.getElementById('settingsStartMinimized').checked = s.startMinimized === true;
     document.getElementById('settingsBackupInterval').value = s.backupInterval || 'startup';
     document.getElementById('settingsMaxBackups').value = s.maxBackups || 5;
