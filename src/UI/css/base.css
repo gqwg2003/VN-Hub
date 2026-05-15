@@ -1,7 +1,7 @@
 /* ===== Fonts ===== */
 @font-face {
     font-family: 'BloodCyrillic';
-    src: url('../Fonts/cyr BLOOD CYRILLIC.TTF') format('truetype');
+    src: url('../Assets/Fonts/cyr BLOOD CYRILLIC.TTF') format('truetype');
     font-display: block;
 }
 
