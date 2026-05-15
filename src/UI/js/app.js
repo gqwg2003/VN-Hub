@@ -1,3 +1,14 @@
+const _splashReady = new Promise(r => setTimeout(r, 1800));
+
+function dismissSplash() {
+    _splashReady.then(() => {
+        const splash = document.getElementById('splash');
+        if (!splash) return;
+        splash.classList.add('fade-out');
+        splash.addEventListener('transitionend', () => splash.remove(), { once: true });
+    });
+}
+
 async function loadPartials() {
     const partials = [
         { id: 'detailPanel', src: 'partials/detail-panel.html' },

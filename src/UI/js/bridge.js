@@ -25,6 +25,7 @@ Object.assign(bridgeHandlers, {
         renderGrid();
         renderGroupsSidebar();
         updateSearchResultCount();
+        dismissSplash();
     },
     receiveTags(tags) {
         state._tagsCache = Array.isArray(tags) ? tags : [];

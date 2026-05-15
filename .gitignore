@@ -6,6 +6,7 @@ obj/
 *.pdb
 *.user
 *.suo
+*.lscache
 .vs/
 .vscode/
 
