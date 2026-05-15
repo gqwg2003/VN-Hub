@@ -106,12 +106,33 @@ html, body {
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-primary);
-    background: var(--bg-base);
     -webkit-font-smoothing: antialiased;
+}
+
+html {
+    background: var(--bg-base);
 }
 
 body {
     display: flex;
+    background: transparent;
+    position: relative;
+}
+
+/* ===== Custom background overlay ===== */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: var(--custom-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: var(--custom-bg-opacity, 0);
+    filter: blur(var(--custom-bg-blur, 0px));
+    transition: opacity var(--transition-slow), filter var(--transition-slow);
 }
 
 /* ===== Scrollbar ===== */

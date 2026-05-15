@@ -1,6 +1,7 @@
 <h2 data-i18n="settings">Settings</h2>
 <div class="settings-tabs">
     <button class="settings-tab active" data-tab="general" data-i18n="tabGeneral">General</button>
+    <button class="settings-tab" data-tab="customization" data-i18n="tabCustomization">Customization</button>
     <button class="settings-tab" data-tab="library" data-i18n="tabLibrary">Library</button>
     <button class="settings-tab" data-tab="vndb" data-i18n="tabVndb">VNDB</button>
     <button class="settings-tab" data-tab="data" data-i18n="tabData">Data</button>
@@ -47,6 +48,51 @@
             <span data-i18n="startMinimized">Start minimized</span>
         </label>
     </div>
+</div>
+</div>
+
+<div class="settings-tab-content" data-tab-content="customization">
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="customFonts" style="margin-bottom:0;">Custom Fonts</label>
+        <button class="btn-secondary btn-small" data-customization-reset="fonts" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 8px;">
+        <button class="btn-secondary" id="btnAddFont" data-i18n="addFont">Add Font</button>
+    </div>
+    <div id="customFontList" class="custom-font-list"></div>
+    <p class="settings-hint" data-i18n="customFontsHint">Supported formats: TTF, OTF, WOFF, WOFF2. The active font is used across the entire interface.</p>
+</div>
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="customBackground" style="margin-bottom:0;">Background Image</label>
+        <button class="btn-secondary btn-small" data-customization-reset="background" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 8px; gap: 12px;">
+        <button class="btn-secondary" id="btnPickBackground" data-i18n="chooseImage">Choose Image</button>
+        <button class="btn-secondary" id="btnClearBackground" data-i18n="removeImage">Remove</button>
+    </div>
+    <div id="customBackgroundPreview" class="custom-bg-preview"></div>
+    <div class="settings-row" style="margin-top: 12px; gap: 16px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgOpacity">Opacity</label>
+            <input type="range" id="settingsBgOpacity" class="custom-slider" min="0" max="100" value="40">
+            <span class="custom-slider-value" id="bgOpacityValue">40%</span>
+        </div>
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgBlur">Blur</label>
+            <input type="range" id="settingsBgBlur" class="custom-slider" min="0" max="20" value="0">
+            <span class="custom-slider-value" id="bgBlurValue">0px</span>
+        </div>
+    </div>
+</div>
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="customColors" style="margin-bottom:0;">Colors</label>
+        <button class="btn-secondary btn-small" data-customization-reset="colors" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="custom-color-grid" id="customColorGrid"></div>
+    <p class="settings-hint" data-i18n="customColorsHint">Text colors remain fixed for readability. Click the reset button next to a color to restore its default.</p>
 </div>
 </div>
 

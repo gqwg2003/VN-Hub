@@ -145,6 +145,45 @@ Object.assign(bridgeHandlers, {
         if (settings.gridSize) state.gridSize = settings.gridSize;
         restoreSortAndGridUI();
         renderSettings();
+        if (typeof applyCustomization === 'function') applyCustomization();
+        if (typeof renderCustomization === 'function') renderCustomization();
+    },
+    fontAdded(data) {
+        if (!data) return;
+        const c = ensureCustomization();
+        c.fonts = data.fonts || c.fonts;
+        c.activeFont = data.activeFont || data.fileName || c.activeFont;
+        applyCustomization();
+        renderCustomization();
+        showToast(t('fontAddedToast').replace('{0}', data.fileName || ''), 'success');
+    },
+    fontRemoved(data) {
+        if (!data) return;
+        const c = ensureCustomization();
+        c.fonts = data.fonts || [];
+        c.activeFont = data.activeFont || '';
+        applyCustomization();
+        renderCustomization();
+        showToast(t('fontRemovedToast'), 'success');
+    },
+    fontsList(data) {
+        const c = ensureCustomization();
+        c.fonts = data?.fonts || [];
+        renderCustomFontList();
+    },
+    backgroundPicked(data) {
+        const c = ensureCustomization();
+        c.backgroundImage = data?.fileName || '';
+        applyCustomization();
+        renderCustomBackground();
+        showToast(t('backgroundSetToast'), 'success');
+    },
+    backgroundCleared() {
+        const c = ensureCustomization();
+        c.backgroundImage = '';
+        applyCustomization();
+        renderCustomBackground();
+        showToast(t('backgroundClearedToast'), 'success');
     },
     settingsSaved(data) {
         if (data && typeof data.proxyAddress === 'string' && state.settings) {

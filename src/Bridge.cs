@@ -58,6 +58,12 @@ public static class Bridge
 
         Register(new[] { "fetchVndb" }, VndbHandler.Handle);
 
+        Register(new[]
+        {
+            "pickFont", "removeFont", "listFonts",
+            "pickBackground", "clearBackground"
+        }, CustomizationHandler.Handle);
+
         map["openUrl"] = (_, payload) =>
         {
             var u = Deserialize<UrlPayload>(payload);

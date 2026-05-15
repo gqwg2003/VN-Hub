@@ -46,6 +46,7 @@ public static class SettingsHandler
                     settings.ScanSortDir,
                     settings.ScanSkipExisting,
                     settings.ScanRecursive,
+                    settings.Customization,
                     coversPath = coversDir,
                     logsPath = LogService.GetLogDir()
                 });

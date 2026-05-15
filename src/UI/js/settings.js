@@ -190,6 +190,7 @@ function initSettings() {
     });
 
     initShortcutButtons();
+    if (typeof initCustomization === 'function') initCustomization();
 }
 
 function renderSettings() {
@@ -216,10 +217,13 @@ function renderSettings() {
     document.getElementById('settingsScanSkipExisting').checked = s.scanSkipExisting !== false;
     document.getElementById('settingsScanRecursive').checked = s.scanRecursive === true;
     renderShortcutButtons();
+    if (typeof renderCustomization === 'function') renderCustomization();
 }
 
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme || 'dark');
+    if (typeof applyCustomization === 'function') applyCustomization();
+    if (typeof renderCustomColors === 'function') renderCustomColors();
 }
 
 function saveSettingsFromUI() {

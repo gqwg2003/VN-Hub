@@ -31,6 +31,18 @@ public class AppSettings
     public string ScanSortDir { get; set; } = "asc";
     public bool ScanSkipExisting { get; set; } = true;
     public bool ScanRecursive { get; set; } = false;
+
+    public CustomizationSettings Customization { get; set; } = new();
+}
+
+public class CustomizationSettings
+{
+    public string ActiveFont { get; set; } = "";
+    public List<string> Fonts { get; set; } = new();
+    public string BackgroundImage { get; set; } = "";
+    public double BackgroundOpacity { get; set; } = 0.4;
+    public int BackgroundBlur { get; set; } = 0;
+    public Dictionary<string, string> Colors { get; set; } = new();
 }
 
 public static class SettingsService

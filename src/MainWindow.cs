@@ -186,6 +186,16 @@ public class MainWindow : Form
             "covers.vnhub.local", coversPath,
             Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow);
 
+        var fontsPath = AppPaths.EnsureFontsDir();
+        _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+            "fonts.vnhub.local", fontsPath,
+            Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow);
+
+        var backgroundsPath = AppPaths.EnsureBackgroundsDir();
+        _webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+            "bg.vnhub.local", backgroundsPath,
+            Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind.Allow);
+
         Bridge.Init(_webView);
 
         _webView.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;

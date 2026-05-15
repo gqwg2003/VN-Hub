@@ -7,6 +7,8 @@ public static class AppPaths
 
     public static string CoversDir { get; } = Path.Combine(Root, "covers");
     public static string LogsDir { get; } = Path.Combine(Root, "logs");
+    public static string FontsDir { get; } = Path.Combine(Root, "fonts");
+    public static string BackgroundsDir { get; } = Path.Combine(Root, "backgrounds");
 
     public static string EnsureRoot()
     {
@@ -24,5 +26,17 @@ public static class AppPaths
     {
         Directory.CreateDirectory(LogsDir);
         return LogsDir;
+    }
+
+    public static string EnsureFontsDir()
+    {
+        Directory.CreateDirectory(FontsDir);
+        return FontsDir;
+    }
+
+    public static string EnsureBackgroundsDir()
+    {
+        Directory.CreateDirectory(BackgroundsDir);
+        return BackgroundsDir;
     }
 }
