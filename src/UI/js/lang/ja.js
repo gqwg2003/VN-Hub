@@ -421,6 +421,96 @@ const LANG_JA = {
     tagPregnancy25Flavor: 'Fiction is full of your contributions to the next generation.',
     tagPregnancy25Info: '"pregnancy"タグのVNを25本以上持ってください。',
 
+    tagBdsm5: 'Curious Experimenter',
+    tagBdsm5Desc: 'bdsmタグのVN 5本',
+    tagBdsm5Flavor: 'You dipped a toe. Carefully. Or maybe not carefully at all.',
+    tagBdsm5Info: '"bdsm"タグのVNを5本以上持ってください。',
+
+    tagBdsm10: 'Rope Theorist',
+    tagBdsm10Desc: 'bdsmタグのVN 10本',
+    tagBdsm10Flavor: 'Ten VNs in and you still claim it\'s purely for the plot. Sure.',
+    tagBdsm10Info: '"bdsm"タグのVNを10本以上持ってください。',
+
+    tagBdsm25: 'Safe Word Required',
+    tagBdsm25Desc: 'bdsmタグのVN 25本',
+    tagBdsm25Flavor: '25 games deep. At this point the safe word is "backlog".',
+    tagBdsm25Info: '"bdsm"タグのVNを25本以上持ってください。',
+
+    tagGrandma5: 'Grandma\'s Favourite',
+    tagGrandma5Desc: '祖母-孫タグのVN 5本',
+    tagGrandma5Flavor: 'She bakes cookies. You appreciate her. Differently.',
+    tagGrandma5Info: '"grandmother-grandson"タグのVNを5本以上持ってください。',
+
+    tagGrandma10: 'Wisdom Seeker',
+    tagGrandma10Desc: '祖母-孫タグのVN 10本',
+    tagGrandma10Flavor: 'Ten VNs in. Still here for the life advice, obviously.',
+    tagGrandma10Info: '"grandmother-grandson"タグのVNを10本以上持ってください。',
+
+    tagGrandma25: 'Generation Gap Denied',
+    tagGrandma25Desc: '祖母-孫タグのVN 25本',
+    tagGrandma25Flavor: 'Age is just a number. Especially when none of this is real. Hopefully.',
+    tagGrandma25Info: '"grandmother-grandson"タグのVNを25本以上持ってください。',
+
+    tagMotherSon5: 'Mama\'s Boy',
+    tagMotherSon5Desc: '母-息子タグのVN 5本',
+    tagMotherSon5Flavor: 'It\'s complicated. Very.',
+    tagMotherSon5Info: '"mother-son"タグのVNを5本以上持ってください。',
+
+    tagMotherSon10: 'Oedipus Runner-Up',
+    tagMotherSon10Desc: '母-息子タグのVN 10本',
+    tagMotherSon10Flavor: 'Freud nods knowingly from beyond the grave.',
+    tagMotherSon10Info: '"mother-son"タグのVNを10本以上持ってください。',
+
+    tagMotherSon25: 'Oedipus Champion',
+    tagMotherSon25Desc: '母-息子タグのVN 25本',
+    tagMotherSon25Flavor: 'Freud wrote a whole theory just for people like you. You\'re welcome, psychology.',
+    tagMotherSon25Info: '"mother-son"タグのVNを25本以上持ってください。',
+
+    tagAunt5: 'Favourite Nephew',
+    tagAunt5Desc: '叔母-甥タグのVN 5本',
+    tagAunt5Flavor: 'She always gave the best gifts. Now she gives... more.',
+    tagAunt5Info: '"aunt-nephew"タグのVNを5本以上持ってください。',
+
+    tagAunt10: 'Holiday Specialist',
+    tagAunt10Desc: '叔母-甥タグのVN 10本',
+    tagAunt10Flavor: 'Family gatherings will never be the same again.',
+    tagAunt10Info: '"aunt-nephew"タグのVNを10本以上持ってください。',
+
+    tagAunt25: 'Extended Family Expert',
+    tagAunt25Desc: '叔母-甥タグのVN 25本',
+    tagAunt25Flavor: 'You\'ve populated an entire family tree. Just not in the conventional direction.',
+    tagAunt25Info: '"aunt-nephew"タグのVNを25本以上持ってください。',
+
+    tagSiblings5: 'Sibling Bonding',
+    tagSiblings5Desc: '兄-妹タグのVN 5本',
+    tagSiblings5Flavor: '"They\'re step-siblings." Sure they are.',
+    tagSiblings5Info: '"brother-sister"タグのVNを5本以上持ってください。',
+
+    tagSiblings10: 'Brotherly Love, Redefined',
+    tagSiblings10Desc: '兄-妹タグのVN 10本',
+    tagSiblings10Flavor: 'Taking "family first" to its most creative VN interpretation.',
+    tagSiblings10Info: '"brother-sister"タグのVNを10本以上持ってください。',
+
+    tagSiblings25: 'House of Cards',
+    tagSiblings25Desc: '兄-妹タグのVN 25本',
+    tagSiblings25Flavor: 'Twenty-five stories about siblings who definitely should not. They always do.',
+    tagSiblings25Info: '"brother-sister"タグのVNを25本以上持ってください。',
+
+    tagCousin5: 'Family Reunion Fan',
+    tagCousin5Desc: 'いとこタグのVN 5本',
+    tagCousin5Flavor: 'The fun kind of family reunion. No potato salad required.',
+    tagCousin5Info: '"cousin"タグのVNを5本以上持ってください。',
+
+    tagCousin10: 'Genetically Adjacent',
+    tagCousin10Desc: 'いとこタグのVN 10本',
+    tagCousin10Flavor: 'Close enough to be family. Close enough for drama. Apparently close enough for this.',
+    tagCousin10Info: '"cousin"タグのVNを10本以上持ってください。',
+
+    tagCousin25: 'Royal Tradition',
+    tagCousin25Desc: 'いとこタグのVN 25本',
+    tagCousin25Flavor: 'Historically, royalty did it all the time. You\'re just keeping traditions alive. Fictional ones.',
+    tagCousin25Info: '"cousin"タグのVNを25本以上持ってください。',
+
     scanFolder: 'スキャン',
     scanTitle: 'フォルダスキャン',
     scanning: 'スキャン中...',

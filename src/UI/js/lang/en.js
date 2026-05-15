@@ -420,6 +420,96 @@ const LANG_EN = {
     tagPregnancy25Flavor: 'Fiction is full of your contributions to the next generation.',
     tagPregnancy25Info: 'Have at least 25 VNs with the "pregnancy" tag.',
 
+    tagBdsm5: 'Curious Experimenter',
+    tagBdsm5Desc: '5 VNs tagged with bdsm',
+    tagBdsm5Flavor: 'You dipped a toe. Carefully. Or maybe not carefully at all.',
+    tagBdsm5Info: 'Have at least 5 VNs with the "bdsm" tag.',
+
+    tagBdsm10: 'Rope Theorist',
+    tagBdsm10Desc: '10 VNs tagged with bdsm',
+    tagBdsm10Flavor: 'Ten VNs in and you still claim it\'s purely for the plot. Sure.',
+    tagBdsm10Info: 'Have at least 10 VNs with the "bdsm" tag.',
+
+    tagBdsm25: 'Safe Word Required',
+    tagBdsm25Desc: '25 VNs tagged with bdsm',
+    tagBdsm25Flavor: '25 games deep. At this point the safe word is "backlog".',
+    tagBdsm25Info: 'Have at least 25 VNs with the "bdsm" tag.',
+
+    tagGrandma5: 'Grandma\'s Favourite',
+    tagGrandma5Desc: '5 VNs with grandmother-grandson tag',
+    tagGrandma5Flavor: 'She bakes cookies. You appreciate her. Differently.',
+    tagGrandma5Info: 'Have at least 5 VNs with the "grandmother-grandson" tag.',
+
+    tagGrandma10: 'Wisdom Seeker',
+    tagGrandma10Desc: '10 VNs with grandmother-grandson tag',
+    tagGrandma10Flavor: 'Ten VNs in. Still here for the life advice, obviously.',
+    tagGrandma10Info: 'Have at least 10 VNs with the "grandmother-grandson" tag.',
+
+    tagGrandma25: 'Generation Gap Denied',
+    tagGrandma25Desc: '25 VNs with grandmother-grandson tag',
+    tagGrandma25Flavor: 'Age is just a number. Especially when none of this is real. Hopefully.',
+    tagGrandma25Info: 'Have at least 25 VNs with the "grandmother-grandson" tag.',
+
+    tagMotherSon5: 'Mama\'s Boy',
+    tagMotherSon5Desc: '5 VNs with mother-son tag',
+    tagMotherSon5Flavor: 'It\'s complicated. Very.',
+    tagMotherSon5Info: 'Have at least 5 VNs with the "mother-son" tag.',
+
+    tagMotherSon10: 'Oedipus Runner-Up',
+    tagMotherSon10Desc: '10 VNs with mother-son tag',
+    tagMotherSon10Flavor: 'Freud nods knowingly from beyond the grave.',
+    tagMotherSon10Info: 'Have at least 10 VNs with the "mother-son" tag.',
+
+    tagMotherSon25: 'Oedipus Champion',
+    tagMotherSon25Desc: '25 VNs with mother-son tag',
+    tagMotherSon25Flavor: 'Freud wrote a whole theory just for people like you. You\'re welcome, psychology.',
+    tagMotherSon25Info: 'Have at least 25 VNs with the "mother-son" tag.',
+
+    tagAunt5: 'Favourite Nephew',
+    tagAunt5Desc: '5 VNs with aunt-nephew tag',
+    tagAunt5Flavor: 'She always gave the best gifts. Now she gives... more.',
+    tagAunt5Info: 'Have at least 5 VNs with the "aunt-nephew" tag.',
+
+    tagAunt10: 'Holiday Specialist',
+    tagAunt10Desc: '10 VNs with aunt-nephew tag',
+    tagAunt10Flavor: 'Family gatherings will never be the same again.',
+    tagAunt10Info: 'Have at least 10 VNs with the "aunt-nephew" tag.',
+
+    tagAunt25: 'Extended Family Expert',
+    tagAunt25Desc: '25 VNs with aunt-nephew tag',
+    tagAunt25Flavor: 'You\'ve populated an entire family tree. Just not in the conventional direction.',
+    tagAunt25Info: 'Have at least 25 VNs with the "aunt-nephew" tag.',
+
+    tagSiblings5: 'Sibling Bonding',
+    tagSiblings5Desc: '5 VNs with brother-sister tag',
+    tagSiblings5Flavor: '"They\'re step-siblings." Sure they are.',
+    tagSiblings5Info: 'Have at least 5 VNs with the "brother-sister" tag.',
+
+    tagSiblings10: 'Brotherly Love, Redefined',
+    tagSiblings10Desc: '10 VNs with brother-sister tag',
+    tagSiblings10Flavor: 'Taking "family first" to its most creative VN interpretation.',
+    tagSiblings10Info: 'Have at least 10 VNs with the "brother-sister" tag.',
+
+    tagSiblings25: 'House of Cards',
+    tagSiblings25Desc: '25 VNs with brother-sister tag',
+    tagSiblings25Flavor: 'Twenty-five stories about siblings who definitely should not. They always do.',
+    tagSiblings25Info: 'Have at least 25 VNs with the "brother-sister" tag.',
+
+    tagCousin5: 'Family Reunion Fan',
+    tagCousin5Desc: '5 VNs with cousin tag',
+    tagCousin5Flavor: 'The fun kind of family reunion. No potato salad required.',
+    tagCousin5Info: 'Have at least 5 VNs with the "cousin" tag.',
+
+    tagCousin10: 'Genetically Adjacent',
+    tagCousin10Desc: '10 VNs with cousin tag',
+    tagCousin10Flavor: 'Close enough to be family. Close enough for drama. Apparently close enough for this.',
+    tagCousin10Info: 'Have at least 10 VNs with the "cousin" tag.',
+
+    tagCousin25: 'Royal Tradition',
+    tagCousin25Desc: '25 VNs with cousin tag',
+    tagCousin25Flavor: 'Historically, royalty did it all the time. You\'re just keeping traditions alive. Fictional ones.',
+    tagCousin25Info: 'Have at least 25 VNs with the "cousin" tag.',
+
     scanFolder: 'Scan',
     scanTitle: 'Scan Folder',
     scanning: 'Scanning...',

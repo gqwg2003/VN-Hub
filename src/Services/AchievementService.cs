@@ -32,64 +32,88 @@ public static class AchievementService
 
     private static readonly List<Definition> Defs = new()
     {
-        // ── Library size ──────────────────────────────────────────────────
+        // --Library size 
         new() { Key = "achFirstVn",       Check = c => c.TotalVn >= 1 },
         new() { Key = "ach10Vn",          Check = c => c.TotalVn >= 10 },
         new() { Key = "ach50Vn",          Check = c => c.TotalVn >= 50 },
         new() { Key = "ach100Vn",         Check = c => c.TotalVn >= 100 },
-        // ── Completions ───────────────────────────────────────────────────
+        // -- Completions 
         new() { Key = "achFirstComplete", Check = c => c.Completed >= 1 },
         new() { Key = "ach10Complete",    Check = c => c.Completed >= 10 },
         new() { Key = "ach25Complete",    Check = c => c.Completed >= 25 },
-        // ── Play time ─────────────────────────────────────────────────────
+        // -- Play time
         new() { Key = "ach10Hours",       Check = c => c.TotalHours >= 10 },
         new() { Key = "ach100Hours",      Check = c => c.TotalHours >= 100 },
         new() { Key = "ach500Hours",      Check = c => c.TotalHours >= 500 },
-        // ── Engagement ────────────────────────────────────────────────────
+        // -- Engagement
         new() { Key = "achFirstFav",      Check = c => c.FavCount >= 1 },
         new() { Key = "achFirstRating",   Check = c => c.HasRating },
-        // ── Tag: milf ─────────────────────────────────────────────────────
+        // -- Tag: milf
         new() { Key = "tagMilf5",         Check = c => TagCount(c, "milf", "mature woman") >= 5 },
         new() { Key = "tagMilf10",        Check = c => TagCount(c, "milf", "mature woman") >= 10 },
         new() { Key = "tagMilf25",        Check = c => TagCount(c, "milf", "mature woman") >= 25 },
-        // ── Tag: harem ────────────────────────────────────────────────────
+        // -- Tag: harem
         new() { Key = "tagHarem5",        Check = c => TagCount(c, "harem") >= 5 },
         new() { Key = "tagHarem10",       Check = c => TagCount(c, "harem") >= 10 },
         new() { Key = "tagHarem25",       Check = c => TagCount(c, "harem") >= 25 },
-        // ── Tag: yuri ─────────────────────────────────────────────────────
+        // -- Tag: yuri
         new() { Key = "tagYuri5",         Check = c => TagCount(c, "yuri", "girl's love", "girls love") >= 5 },
         new() { Key = "tagYuri25",        Check = c => TagCount(c, "yuri", "girl's love", "girls love") >= 25 },
-        // ── Tag: school ───────────────────────────────────────────────────
+        // -- Tag: school
         new() { Key = "tagSchool5",       Check = c => TagCount(c, "school", "school life", "school setting") >= 5 },
         new() { Key = "tagSchool25",      Check = c => TagCount(c, "school", "school life", "school setting") >= 25 },
-        // ── Tag: fantasy ──────────────────────────────────────────────────
+        // -- Tag: fantasy
         new() { Key = "tagFantasy5",      Check = c => TagCount(c, "fantasy") >= 5 },
         new() { Key = "tagFantasy25",     Check = c => TagCount(c, "fantasy") >= 25 },
-        // ── Tag: tsundere ─────────────────────────────────────────────────
+        // -- Tag: tsundere
         new() { Key = "tagTsundere5",     Check = c => TagCount(c, "tsundere") >= 5 },
         new() { Key = "tagTsundere10",    Check = c => TagCount(c, "tsundere") >= 10 },
-        // ── Tag: moege ────────────────────────────────────────────────────
+        // -- Tag: moege
         new() { Key = "tagMoege5",        Check = c => TagCount(c, "moege", "moe") >= 5 },
         new() { Key = "tagMoege25",       Check = c => TagCount(c, "moege", "moe") >= 25 },
-        // ── Tag: romance ──────────────────────────────────────────────────
+        // -- Tag: romance
         new() { Key = "tagRomance5",      Check = c => TagCount(c, "romance") >= 5 },
         new() { Key = "tagRomance25",     Check = c => TagCount(c, "romance") >= 25 },
-        // ── Tag: incest ───────────────────────────────────────────────────
+        // -- Tag: incest
         new() { Key = "tagIncest5",       Check = c => TagCount(c, "incest") >= 5 },
         new() { Key = "tagIncest10",      Check = c => TagCount(c, "incest") >= 10 },
         new() { Key = "tagIncest25",      Check = c => TagCount(c, "incest") >= 25 },
-        // ── Tag: ahegao ───────────────────────────────────────────────────
+        // -- Tag: ahegao
         new() { Key = "tagAhegao5",       Check = c => TagCount(c, "ahegao") >= 5 },
         new() { Key = "tagAhegao25",      Check = c => TagCount(c, "ahegao") >= 25 },
-        // ── Tag: exhibitionism ────────────────────────────────────────────
+        // -- Tag: exhibitionism
         new() { Key = "tagExhibit5",      Check = c => TagCount(c, "exhibitionism", "exhibitionist") >= 5 },
         new() { Key = "tagExhibit25",     Check = c => TagCount(c, "exhibitionism", "exhibitionist") >= 25 },
-        // ── Tag: creampie ─────────────────────────────────────────────────
+        // -- Tag: creampie
         new() { Key = "tagCreampie5",     Check = c => TagCount(c, "creampie") >= 5 },
         new() { Key = "tagCreampie25",    Check = c => TagCount(c, "creampie") >= 25 },
-        // ── Tag: pregnancy ────────────────────────────────────────────────
+        // -- Tag: pregnancy
         new() { Key = "tagPregnancy5",    Check = c => TagCount(c, "pregnancy", "pregnant") >= 5 },
         new() { Key = "tagPregnancy25",   Check = c => TagCount(c, "pregnancy", "pregnant") >= 25 },
+        // -- Tag: bdsm
+        new() { Key = "tagBdsm5",         Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 5 },
+        new() { Key = "tagBdsm10",        Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 10 },
+        new() { Key = "tagBdsm25",        Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 25 },
+        // -- Tag: grandmother-grandson
+        new() { Key = "tagGrandma5",      Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 5 },
+        new() { Key = "tagGrandma10",     Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 10 },
+        new() { Key = "tagGrandma25",     Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 25 },
+        // -- Tag: mother-son
+        new() { Key = "tagMotherSon5",    Check = c => TagCount(c, "mother-son", "mother/son") >= 5 },
+        new() { Key = "tagMotherSon10",   Check = c => TagCount(c, "mother-son", "mother/son") >= 10 },
+        new() { Key = "tagMotherSon25",   Check = c => TagCount(c, "mother-son", "mother/son") >= 25 },
+        // -- Tag: aunt-nephew
+        new() { Key = "tagAunt5",         Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 5 },
+        new() { Key = "tagAunt10",        Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 10 },
+        new() { Key = "tagAunt25",        Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 25 },
+        // -- Tag: brother-sister
+        new() { Key = "tagSiblings5",     Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 5 },
+        new() { Key = "tagSiblings10",    Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 10 },
+        new() { Key = "tagSiblings25",    Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 25 },
+        // -- Tag: cousin
+        new() { Key = "tagCousin5",       Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 5 },
+        new() { Key = "tagCousin10",      Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 10 },
+        new() { Key = "tagCousin25",      Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 25 },
     };
 
     public static (List<UnlockedAchievement> All, List<string> NewlyUnlocked) Evaluate(StatsContext ctx)

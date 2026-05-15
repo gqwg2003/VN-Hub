@@ -421,6 +421,96 @@ const LANG_RU = {
     tagPregnancy25Flavor: 'Вымышленный мир полон твоего вклада в следующее поколение.',
     tagPregnancy25Info: 'Иметь хотя бы 25 VN с тегом "pregnancy".',
 
+    tagBdsm5: 'Любопытный экспериментатор',
+    tagBdsm5Desc: '5 VN с тегом bdsm',
+    tagBdsm5Flavor: 'Осторожно опустил ногу в воду. Или не слишком осторожно.',
+    tagBdsm5Info: 'Иметь хотя бы 5 VN с тегом "bdsm".',
+
+    tagBdsm10: 'Теоретик верёвки',
+    tagBdsm10Desc: '10 VN с тегом bdsm',
+    tagBdsm10Flavor: '10 VN, и ты всё ещё утверждаешь, что тебя интересует только сюжет. Конечно.',
+    tagBdsm10Info: 'Иметь хотя бы 10 VN с тегом "bdsm".',
+
+    tagBdsm25: 'Нужно стоп-слово',
+    tagBdsm25Desc: '25 VN с тегом bdsm',
+    tagBdsm25Flavor: '25 игр. Твоим стоп-словом стало слово «беклог».',
+    tagBdsm25Info: 'Иметь хотя бы 25 VN с тегом "bdsm".',
+
+    tagGrandma5: 'Любимый внук',
+    tagGrandma5Desc: '5 VN с тегом grandmother-grandson',
+    tagGrandma5Flavor: 'Она печёт пирожки. Ты её ценишь. По-своему.',
+    tagGrandma5Info: 'Иметь хотя бы 5 VN с тегом "grandmother-grandson".',
+
+    tagGrandma10: 'Искатель мудрости',
+    tagGrandma10Desc: '10 VN с тегом grandmother-grandson',
+    tagGrandma10Flavor: '10 VN. Очевидно, ты здесь только за жизненными советами.',
+    tagGrandma10Info: 'Иметь хотя бы 10 VN с тегом "grandmother-grandson".',
+
+    tagGrandma25: 'Разрыв поколений? Какой разрыв?',
+    tagGrandma25Desc: '25 VN с тегом grandmother-grandson',
+    tagGrandma25Flavor: 'Возраст — просто цифра. Особенно когда всё это выдумка. Надеюсь.',
+    tagGrandma25Info: 'Иметь хотя бы 25 VN с тегом "grandmother-grandson".',
+
+    tagMotherSon5: 'Маменькин сынок',
+    tagMotherSon5Desc: '5 VN с тегом mother-son',
+    tagMotherSon5Flavor: 'Всё сложно. Очень.',
+    tagMotherSon5Info: 'Иметь хотя бы 5 VN с тегом "mother-son".',
+
+    tagMotherSon10: 'Вице-Эдип',
+    tagMotherSon10Desc: '10 VN с тегом mother-son',
+    tagMotherSon10Flavor: 'Фрейд понимающе кивает из-за гробовой доски.',
+    tagMotherSon10Info: 'Иметь хотя бы 10 VN с тегом "mother-son".',
+
+    tagMotherSon25: 'Чемпион Эдип',
+    tagMotherSon25Desc: '25 VN с тегом mother-son',
+    tagMotherSon25Flavor: 'Фрейд написал целую теорию специально для таких, как ты. Психология говорит спасибо.',
+    tagMotherSon25Info: 'Иметь хотя бы 25 VN с тегом "mother-son".',
+
+    tagAunt5: 'Любимый племянник',
+    tagAunt5Desc: '5 VN с тегом aunt-nephew',
+    tagAunt5Flavor: 'Она всегда дарила лучшие подарки. Теперь дарит... большее.',
+    tagAunt5Info: 'Иметь хотя бы 5 VN с тегом "aunt-nephew".',
+
+    tagAunt10: 'Специалист по праздникам',
+    tagAunt10Desc: '10 VN с тегом aunt-nephew',
+    tagAunt10Flavor: 'Семейные встречи больше никогда не будут прежними.',
+    tagAunt10Info: 'Иметь хотя бы 10 VN с тегом "aunt-nephew".',
+
+    tagAunt25: 'Эксперт по расширенной семье',
+    tagAunt25Desc: '25 VN с тегом aunt-nephew',
+    tagAunt25Flavor: 'Ты заполнил целое семейное древо. Только не в стандартном направлении.',
+    tagAunt25Info: 'Иметь хотя бы 25 VN с тегом "aunt-nephew".',
+
+    tagSiblings5: 'Братская связь',
+    tagSiblings5Desc: '5 VN с тегом brother-sister',
+    tagSiblings5Flavor: '«Они сводные». Ну да, конечно.',
+    tagSiblings5Info: 'Иметь хотя бы 5 VN с тегом "brother-sister".',
+
+    tagSiblings10: 'Братская любовь — переосмысление',
+    tagSiblings10Desc: '10 VN с тегом brother-sister',
+    tagSiblings10Flavor: 'Воплощение принципа «семья прежде всего» в самой творческой интерпретации.',
+    tagSiblings10Info: 'Иметь хотя бы 10 VN с тегом "brother-sister".',
+
+    tagSiblings25: 'Карточный домик',
+    tagSiblings25Desc: '25 VN с тегом brother-sister',
+    tagSiblings25Flavor: '25 историй о братьях и сёстрах, которым категорически нельзя. Но они всегда находят способ.',
+    tagSiblings25Info: 'Иметь хотя бы 25 VN с тегом "brother-sister".',
+
+    tagCousin5: 'Фанат семейных встреч',
+    tagCousin5Desc: '5 VN с тегом cousin',
+    tagCousin5Flavor: 'Тот самый весёлый тип семейных встреч. Оливье по желанию.',
+    tagCousin5Info: 'Иметь хотя бы 5 VN с тегом "cousin".',
+
+    tagCousin10: 'Генетически близкий',
+    tagCousin10Desc: '10 VN с тегом cousin',
+    tagCousin10Flavor: 'Достаточно близко, чтобы быть роднёй. Достаточно близко для драмы. Оказывается, этого тоже достаточно.',
+    tagCousin10Info: 'Иметь хотя бы 10 VN с тегом "cousin".',
+
+    tagCousin25: 'Королевская традиция',
+    tagCousin25Desc: '25 VN с тегом cousin',
+    tagCousin25Flavor: 'Исторически королевские дома только так и поступали. Ты просто хранишь традиции. Выдуманные.',
+    tagCousin25Info: 'Иметь хотя бы 25 VN с тегом "cousin".',
+
     scanFolder: 'Скан',
     scanTitle: 'Сканирование папки',
     scanning: 'Сканирование...',
