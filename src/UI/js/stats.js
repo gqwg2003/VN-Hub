@@ -17,15 +17,7 @@ function renderStats(data) {
     const statusLabels = getStatusLabels();
     const statusColors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)', 'var(--status-plan)'];
 
-    const icons = {
-        library: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
-        clock: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-        check: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        book: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
-        heart: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
-        star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-        target: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
-    };
+    const icons = { library: ICONS.book, clock: ICONS.clock, check: ICONS.check, book: ICONS.books, heart: ICONS.heart, star: ICONS.star, target: ICONS.target };
     const cardsEl = document.getElementById('statsCards');
     cardsEl.innerHTML = `
         <div class="stat-card stat-card-accent">
@@ -244,34 +236,50 @@ function renderAchievements(data) {
     const el = document.getElementById('statsAchievements');
     if (!el) return;
 
-    const achIcons = {
-        book: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
-        books: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
-        library: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l4-4 4 4"/><path d="M7 5v14"/><path d="M11 18l4 4 4-4"/><path d="M15 3v16"/><rect x="19" y="4" width="2" height="16" rx="1"/></svg>',
-        archive: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>',
-        check: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        award: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
-        crown: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 16h14v4H5z"/></svg>',
-        clock: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-        flame: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
-        gem: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3l1 10"/><path d="M2 9h20"/><path d="M6.5 3 12 13"/><path d="M17.5 3 12 13"/></svg>',
-        heart: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
-        star: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-    };
+    const svg = ICONS;
 
     const iconMap = {
-        achFirstVn: achIcons.book,
-        ach10Vn: achIcons.books,
-        ach50Vn: achIcons.library,
-        ach100Vn: achIcons.archive,
-        achFirstComplete: achIcons.check,
-        ach10Complete: achIcons.award,
-        ach25Complete: achIcons.crown,
-        ach10Hours: achIcons.clock,
-        ach100Hours: achIcons.flame,
-        ach500Hours: achIcons.gem,
-        achFirstFav: achIcons.heart,
-        achFirstRating: achIcons.star,
+        achFirstVn:       svg.book,
+        ach10Vn:          svg.books,
+        ach50Vn:          svg.library,
+        ach100Vn:         svg.archive,
+        achFirstComplete: svg.check,
+        ach10Complete:    svg.award,
+        ach25Complete:    svg.crown,
+        ach10Hours:       svg.clock,
+        ach100Hours:      svg.flame,
+        ach500Hours:      svg.gem,
+        achFirstFav:      svg.heart,
+        achFirstRating:   svg.star,
+        tagMilf5:         svg.moon,
+        tagMilf10:        svg.moon,
+        tagMilf25:        svg.moon,
+        tagHarem5:        svg.users,
+        tagHarem10:       svg.users,
+        tagHarem25:       svg.users,
+        tagYuri5:         svg.flower,
+        tagYuri25:        svg.flower,
+        tagSchool5:       svg.school,
+        tagSchool25:      svg.school,
+        tagFantasy5:      svg.sword,
+        tagFantasy25:     svg.sword,
+        tagTsundere5:     svg.zap,
+        tagTsundere10:    svg.zap,
+        tagMoege5:        svg.star,
+        tagMoege25:       svg.star,
+        tagRomance5:      svg.heart,
+        tagRomance25:     svg.heart,
+        tagIncest5:       svg.drama,
+        tagIncest10:      svg.drama,
+        tagIncest25:      svg.drama,
+        tagAhegao5:       svg.eye,
+        tagAhegao25:      svg.eye,
+        tagExhibit5:      svg.eye,
+        tagExhibit25:     svg.eye,
+        tagCreampie5:     svg.drop,
+        tagCreampie25:    svg.drop,
+        tagPregnancy5:    svg.baby,
+        tagPregnancy25:   svg.baby,
     };
 
     const list = Array.isArray(data.achievements) ? data.achievements : [];
@@ -282,18 +290,43 @@ function renderAchievements(data) {
     }
 
     el.innerHTML = list.map(a => {
-        const icon = iconMap[a.key] || achIcons.star;
+        const icon = iconMap[a.key] || svg.star;
         const dateStr = a.unlockedAt ? new Date(a.unlockedAt).toLocaleDateString() : '';
+        const flavorText = a.unlocked ? escapeHTML(t(a.key + 'Flavor')) : '???';
+        const flavorClass = a.unlocked ? 'achievement-flavor' : 'achievement-flavor achievement-flavor-locked';
         return `
-        <div class="achievement${a.unlocked ? ' unlocked' : ''}">
-            <span class="achievement-icon">${icon}</span>
-            <div class="achievement-info">
-                <span class="achievement-title">${t(a.key)}</span>
-                <span class="achievement-desc">${t(a.key + 'Desc')}</span>
-                ${dateStr ? `<span class="achievement-date">${dateStr}</span>` : ''}
+        <div class="achievement${a.unlocked ? ' unlocked' : ''}" data-key="${escapeAttr(a.key)}">
+            <div class="achievement-header">
+                <span class="achievement-icon">${icon}</span>
+                <div class="achievement-info">
+                    <span class="achievement-title">${escapeHTML(t(a.key))}</span>
+                    <span class="achievement-desc">${escapeHTML(t(a.key + 'Desc'))}</span>
+                    ${dateStr ? `<span class="achievement-date">${dateStr}</span>` : ''}
+                </div>
+                <button class="achievement-expand-btn" aria-label="expand">${svg.chevron}</button>
+            </div>
+            <div class="achievement-body">
+                <div class="achievement-body-inner">
+                    <div class="achievement-flavor-block">
+                        <div class="achievement-section-label">${escapeHTML(t('achFlavorLabel'))}</div>
+                        <div class="${flavorClass}">${flavorText}</div>
+                    </div>
+                    <div class="achievement-info-block">
+                        <div class="achievement-section-label">${escapeHTML(t('achInfoLabel'))}</div>
+                        <div class="achievement-real-info">${escapeHTML(t(a.key + 'Info'))}</div>
+                    </div>
+                </div>
             </div>
         </div>
     `}).join('');
+
+    el.querySelectorAll('.achievement').forEach(card => {
+        card.addEventListener('click', () => {
+            const body = card.querySelector('.achievement-body');
+            const expanded = card.classList.toggle('expanded');
+            body.style.maxHeight = expanded ? body.scrollHeight + 'px' : '0';
+        });
+    });
 }
 
 function renderRatingDistribution(byRating) {

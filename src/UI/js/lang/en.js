@@ -212,30 +212,213 @@ const LANG_EN = {
     statsNoMonthly: 'No additions recorded yet.',
 
     achievements: 'Achievements',
+    achFlavorLabel: 'The Roast',
+    achInfoLabel: 'Details',
+
     achFirstVn: 'First Step',
     achFirstVnDesc: 'Added first VN to library',
+    achFirstVnFlavor: 'One small step for you, one giant leap for your free time.',
+    achFirstVnInfo: 'Add at least 1 VN to your library.',
+
     ach10Vn: 'Collector',
     ach10VnDesc: 'Added 10 VNs',
+    ach10VnFlavor: 'At this point it\'s no longer a hobby. It\'s a lifestyle.',
+    ach10VnInfo: 'Add at least 10 VNs to your library.',
+
     ach50Vn: 'Enthusiast',
     ach50VnDesc: 'Added 50 VNs',
+    ach50VnFlavor: '50 VNs. You\'re not an enthusiast, you\'re a warning sign.',
+    ach50VnInfo: 'Add at least 50 VNs to your library.',
+
     ach100Vn: 'Archivist',
     ach100VnDesc: 'Added 100 VNs',
+    ach100VnFlavor: '100 VNs and no signs of stopping. Your hard drive is quietly crying.',
+    ach100VnInfo: 'Add at least 100 VNs to your library.',
+
     achFirstComplete: 'First Completion',
     achFirstCompleteDesc: 'Completed first VN',
+    achFirstCompleteFlavor: 'You finished one. Please don\'t immediately start another one.',
+    achFirstCompleteInfo: 'Complete at least 1 VN.',
+
     ach10Complete: 'Veteran Reader',
     ach10CompleteDesc: 'Completed 10 VNs',
+    ach10CompleteFlavor: '10 completed stories. Have you considered reading a paper book sometime?',
+    ach10CompleteInfo: 'Complete at least 10 VNs.',
+
     ach25Complete: 'Master Reader',
     ach25CompleteDesc: 'Completed 25 VNs',
+    ach25CompleteFlavor: '25 completions. Your backlog has given up and accepted its fate.',
+    ach25CompleteInfo: 'Complete at least 25 VNs.',
+
     ach10Hours: 'Getting Started',
     ach10HoursDesc: '10 hours of total play time',
+    ach10HoursFlavor: '10 hours. That\'s almost half a weekend.',
+    ach10HoursInfo: 'Accumulate at least 10 hours of total play time.',
+
     ach100Hours: 'Dedicated',
     ach100HoursDesc: '100 hours of total play time',
+    ach100HoursFlavor: '100 hours. Some people use this time to learn a skill. You chose wisely.',
+    ach100HoursInfo: 'Accumulate at least 100 hours of total play time.',
+
     ach500Hours: 'Hardcore',
     ach500HoursDesc: '500 hours of total play time',
+    ach500HoursFlavor: 'You could have learned to play the guitar. Or Japanese. Or both.',
+    ach500HoursInfo: 'Accumulate at least 500 hours of total play time.',
+
     achFirstFav: 'First Love',
     achFirstFavDesc: 'Added first favorite',
+    achFirstFavFlavor: 'You\'ve found something worth bookmarking. Treasure it.',
+    achFirstFavInfo: 'Mark at least 1 VN as a favorite.',
+
     achFirstRating: 'Critic',
     achFirstRatingDesc: 'Rated your first VN',
+    achFirstRatingFlavor: 'One review in. Rotten Tomatoes awaits.',
+    achFirstRatingInfo: 'Rate at least 1 VN.',
+
+    tagMilf5: 'Milf Curious',
+    tagMilf5Desc: '5 VNs tagged with milf',
+    tagMilf5Flavor: 'First steps taken. Mama is proud.',
+    tagMilf5Info: 'Have at least 5 VNs with the "milf" tag.',
+
+    tagMilf10: 'Milf Enthusiast',
+    tagMilf10Desc: '10 VNs tagged with milf',
+    tagMilf10Flavor: 'Some people collect stamps. You collect milfs.',
+    tagMilf10Info: 'Have at least 10 VNs with the "milf" tag.',
+
+    tagMilf25: 'Milf Connoisseur',
+    tagMilf25Desc: '25 VNs tagged with milf',
+    tagMilf25Flavor: 'You didn\'t choose the milf life. The milf life chose you.',
+    tagMilf25Info: 'Have at least 25 VNs with the "milf" tag.',
+
+    tagHarem5: 'Harem Dreamer',
+    tagHarem5Desc: '5 VNs tagged with harem',
+    tagHarem5Flavor: 'Still waiting for those girls to magically appear at your door.',
+    tagHarem5Info: 'Have at least 5 VNs with the "harem" tag.',
+
+    tagHarem10: 'Harem Veteran',
+    tagHarem10Desc: '10 VNs tagged with harem',
+    tagHarem10Flavor: 'You\'ve accepted that 2D is more reliable than 3D.',
+    tagHarem10Info: 'Have at least 10 VNs with the "harem" tag.',
+
+    tagHarem25: 'Harem Emperor',
+    tagHarem25Desc: '25 VNs tagged with harem',
+    tagHarem25Flavor: 'World record for harem members encountered. Your real life remains a single-player game.',
+    tagHarem25Info: 'Have at least 25 VNs with the "harem" tag.',
+
+    tagYuri5: 'Yuri Appreciator',
+    tagYuri5Desc: '5 VNs tagged with yuri',
+    tagYuri5Flavor: 'Beauty appreciates beauty. Or so you tell yourself.',
+    tagYuri5Info: 'Have at least 5 VNs with the "yuri" or "girl\'s love" tag.',
+
+    tagYuri25: 'Yuri Devotee',
+    tagYuri25Desc: '25 VNs tagged with yuri',
+    tagYuri25Flavor: 'Not gay, just a connoisseur of love in its purest form.',
+    tagYuri25Info: 'Have at least 25 VNs with the "yuri" or "girl\'s love" tag.',
+
+    tagSchool5: 'School Life Fan',
+    tagSchool5Desc: '5 VNs set in a school',
+    tagSchool5Flavor: 'School never ends when you never have to take exams.',
+    tagSchool5Info: 'Have at least 5 VNs with the "school" or "school life" tag.',
+
+    tagSchool25: 'Honorary Classmate',
+    tagSchool25Desc: '25 VNs set in a school',
+    tagSchool25Flavor: 'You\'ve spent more time in fictional schools than most students spend in real ones.',
+    tagSchool25Info: 'Have at least 25 VNs with the "school" or "school life" tag.',
+
+    tagFantasy5: 'Fantasy Adventurer',
+    tagFantasy5Desc: '5 VNs in a fantasy setting',
+    tagFantasy5Flavor: 'Reality had a strict "no isekai" policy. You found a workaround.',
+    tagFantasy5Info: 'Have at least 5 VNs with the "fantasy" tag.',
+
+    tagFantasy25: 'Fantasy Addict',
+    tagFantasy25Desc: '25 VNs in a fantasy setting',
+    tagFantasy25Flavor: 'Local hero saves kingdom for the 25th time. Still lives in a studio apartment.',
+    tagFantasy25Info: 'Have at least 25 VNs with the "fantasy" tag.',
+
+    tagTsundere5: 'Tsundere Target',
+    tagTsundere5Desc: '5 VNs tagged with tsundere',
+    tagTsundere5Flavor: 'It\'s not like you enjoy getting yelled at. B-baka.',
+    tagTsundere5Info: 'Have at least 5 VNs with the "tsundere" tag.',
+
+    tagTsundere10: 'Glutton for Punishment',
+    tagTsundere10Desc: '10 VNs tagged with tsundere',
+    tagTsundere10Flavor: 'Therapists love players like you. Trust issues? You call them "character development".',
+    tagTsundere10Info: 'Have at least 10 VNs with the "tsundere" tag.',
+
+    tagMoege5: 'Moe Enjoyer',
+    tagMoege5Desc: '5 VNs tagged with moege',
+    tagMoege5Flavor: 'You have developed a condition. It is incurable.',
+    tagMoege5Info: 'Have at least 5 VNs with the "moege" or "moe" tag.',
+
+    tagMoege25: 'Moe Cultist',
+    tagMoege25Desc: '25 VNs tagged with moege',
+    tagMoege25Flavor: 'Your definition of "cute" has permanently diverged from mainstream society.',
+    tagMoege25Info: 'Have at least 25 VNs with the "moege" or "moe" tag.',
+
+    tagRomance5: 'Hopeless Romantic',
+    tagRomance5Desc: '5 VNs tagged with romance',
+    tagRomance5Flavor: 'Searching for the perfect love story because writing your own seems like too much work.',
+    tagRomance5Info: 'Have at least 5 VNs with the "romance" tag.',
+
+    tagRomance25: 'Romance Addict',
+    tagRomance25Desc: '25 VNs tagged with romance',
+    tagRomance25Flavor: 'Your heart has been broken 25 times and you keep coming back. Brave or delusional? Yes.',
+    tagRomance25Info: 'Have at least 25 VNs with the "romance" tag.',
+
+    tagIncest5: 'Curious Relative',
+    tagIncest5Desc: '5 VNs tagged with incest',
+    tagIncest5Flavor: 'It\'s just a story, right? ...Right?',
+    tagIncest5Info: 'Have at least 5 VNs with the "incest" tag.',
+
+    tagIncest10: 'Family Affair',
+    tagIncest10Desc: '10 VNs tagged with incest',
+    tagIncest10Flavor: 'Your therapist doesn\'t need to know about this.',
+    tagIncest10Info: 'Have at least 10 VNs with the "incest" tag.',
+
+    tagIncest25: 'Family Reunion Champion',
+    tagIncest25Desc: '25 VNs tagged with incest',
+    tagIncest25Flavor: 'Congratulations. You are now the #2 biggest incest fan in the world. The #1 is too busy to leave a review.',
+    tagIncest25Info: 'Have at least 25 VNs with the "incest" tag.',
+
+    tagAhegao5: 'Expressionist',
+    tagAhegao5Desc: '5 VNs tagged with ahegao',
+    tagAhegao5Flavor: 'A fine appreciation for facial expressions.',
+    tagAhegao5Info: 'Have at least 5 VNs with the "ahegao" tag.',
+
+    tagAhegao25: 'Ahegao Archivist',
+    tagAhegao25Desc: '25 VNs tagged with ahegao',
+    tagAhegao25Flavor: 'You\'ve seen enough to know that normal expressions are overrated.',
+    tagAhegao25Info: 'Have at least 25 VNs with the "ahegao" tag.',
+
+    tagExhibit5: 'Open Book',
+    tagExhibit5Desc: '5 VNs tagged with exhibitionism',
+    tagExhibit5Flavor: 'Some people are private. You respect those who are less so.',
+    tagExhibit5Info: 'Have at least 5 VNs with the "exhibitionism" tag.',
+
+    tagExhibit25: 'Exposure Therapy',
+    tagExhibit25Desc: '25 VNs tagged with exhibitionism',
+    tagExhibit25Flavor: '25 public displays of confidence observed. Still considering your own.',
+    tagExhibit25Info: 'Have at least 25 VNs with the "exhibitionism" tag.',
+
+    tagCreampie5: 'Internal Affairs',
+    tagCreampie5Desc: '5 VNs tagged with creampie',
+    tagCreampie5Flavor: 'You have specific preferences and you\'re not ashamed. Mostly.',
+    tagCreampie5Info: 'Have at least 5 VNs with the "creampie" tag.',
+
+    tagCreampie25: 'Consistent Preferences',
+    tagCreampie25Desc: '25 VNs tagged with creampie',
+    tagCreampie25Flavor: '25 games deep and the theme remains unchanged. Nothing if not dedicated.',
+    tagCreampie25Info: 'Have at least 25 VNs with the "creampie" tag.',
+
+    tagPregnancy5: 'Baby Boom Enthusiast',
+    tagPregnancy5Desc: '5 VNs tagged with pregnancy',
+    tagPregnancy5Flavor: 'A fondness for story arcs that take nine months to resolve.',
+    tagPregnancy5Info: 'Have at least 5 VNs with the "pregnancy" tag.',
+
+    tagPregnancy25: 'Population Contributor',
+    tagPregnancy25Desc: '25 VNs tagged with pregnancy',
+    tagPregnancy25Flavor: 'Fiction is full of your contributions to the next generation.',
+    tagPregnancy25Info: 'Have at least 25 VNs with the "pregnancy" tag.',
 
     scanFolder: 'Scan',
     scanTitle: 'Scan Folder',

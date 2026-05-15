@@ -109,7 +109,8 @@ public static class StatsService
             Completed = byStatus[(int)VnStatus.Completed],
             FavCount = favCount,
             HasRating = topRated.Count > 0,
-            TotalHours = totalPlayTime / 3600.0
+            TotalHours = totalPlayTime / 3600.0,
+            TagCounts = tagFreq
         };
         var (achievements, newlyUnlocked) = AchievementService.Evaluate(ctx);
 

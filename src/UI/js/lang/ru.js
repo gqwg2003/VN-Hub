@@ -213,30 +213,213 @@ const LANG_RU = {
     statsNoMonthly: 'Нет записей о добавлениях.',
 
     achievements: 'Достижения',
+    achFlavorLabel: 'Разнос',
+    achInfoLabel: 'Подробности',
+
     achFirstVn: 'Первый шаг',
     achFirstVnDesc: 'Добавлена первая VN в библиотеку',
+    achFirstVnFlavor: 'Маленький шаг для тебя, гигантский скачок для твоего свободного времени.',
+    achFirstVnInfo: 'Добавь хотя бы 1 VN в библиотеку.',
+
     ach10Vn: 'Коллекционер',
     ach10VnDesc: 'Добавлено 10 VN',
+    ach10VnFlavor: 'На этом этапе это уже не хобби. Это образ жизни.',
+    ach10VnInfo: 'Добавь хотя бы 10 VN в библиотеку.',
+
     ach50Vn: 'Энтузиаст',
     ach50VnDesc: 'Добавлено 50 VN',
+    ach50VnFlavor: '50 VN. Ты уже не энтузиаст — ты красный флаг.',
+    ach50VnInfo: 'Добавь хотя бы 50 VN в библиотеку.',
+
     ach100Vn: 'Архивариус',
     ach100VnDesc: 'Добавлено 100 VN',
+    ach100VnFlavor: '100 VN, и конца не видно. Твой жёсткий диск тихо плачет.',
+    ach100VnInfo: 'Добавь хотя бы 100 VN в библиотеку.',
+
     achFirstComplete: 'Первое прохождение',
     achFirstCompleteDesc: 'Завершена первая VN',
+    achFirstCompleteFlavor: 'Одну прошёл. Пожалуйста, не начинай следующую прямо сейчас.',
+    achFirstCompleteInfo: 'Заверши хотя бы 1 VN.',
+
     ach10Complete: 'Ветеран',
     ach10CompleteDesc: 'Завершено 10 VN',
+    ach10CompleteFlavor: '10 завершённых историй. Может, когда-нибудь попробуешь бумажную книгу?',
+    ach10CompleteInfo: 'Заверши хотя бы 10 VN.',
+
     ach25Complete: 'Мастер чтения',
     ach25CompleteDesc: 'Завершено 25 VN',
+    ach25CompleteFlavor: '25 завершений. Твой беклог смирился со своей судьбой.',
+    ach25CompleteInfo: 'Заверши хотя бы 25 VN.',
+
     ach10Hours: 'Начало пути',
     ach10HoursDesc: '10 часов общего времени игры',
+    ach10HoursFlavor: '10 часов. Это почти половина выходных.',
+    ach10HoursInfo: 'Наиграй хотя бы 10 часов суммарно.',
+
     ach100Hours: 'Преданный',
     ach100HoursDesc: '100 часов общего времени игры',
+    ach100HoursFlavor: '100 часов. Некоторые за это время учатся новому навыку. Ты сделал правильный выбор.',
+    ach100HoursInfo: 'Наиграй хотя бы 100 часов суммарно.',
+
     ach500Hours: 'Хардкор',
     ach500HoursDesc: '500 часов общего времени игры',
+    ach500HoursFlavor: 'Ты мог бы выучить гитару. Или японский. Или оба сразу.',
+    ach500HoursInfo: 'Наиграй хотя бы 500 часов суммарно.',
+
     achFirstFav: 'Первая любовь',
     achFirstFavDesc: 'Добавлено первое избранное',
+    achFirstFavFlavor: 'Ты нашёл что-то достойное закладки. Береги это.',
+    achFirstFavInfo: 'Добавь хотя бы 1 VN в избранное.',
+
     achFirstRating: 'Критик',
     achFirstRatingDesc: 'Оценена первая VN',
+    achFirstRatingFlavor: 'Первая рецензия выставлена. Кинокритики завидуют.',
+    achFirstRatingInfo: 'Поставь оценку хотя бы 1 VN.',
+
+    tagMilf5: 'Начинающий любитель',
+    tagMilf5Desc: '5 VN с тегом milf',
+    tagMilf5Flavor: 'Первый шаг сделан. Мама гордится.',
+    tagMilf5Info: 'Иметь хотя бы 5 VN с тегом "milf".',
+
+    tagMilf10: 'Знаток',
+    tagMilf10Desc: '10 VN с тегом milf',
+    tagMilf10Flavor: 'Кто-то коллекционирует марки. Ты — милф.',
+    tagMilf10Info: 'Иметь хотя бы 10 VN с тегом "milf".',
+
+    tagMilf25: 'Мастер-ценитель',
+    tagMilf25Desc: '25 VN с тегом milf',
+    tagMilf25Flavor: 'Ты не выбирал жизнь с милфами. Жизнь с милфами выбрала тебя.',
+    tagMilf25Info: 'Иметь хотя бы 25 VN с тегом "milf".',
+
+    tagHarem5: 'Мечтатель-гаремник',
+    tagHarem5Desc: '5 VN с тегом harem',
+    tagHarem5Flavor: 'Всё ещё ждёшь, когда девушки сами придут к тебе домой.',
+    tagHarem5Info: 'Иметь хотя бы 5 VN с тегом "harem".',
+
+    tagHarem10: 'Ветеран гарема',
+    tagHarem10Desc: '10 VN с тегом harem',
+    tagHarem10Flavor: 'Ты принял, что 2D надёжнее 3D.',
+    tagHarem10Info: 'Иметь хотя бы 10 VN с тегом "harem".',
+
+    tagHarem25: 'Повелитель гарема',
+    tagHarem25Desc: '25 VN с тегом harem',
+    tagHarem25Flavor: 'Мировой рекорд по числу участников гарема. Реальная жизнь — по-прежнему одиночная кампания.',
+    tagHarem25Info: 'Иметь хотя бы 25 VN с тегом "harem".',
+
+    tagYuri5: 'Ценитель юри',
+    tagYuri5Desc: '5 VN с тегом yuri',
+    tagYuri5Flavor: 'Красота ценит красоту. Именно так ты это называешь.',
+    tagYuri5Info: 'Иметь хотя бы 5 VN с тегом "yuri".',
+
+    tagYuri25: 'Адепт юри',
+    tagYuri25Desc: '25 VN с тегом yuri',
+    tagYuri25Flavor: 'Не гей, просто знаток любви в её чистейшем проявлении.',
+    tagYuri25Info: 'Иметь хотя бы 25 VN с тегом "yuri".',
+
+    tagSchool5: 'Фанат школьной жизни',
+    tagSchool5Desc: '5 VN с тегом school',
+    tagSchool5Flavor: 'Школа не кончается, когда не нужно сдавать экзамены.',
+    tagSchool5Info: 'Иметь хотя бы 5 VN с тегом "school".',
+
+    tagSchool25: 'Почётный одноклассник',
+    tagSchool25Desc: '25 VN с тегом school',
+    tagSchool25Flavor: 'Ты провёл в выдуманных школах больше времени, чем иные ученики — в настоящих.',
+    tagSchool25Info: 'Иметь хотя бы 25 VN с тегом "school".',
+
+    tagFantasy5: 'Искатель приключений',
+    tagFantasy5Desc: '5 VN с тегом fantasy',
+    tagFantasy5Flavor: 'Реальность запретила исекаи, ты нашёл обходной путь.',
+    tagFantasy5Info: 'Иметь хотя бы 5 VN с тегом "fantasy".',
+
+    tagFantasy25: 'Фэнтези-наркоман',
+    tagFantasy25Desc: '25 VN с тегом fantasy',
+    tagFantasy25Flavor: 'Местный герой спасает королевство в 25-й раз. Живёт в однушке.',
+    tagFantasy25Info: 'Иметь хотя бы 25 VN с тегом "fantasy".',
+
+    tagTsundere5: 'Мишень цундере',
+    tagTsundere5Desc: '5 VN с тегом tsundere',
+    tagTsundere5Flavor: 'Тебе не нравится, когда на тебя орут. Наверное. Б-бака.',
+    tagTsundere5Info: 'Иметь хотя бы 5 VN с тегом "tsundere".',
+
+    tagTsundere10: 'Любитель страданий',
+    tagTsundere10Desc: '10 VN с тегом tsundere',
+    tagTsundere10Flavor: 'Психологи обожают таких игроков. Проблемы с доверием? Ты называешь это развитием персонажа.',
+    tagTsundere10Info: 'Иметь хотя бы 10 VN с тегом "tsundere".',
+
+    tagMoege5: 'Поклонник мо',
+    tagMoege5Desc: '5 VN с тегом moege',
+    tagMoege5Flavor: 'У тебя развилась болезнь. Она неизлечима.',
+    tagMoege5Info: 'Иметь хотя бы 5 VN с тегом "moege".',
+
+    tagMoege25: 'Адепт культа мо',
+    tagMoege25Desc: '25 VN с тегом moege',
+    tagMoege25Flavor: 'Твоё понимание слова «мило» навсегда разошлось с общепринятым.',
+    tagMoege25Info: 'Иметь хотя бы 25 VN с тегом "moege".',
+
+    tagRomance5: 'Безнадёжный романтик',
+    tagRomance5Desc: '5 VN с тегом romance',
+    tagRomance5Flavor: 'Ищешь идеальную историю любви, потому что написать собственную — это уже слишком.',
+    tagRomance5Info: 'Иметь хотя бы 5 VN с тегом "romance".',
+
+    tagRomance25: 'Романтик-наркоман',
+    tagRomance25Desc: '25 VN с тегом romance',
+    tagRomance25Flavor: 'Сердце разбито 25 раз, и ты возвращаешься снова. Храбрость или мазохизм? Да.',
+    tagRomance25Info: 'Иметь хотя бы 25 VN с тегом "romance".',
+
+    tagIncest5: 'Любопытный родственник',
+    tagIncest5Desc: '5 VN с тегом incest',
+    tagIncest5Flavor: 'Это просто история, правда? ...Правда?',
+    tagIncest5Info: 'Иметь хотя бы 5 VN с тегом "incest".',
+
+    tagIncest10: 'Семейное дело',
+    tagIncest10Desc: '10 VN с тегом incest',
+    tagIncest10Flavor: 'Твоему психотерапевту не нужно знать об этом.',
+    tagIncest10Info: 'Иметь хотя бы 10 VN с тегом "incest".',
+
+    tagIncest25: 'Чемпион семейных встреч',
+    tagIncest25Desc: '25 VN с тегом incest',
+    tagIncest25Flavor: 'Поздравляем. Ты стал вторым в мире по любви к инцест-тематике. Первый слишком занят, чтобы оставить отзыв.',
+    tagIncest25Info: 'Иметь хотя бы 25 VN с тегом "incest".',
+
+    tagAhegao5: 'Ценитель мимики',
+    tagAhegao5Desc: '5 VN с тегом ahegao',
+    tagAhegao5Flavor: 'Высокая оценка выразительности лица.',
+    tagAhegao5Info: 'Иметь хотя бы 5 VN с тегом "ahegao".',
+
+    tagAhegao25: 'Архивариус ахегао',
+    tagAhegao25Desc: '25 VN с тегом ahegao',
+    tagAhegao25Flavor: 'Ты видел достаточно, чтобы понять: обычные выражения лица — скучно.',
+    tagAhegao25Info: 'Иметь хотя бы 25 VN с тегом "ahegao".',
+
+    tagExhibit5: 'Открытая книга',
+    tagExhibit5Desc: '5 VN с тегом exhibitionism',
+    tagExhibit5Flavor: 'Одни люди скрытны. Ты уважаешь тех, кто не особо.',
+    tagExhibit5Info: 'Иметь хотя бы 5 VN с тегом "exhibitionism".',
+
+    tagExhibit25: 'Эксгибиционист по доверенности',
+    tagExhibit25Desc: '25 VN с тегом exhibitionism',
+    tagExhibit25Flavor: '25 публичных демонстраций просмотрено. Собственную ты всё ещё обдумываешь.',
+    tagExhibit25Info: 'Иметь хотя бы 25 VN с тегом "exhibitionism".',
+
+    tagCreampie5: 'Специалист по внутренним делам',
+    tagCreampie5Desc: '5 VN с тегом creampie',
+    tagCreampie5Flavor: 'Специфические предпочтения, и ты не стыдишься. В основном.',
+    tagCreampie5Info: 'Иметь хотя бы 5 VN с тегом "creampie".',
+
+    tagCreampie25: 'Профи по внутренним вопросам',
+    tagCreampie25Desc: '25 VN с тегом creampie',
+    tagCreampie25Flavor: '25 игр — и тема неизменна. Ты по крайней мере последователен.',
+    tagCreampie25Info: 'Иметь хотя бы 25 VN с тегом "creampie".',
+
+    tagPregnancy5: 'Демограф-энтузиаст',
+    tagPregnancy5Desc: '5 VN с тегом pregnancy',
+    tagPregnancy5Flavor: 'Ты полюбил сюжетные арки, для которых требуется девять месяцев.',
+    tagPregnancy5Info: 'Иметь хотя бы 5 VN с тегом "pregnancy".',
+
+    tagPregnancy25: 'Вклад в демографию',
+    tagPregnancy25Desc: '25 VN с тегом pregnancy',
+    tagPregnancy25Flavor: 'Вымышленный мир полон твоего вклада в следующее поколение.',
+    tagPregnancy25Info: 'Иметь хотя бы 25 VN с тегом "pregnancy".',
 
     scanFolder: 'Скан',
     scanTitle: 'Сканирование папки',

@@ -43,6 +43,11 @@
     display: flex;
 }
 
+.toast-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
 .toast-msg {
     flex: 1;
     line-height: 1.4;

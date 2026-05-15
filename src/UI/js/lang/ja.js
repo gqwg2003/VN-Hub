@@ -213,30 +213,213 @@ const LANG_JA = {
     statsNoMonthly: '追加の記録がありません。',
 
     achievements: '実績',
+    achFlavorLabel: 'The Roast',
+    achInfoLabel: '詳細',
+
     achFirstVn: '最初の一歩',
     achFirstVnDesc: 'ライブラリに最初のVNを追加',
+    achFirstVnFlavor: 'One small step for you, one giant leap for your free time.',
+    achFirstVnInfo: 'ライブラリに1本以上のVNを追加してください。',
+
     ach10Vn: 'コレクター',
     ach10VnDesc: '10本のVNを追加',
+    ach10VnFlavor: 'At this point it\'s no longer a hobby. It\'s a lifestyle.',
+    ach10VnInfo: 'ライブラリに10本以上のVNを追加してください。',
+
     ach50Vn: '愛好家',
     ach50VnDesc: '50本のVNを追加',
+    ach50VnFlavor: '50 VNs. You\'re not an enthusiast, you\'re a warning sign.',
+    ach50VnInfo: 'ライブラリに50本以上のVNを追加してください。',
+
     ach100Vn: 'アーキビスト',
     ach100VnDesc: '100本のVNを追加',
+    ach100VnFlavor: '100 VNs and no signs of stopping. Your hard drive is quietly crying.',
+    ach100VnInfo: 'ライブラリに100本以上のVNを追加してください。',
+
     achFirstComplete: '初クリア',
     achFirstCompleteDesc: '最初のVNをクリア',
+    achFirstCompleteFlavor: 'You finished one. Please don\'t immediately start another one.',
+    achFirstCompleteInfo: '1本以上のVNをクリアしてください。',
+
     ach10Complete: 'ベテラン読者',
     ach10CompleteDesc: '10本のVNをクリア',
+    ach10CompleteFlavor: '10 completed stories. Have you considered reading a paper book sometime?',
+    ach10CompleteInfo: '10本以上のVNをクリアしてください。',
+
     ach25Complete: 'マスター読者',
     ach25CompleteDesc: '25本のVNをクリア',
+    ach25CompleteFlavor: '25 completions. Your backlog has given up and accepted its fate.',
+    ach25CompleteInfo: '25本以上のVNをクリアしてください。',
+
     ach10Hours: 'スタート',
     ach10HoursDesc: '合計10時間プレイ',
+    ach10HoursFlavor: '10 hours. That\'s almost half a weekend.',
+    ach10HoursInfo: '合計10時間以上プレイしてください。',
+
     ach100Hours: '熱心',
     ach100HoursDesc: '合計100時間プレイ',
+    ach100HoursFlavor: '100 hours. Some people use this time to learn a skill. You chose wisely.',
+    ach100HoursInfo: '合計100時間以上プレイしてください。',
+
     ach500Hours: 'ハードコア',
     ach500HoursDesc: '合計500時間プレイ',
+    ach500HoursFlavor: 'You could have learned to play the guitar. Or Japanese. Or both.',
+    ach500HoursInfo: '合計500時間以上プレイしてください。',
+
     achFirstFav: '初恋',
     achFirstFavDesc: '最初のお気に入りを追加',
+    achFirstFavFlavor: 'You\'ve found something worth bookmarking. Treasure it.',
+    achFirstFavInfo: '1本以上のVNをお気に入りに追加してください。',
+
     achFirstRating: '批評家',
     achFirstRatingDesc: '最初のVNを評価',
+    achFirstRatingFlavor: 'One review in. Rotten Tomatoes awaits.',
+    achFirstRatingInfo: '1本以上のVNを評価してください。',
+
+    tagMilf5: 'Milf Curious',
+    tagMilf5Desc: 'milfタグのVN 5本',
+    tagMilf5Flavor: 'First steps taken. Mama is proud.',
+    tagMilf5Info: '"milf"タグのVNを5本以上持ってください。',
+
+    tagMilf10: 'Milf Enthusiast',
+    tagMilf10Desc: 'milfタグのVN 10本',
+    tagMilf10Flavor: 'Some people collect stamps. You collect milfs.',
+    tagMilf10Info: '"milf"タグのVNを10本以上持ってください。',
+
+    tagMilf25: 'Milf Connoisseur',
+    tagMilf25Desc: 'milfタグのVN 25本',
+    tagMilf25Flavor: 'You didn\'t choose the milf life. The milf life chose you.',
+    tagMilf25Info: '"milf"タグのVNを25本以上持ってください。',
+
+    tagHarem5: 'Harem Dreamer',
+    tagHarem5Desc: 'haremタグのVN 5本',
+    tagHarem5Flavor: 'Still waiting for those girls to magically appear at your door.',
+    tagHarem5Info: '"harem"タグのVNを5本以上持ってください。',
+
+    tagHarem10: 'Harem Veteran',
+    tagHarem10Desc: 'haremタグのVN 10本',
+    tagHarem10Flavor: 'You\'ve accepted that 2D is more reliable than 3D.',
+    tagHarem10Info: '"harem"タグのVNを10本以上持ってください。',
+
+    tagHarem25: 'Harem Emperor',
+    tagHarem25Desc: 'haremタグのVN 25本',
+    tagHarem25Flavor: 'World record for harem members encountered. Your real life remains a single-player game.',
+    tagHarem25Info: '"harem"タグのVNを25本以上持ってください。',
+
+    tagYuri5: 'Yuri Appreciator',
+    tagYuri5Desc: 'yuriタグのVN 5本',
+    tagYuri5Flavor: 'Beauty appreciates beauty. Or so you tell yourself.',
+    tagYuri5Info: '"yuri"タグのVNを5本以上持ってください。',
+
+    tagYuri25: 'Yuri Devotee',
+    tagYuri25Desc: 'yuriタグのVN 25本',
+    tagYuri25Flavor: 'Not gay, just a connoisseur of love in its purest form.',
+    tagYuri25Info: '"yuri"タグのVNを25本以上持ってください。',
+
+    tagSchool5: 'School Life Fan',
+    tagSchool5Desc: 'schoolタグのVN 5本',
+    tagSchool5Flavor: 'School never ends when you never have to take exams.',
+    tagSchool5Info: '"school"タグのVNを5本以上持ってください。',
+
+    tagSchool25: 'Honorary Classmate',
+    tagSchool25Desc: 'schoolタグのVN 25本',
+    tagSchool25Flavor: 'You\'ve spent more time in fictional schools than most students spend in real ones.',
+    tagSchool25Info: '"school"タグのVNを25本以上持ってください。',
+
+    tagFantasy5: 'Fantasy Adventurer',
+    tagFantasy5Desc: 'fantasyタグのVN 5本',
+    tagFantasy5Flavor: 'Reality had a strict "no isekai" policy. You found a workaround.',
+    tagFantasy5Info: '"fantasy"タグのVNを5本以上持ってください。',
+
+    tagFantasy25: 'Fantasy Addict',
+    tagFantasy25Desc: 'fantasyタグのVN 25本',
+    tagFantasy25Flavor: 'Local hero saves kingdom for the 25th time. Still lives in a studio apartment.',
+    tagFantasy25Info: '"fantasy"タグのVNを25本以上持ってください。',
+
+    tagTsundere5: 'Tsundere Target',
+    tagTsundere5Desc: 'tsundereタグのVN 5本',
+    tagTsundere5Flavor: 'It\'s not like you enjoy getting yelled at. B-baka.',
+    tagTsundere5Info: '"tsundere"タグのVNを5本以上持ってください。',
+
+    tagTsundere10: 'Glutton for Punishment',
+    tagTsundere10Desc: 'tsundereタグのVN 10本',
+    tagTsundere10Flavor: 'Therapists love players like you. Trust issues? You call them "character development".',
+    tagTsundere10Info: '"tsundere"タグのVNを10本以上持ってください。',
+
+    tagMoege5: 'Moe Enjoyer',
+    tagMoege5Desc: 'moegeタグのVN 5本',
+    tagMoege5Flavor: 'You have developed a condition. It is incurable.',
+    tagMoege5Info: '"moege"タグのVNを5本以上持ってください。',
+
+    tagMoege25: 'Moe Cultist',
+    tagMoege25Desc: 'moegeタグのVN 25本',
+    tagMoege25Flavor: 'Your definition of "cute" has permanently diverged from mainstream society.',
+    tagMoege25Info: '"moege"タグのVNを25本以上持ってください。',
+
+    tagRomance5: 'Hopeless Romantic',
+    tagRomance5Desc: 'romanceタグのVN 5本',
+    tagRomance5Flavor: 'Searching for the perfect love story because writing your own seems like too much work.',
+    tagRomance5Info: '"romance"タグのVNを5本以上持ってください。',
+
+    tagRomance25: 'Romance Addict',
+    tagRomance25Desc: 'romanceタグのVN 25本',
+    tagRomance25Flavor: 'Your heart has been broken 25 times and you keep coming back. Brave or delusional? Yes.',
+    tagRomance25Info: '"romance"タグのVNを25本以上持ってください。',
+
+    tagIncest5: 'Curious Relative',
+    tagIncest5Desc: 'incestタグのVN 5本',
+    tagIncest5Flavor: 'It\'s just a story, right? ...Right?',
+    tagIncest5Info: '"incest"タグのVNを5本以上持ってください。',
+
+    tagIncest10: 'Family Affair',
+    tagIncest10Desc: 'incestタグのVN 10本',
+    tagIncest10Flavor: 'Your therapist doesn\'t need to know about this.',
+    tagIncest10Info: '"incest"タグのVNを10本以上持ってください。',
+
+    tagIncest25: 'Family Reunion Champion',
+    tagIncest25Desc: 'incestタグのVN 25本',
+    tagIncest25Flavor: 'Congratulations. You are now the #2 biggest incest fan in the world. The #1 is too busy to leave a review.',
+    tagIncest25Info: '"incest"タグのVNを25本以上持ってください。',
+
+    tagAhegao5: 'Expressionist',
+    tagAhegao5Desc: 'ahegaoタグのVN 5本',
+    tagAhegao5Flavor: 'A fine appreciation for facial expressions.',
+    tagAhegao5Info: '"ahegao"タグのVNを5本以上持ってください。',
+
+    tagAhegao25: 'Ahegao Archivist',
+    tagAhegao25Desc: 'ahegaoタグのVN 25本',
+    tagAhegao25Flavor: 'You\'ve seen enough to know that normal expressions are overrated.',
+    tagAhegao25Info: '"ahegao"タグのVNを25本以上持ってください。',
+
+    tagExhibit5: 'Open Book',
+    tagExhibit5Desc: 'exhibitionismタグのVN 5本',
+    tagExhibit5Flavor: 'Some people are private. You respect those who are less so.',
+    tagExhibit5Info: '"exhibitionism"タグのVNを5本以上持ってください。',
+
+    tagExhibit25: 'Exposure Therapy',
+    tagExhibit25Desc: 'exhibitionismタグのVN 25本',
+    tagExhibit25Flavor: '25 public displays of confidence observed. Still considering your own.',
+    tagExhibit25Info: '"exhibitionism"タグのVNを25本以上持ってください。',
+
+    tagCreampie5: 'Internal Affairs',
+    tagCreampie5Desc: 'creampieタグのVN 5本',
+    tagCreampie5Flavor: 'You have specific preferences and you\'re not ashamed. Mostly.',
+    tagCreampie5Info: '"creampie"タグのVNを5本以上持ってください。',
+
+    tagCreampie25: 'Consistent Preferences',
+    tagCreampie25Desc: 'creampieタグのVN 25本',
+    tagCreampie25Flavor: '25 games deep and the theme remains unchanged. Nothing if not dedicated.',
+    tagCreampie25Info: '"creampie"タグのVNを25本以上持ってください。',
+
+    tagPregnancy5: 'Baby Boom Enthusiast',
+    tagPregnancy5Desc: 'pregnancyタグのVN 5本',
+    tagPregnancy5Flavor: 'A fondness for story arcs that take nine months to resolve.',
+    tagPregnancy5Info: '"pregnancy"タグのVNを5本以上持ってください。',
+
+    tagPregnancy25: 'Population Contributor',
+    tagPregnancy25Desc: 'pregnancyタグのVN 25本',
+    tagPregnancy25Flavor: 'Fiction is full of your contributions to the next generation.',
+    tagPregnancy25Info: '"pregnancy"タグのVNを25本以上持ってください。',
 
     scanFolder: 'スキャン',
     scanTitle: 'フォルダスキャン',
