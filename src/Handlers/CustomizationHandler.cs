@@ -171,8 +171,154 @@ public static class CustomizationHandler
                 }
                 break;
             }
+
+            case "pickSidebarBackground":
+            {
+                Bridge.InvokeOnUiThread(() =>
+                {
+                    using var dialog = new OpenFileDialog
+                    {
+                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
+                    };
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            var copied = CopyPanelBackground(dialog.FileName, "sidebar", ImageExtensions);
+                            if (copied != null)
+                            {
+                                var settings = SettingsService.Load();
+                                settings.Customization.SidebarBackgroundImage = copied;
+                                SettingsService.Save(settings);
+                                Bridge.SendToJs("sidebarBackgroundPicked", new { fileName = copied });
+                            }
+                            else
+                            {
+                                Bridge.SendToJs("onError", new { message = "Unsupported image format." });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogService.Error("pickSidebarBackground failed", ex);
+                            Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
+                        }
+                    }
+                });
+                break;
+            }
+
+            case "clearSidebarBackground":
+            {
+                try
+                {
+                    var settings = SettingsService.Load();
+                    var current = settings.Customization.SidebarBackgroundImage;
+                    settings.Customization.SidebarBackgroundImage = "";
+                    SettingsService.Save(settings);
+                    DeletePanelBgFile(current);
+                    Bridge.SendToJs("sidebarBackgroundCleared", new { ok = true });
+                }
+                catch (Exception ex)
+                {
+                    LogService.Error("clearSidebarBackground failed", ex);
+                    Bridge.SendToJs("onError", new { message = $"Clear background failed: {ex.Message}" });
+                }
+                break;
+            }
+
+            case "pickTopbarBackground":
+            {
+                Bridge.InvokeOnUiThread(() =>
+                {
+                    using var dialog = new OpenFileDialog
+                    {
+                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
+                    };
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            var copied = CopyPanelBackground(dialog.FileName, "topbar", ImageExtensions);
+                            if (copied != null)
+                            {
+                                var settings = SettingsService.Load();
+                                settings.Customization.TopbarBackgroundImage = copied;
+                                SettingsService.Save(settings);
+                                Bridge.SendToJs("topbarBackgroundPicked", new { fileName = copied });
+                            }
+                            else
+                            {
+                                Bridge.SendToJs("onError", new { message = "Unsupported image format." });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogService.Error("pickTopbarBackground failed", ex);
+                            Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
+                        }
+                    }
+                });
+                break;
+            }
+
+            case "clearTopbarBackground":
+            {
+                try
+                {
+                    var settings = SettingsService.Load();
+                    var current = settings.Customization.TopbarBackgroundImage;
+                    settings.Customization.TopbarBackgroundImage = "";
+                    SettingsService.Save(settings);
+                    DeletePanelBgFile(current);
+                    Bridge.SendToJs("topbarBackgroundCleared", new { ok = true });
+                }
+                catch (Exception ex)
+                {
+                    LogService.Error("clearTopbarBackground failed", ex);
+                    Bridge.SendToJs("onError", new { message = $"Clear background failed: {ex.Message}" });
+                }
+                break;
+            }
         }
         return Task.CompletedTask;
+    }
+
+    private static string? CopyPanelBackground(string source, string slotPrefix, string[] allowedExtensions)
+    {
+        if (string.IsNullOrEmpty(source) || !File.Exists(source)) return null;
+        var ext = Path.GetExtension(source).ToLowerInvariant();
+        if (!allowedExtensions.Contains(ext)) return null;
+
+        var dir = AppPaths.EnsureBackgroundsDir();
+        var fileName = slotPrefix + "_bg" + ext;
+        var dest = Path.Combine(dir, fileName);
+        var safeDest = PathGuard.EnsureWithin(dir, dest);
+        if (safeDest == null) return null;
+
+        foreach (var f in Directory.EnumerateFiles(dir))
+        {
+            var name = Path.GetFileName(f);
+            if (name.StartsWith(slotPrefix + "_bg.", StringComparison.OrdinalIgnoreCase))
+            {
+                try { File.Delete(f); } catch { }
+            }
+        }
+
+        File.Copy(source, safeDest, false);
+        return fileName;
+    }
+
+    private static void DeletePanelBgFile(string? fileName)
+    {
+        if (string.IsNullOrEmpty(fileName) || !PathGuard.IsSafeFileName(fileName, ImageExtensions)) return;
+        try
+        {
+            var path = Path.Combine(AppPaths.BackgroundsDir, fileName);
+            var safe = PathGuard.EnsureWithin(AppPaths.BackgroundsDir, path);
+            if (safe != null && File.Exists(safe))
+                File.Delete(safe);
+        }
+        catch { }
     }
 
     private static string? CopyToDir(string source, string destDir, string[] allowedExtensions)
@@ -217,10 +363,10 @@ public static class CustomizationHandler
             foreach (var file in Directory.EnumerateFiles(dir))
             {
                 var name = Path.GetFileName(file);
-                if (!string.Equals(name, keepFileName, StringComparison.Ordinal))
-                {
-                    try { File.Delete(file); } catch { /* best effort */ }
-                }
+                if (string.Equals(name, keepFileName, StringComparison.Ordinal)) continue;
+                if (name.StartsWith("sidebar_bg.", StringComparison.OrdinalIgnoreCase)) continue;
+                if (name.StartsWith("topbar_bg.", StringComparison.OrdinalIgnoreCase)) continue;
+                try { File.Delete(file); } catch { /* best effort */ }
             }
         }
         catch { /* best effort */ }

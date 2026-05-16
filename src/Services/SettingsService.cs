@@ -42,6 +42,15 @@ public class CustomizationSettings
     public string BackgroundImage { get; set; } = "";
     public double BackgroundOpacity { get; set; } = 0.4;
     public int BackgroundBlur { get; set; } = 0;
+    public string SidebarBackgroundImage { get; set; } = "";
+    public double SidebarBackgroundOpacity { get; set; } = 0.6;
+    public int SidebarBackgroundBlur { get; set; } = 0;
+    public string TopbarBackgroundImage { get; set; } = "";
+    public double TopbarBackgroundOpacity { get; set; } = 0.6;
+    public int TopbarBackgroundBlur { get; set; } = 0;
+    public double PanelSurfaceOpacity { get; set; } = 1.0;
+    public int SidebarWidth { get; set; } = 220;
+    public int CardRadius { get; set; } = 8;
     public Dictionary<string, string> Colors { get; set; } = new();
 }
 

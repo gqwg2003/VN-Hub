@@ -185,6 +185,34 @@ Object.assign(bridgeHandlers, {
         renderCustomBackground();
         showToast(t('backgroundClearedToast'), 'success');
     },
+    sidebarBackgroundPicked(data) {
+        const c = ensureCustomization();
+        c.sidebarBackgroundImage = data?.fileName || '';
+        applyCustomization();
+        renderSidebarBackground();
+        showToast(t('backgroundSetToast'), 'success');
+    },
+    sidebarBackgroundCleared() {
+        const c = ensureCustomization();
+        c.sidebarBackgroundImage = '';
+        applyCustomization();
+        renderSidebarBackground();
+        showToast(t('backgroundClearedToast'), 'success');
+    },
+    topbarBackgroundPicked(data) {
+        const c = ensureCustomization();
+        c.topbarBackgroundImage = data?.fileName || '';
+        applyCustomization();
+        renderTopbarBackground();
+        showToast(t('backgroundSetToast'), 'success');
+    },
+    topbarBackgroundCleared() {
+        const c = ensureCustomization();
+        c.topbarBackgroundImage = '';
+        applyCustomization();
+        renderTopbarBackground();
+        showToast(t('backgroundClearedToast'), 'success');
+    },
     settingsSaved(data) {
         if (data && typeof data.proxyAddress === 'string' && state.settings) {
             state.settings.proxyAddress = data.proxyAddress;

@@ -68,6 +68,13 @@
     --radius-lg: 12px;
     --sidebar-width: 220px;
     --topbar-height: 60px;
+    --panel-surface-opacity: 1;
+    --sidebar-bg-image: none;
+    --sidebar-bg-opacity: 0;
+    --sidebar-bg-blur: 0px;
+    --topbar-bg-image: none;
+    --topbar-bg-opacity: 0;
+    --topbar-bg-blur: 0px;
     --transition: 150ms ease;
     --transition-slow: 250ms ease;
     --font-ui: 'Inter', system-ui, -apple-system, sans-serif;

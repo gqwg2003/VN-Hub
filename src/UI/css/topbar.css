@@ -44,14 +44,35 @@
 
 /* ===== Top Bar ===== */
 .topbar {
+    position: relative;
     height: var(--topbar-height);
     min-height: var(--topbar-height);
     display: flex;
     align-items: center;
     padding: 0 24px;
     gap: 16px;
-    background: var(--bg-surface);
+    background: color-mix(in srgb, var(--bg-surface) calc(var(--panel-surface-opacity) * 100%), transparent);
     border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.topbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--topbar-bg-image, none);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: var(--topbar-bg-opacity, 0);
+    filter: blur(var(--topbar-bg-blur, 0px));
+    transition: opacity var(--transition-slow), filter var(--transition-slow);
+}
+
+.topbar > * {
+    position: relative;
+    z-index: 1;
 }
 
 .topbar-search {

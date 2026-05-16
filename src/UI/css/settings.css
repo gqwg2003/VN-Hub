@@ -294,6 +294,11 @@
     font-size: 12px;
 }
 
+.custom-bg-preview--small {
+    height: 72px;
+    margin-top: 8px;
+}
+
 .custom-slider {
     width: 100%;
     accent-color: var(--accent);
@@ -307,10 +312,27 @@
 }
 
 .custom-color-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.custom-color-section-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    padding: 2px 0 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+}
+
+.custom-color-section {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 10px;
-    margin-top: 10px;
 }
 
 .custom-color-item {

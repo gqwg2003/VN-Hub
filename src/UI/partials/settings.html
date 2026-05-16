@@ -87,13 +87,95 @@
         </div>
     </div>
 </div>
+
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="sidebarBackground" style="margin-bottom:0;">Sidebar Background</label>
+        <button class="btn-secondary btn-small" data-customization-reset="sidebar" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 8px; gap: 12px;">
+        <button class="btn-secondary" id="btnPickSidebarBackground" data-i18n="chooseImage">Choose Image</button>
+        <button class="btn-secondary" id="btnClearSidebarBackground" data-i18n="removeImage">Remove</button>
+    </div>
+    <div id="customSidebarBgPreview" class="custom-bg-preview custom-bg-preview--small"></div>
+    <div class="settings-row" style="margin-top: 12px; gap: 16px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgOpacity">Opacity</label>
+            <input type="range" id="settingsSidebarBgOpacity" class="custom-slider" min="0" max="100" value="60">
+            <span class="custom-slider-value" id="sidebarBgOpacityValue">60%</span>
+        </div>
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgBlur">Blur</label>
+            <input type="range" id="settingsSidebarBgBlur" class="custom-slider" min="0" max="20" value="0">
+            <span class="custom-slider-value" id="sidebarBgBlurValue">0px</span>
+        </div>
+    </div>
+</div>
+
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="topbarBackground" style="margin-bottom:0;">Topbar Background</label>
+        <button class="btn-secondary btn-small" data-customization-reset="topbar" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 8px; gap: 12px;">
+        <button class="btn-secondary" id="btnPickTopbarBackground" data-i18n="chooseImage">Choose Image</button>
+        <button class="btn-secondary" id="btnClearTopbarBackground" data-i18n="removeImage">Remove</button>
+    </div>
+    <div id="customTopbarBgPreview" class="custom-bg-preview custom-bg-preview--small"></div>
+    <div class="settings-row" style="margin-top: 12px; gap: 16px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgOpacity">Opacity</label>
+            <input type="range" id="settingsTopbarBgOpacity" class="custom-slider" min="0" max="100" value="60">
+            <span class="custom-slider-value" id="topbarBgOpacityValue">60%</span>
+        </div>
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="bgBlur">Blur</label>
+            <input type="range" id="settingsTopbarBgBlur" class="custom-slider" min="0" max="20" value="0">
+            <span class="custom-slider-value" id="topbarBgBlurValue">0px</span>
+        </div>
+    </div>
+</div>
+
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="panelStyle" style="margin-bottom:0;">Panel Style</label>
+        <button class="btn-secondary btn-small" data-customization-reset="panelStyle" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 12px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="panelSurfaceOpacity">Surface Opacity</label>
+            <input type="range" id="settingsPanelSurfaceOpacity" class="custom-slider" min="0" max="100" value="100">
+            <span class="custom-slider-value" id="panelSurfaceOpacityValue">100%</span>
+        </div>
+    </div>
+    <p class="settings-hint" data-i18n="panelStyleHint">Lower opacity reveals the global background through the panels.</p>
+</div>
+
+<div class="settings-group">
+    <div class="settings-row" style="justify-content: space-between;">
+        <label class="settings-label" data-i18n="layoutSection" style="margin-bottom:0;">Layout</label>
+        <button class="btn-secondary btn-small" data-customization-reset="layout" data-i18n="resetSection">Reset</button>
+    </div>
+    <div class="settings-row" style="margin-top: 12px; gap: 16px;">
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="sidebarWidth">Sidebar Width</label>
+            <input type="range" id="settingsSidebarWidth" class="custom-slider" min="160" max="320" value="220">
+            <span class="custom-slider-value" id="sidebarWidthValue">220px</span>
+        </div>
+        <div class="settings-group" style="margin-bottom:0; flex:1;">
+            <label class="settings-label" data-i18n="cardRadius">Corner Radius</label>
+            <input type="range" id="settingsCardRadius" class="custom-slider" min="0" max="20" value="8">
+            <span class="custom-slider-value" id="cardRadiusValue">8px</span>
+        </div>
+    </div>
+</div>
 <div class="settings-group">
     <div class="settings-row" style="justify-content: space-between;">
         <label class="settings-label" data-i18n="customColors" style="margin-bottom:0;">Colors</label>
         <button class="btn-secondary btn-small" data-customization-reset="colors" data-i18n="resetSection">Reset</button>
     </div>
     <div class="custom-color-grid" id="customColorGrid"></div>
-    <p class="settings-hint" data-i18n="customColorsHint">Text colors remain fixed for readability. Click the reset button next to a color to restore its default.</p>
+    <p class="settings-hint" data-i18n="customColorsHint">Click the reset button next to a color to restore its default.</p>
 </div>
 </div>
 
