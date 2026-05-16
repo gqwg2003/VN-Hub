@@ -1,4 +1,3 @@
-/* ===== Groups Sidebar ===== */
 .group-section-label {
     font-size: 10px;
     text-transform: uppercase;
@@ -104,7 +103,6 @@
     display: none;
 }
 
-/* ===== Group Color Picker ===== */
 .group-color-picker {
     position: absolute;
     left: 100%;

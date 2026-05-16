@@ -301,11 +301,6 @@ function renderTags() {
     });
 }
 
-function parseLinks(linksJson) {
-    try { return JSON.parse(linksJson || '[]'); }
-    catch { return []; }
-}
-
 function renderLinks() {
     const container = document.getElementById('linksContainer');
     if (!container) return;

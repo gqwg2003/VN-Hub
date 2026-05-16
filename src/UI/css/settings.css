@@ -1,4 +1,3 @@
-/* ===== Settings ===== */
 .settings-page {
     max-width: 1500px;
     width: 100%;
@@ -7,45 +6,6 @@
 .settings-page h2 {
     font-size: 22px;
     margin-bottom: 16px;
-}
-
-/* Settings tabs */
-.settings-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0;
-}
-
-.settings-tab {
-    padding: 8px 16px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
-}
-
-.settings-tab:hover {
-    color: var(--text-primary);
-}
-
-.settings-tab.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-}
-
-.settings-tab-content {
-    display: none;
-}
-
-.settings-tab-content.active {
-    display: block;
 }
 
 .settings-group {
@@ -127,7 +87,6 @@
     margin-top: 4px;
 }
 
-/* Keyboard Shortcuts */
 .shortcuts-list {
     display: flex;
     flex-direction: column;
@@ -182,12 +141,8 @@
     animation: pulse-border 1s infinite;
 }
 
-@keyframes pulse-border {
-    0%, 100% { border-color: var(--accent); }
-    50% { border-color: transparent; }
-}
 
-/* ===== Backup List ===== */
+
 .backup-list {
     margin-top: 8px;
     display: flex;
@@ -220,7 +175,6 @@
     white-space: nowrap;
 }
 
-/* ===== Customization tab ===== */
 .custom-font-list {
     display: flex;
     flex-direction: column;

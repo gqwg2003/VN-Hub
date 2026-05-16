@@ -61,7 +61,9 @@ public static class Bridge
         Register(new[]
         {
             "pickFont", "removeFont", "listFonts",
-            "pickBackground", "clearBackground"
+            "pickBackground", "clearBackground",
+            "pickSidebarBackground", "clearSidebarBackground",
+            "pickTopbarBackground", "clearTopbarBackground"
         }, CustomizationHandler.Handle);
 
         map["openUrl"] = (_, payload) =>

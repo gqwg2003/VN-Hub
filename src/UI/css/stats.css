@@ -1,50 +1,9 @@
-/* ===== Statistics Page ===== */
 .stats-page h2 {
     margin-bottom: 16px;
     font-size: 22px;
     font-weight: 700;
 }
 
-/* ── Sub-tabs ── */
-.stats-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0;
-}
-
-.stats-tab {
-    padding: 8px 16px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
-}
-
-.stats-tab:hover {
-    color: var(--text-primary);
-}
-
-.stats-tab.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-}
-
-.stats-tab-content {
-    display: none;
-}
-
-.stats-tab-content.active {
-    display: block;
-}
-
-/* ── Summary cards ── */
 .stats-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -109,7 +68,6 @@
     letter-spacing: 0.4px;
 }
 
-/* ── 2-column grid for panels ── */
 .stats-grid-2col {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -117,7 +75,6 @@
     margin-bottom: 20px;
 }
 
-/* ── Panel wrapper ── */
 .stats-panel {
     background: var(--bg-surface);
     border-radius: var(--radius-lg);
@@ -135,7 +92,6 @@
     margin-bottom: 20px;
 }
 
-/* ── Panel header with period selector ── */
 .stats-panel-header {
     display: flex;
     align-items: center;
@@ -175,7 +131,6 @@
     color: #fff;
 }
 
-/* ── Ranking list (Top Played / Top Rated) ── */
 .stats-ranking {
     display: flex;
     flex-direction: column;
@@ -268,7 +223,6 @@
     background: rgba(205,127,50,0.05);
 }
 
-/* ── Status bars ── */
 .stats-bar-row {
     display: flex;
     align-items: center;
@@ -307,7 +261,6 @@
     color: var(--text-primary);
 }
 
-/* ── Charts ── */
 .stats-chart-bars {
     display: flex;
     align-items: flex-end;
@@ -345,7 +298,6 @@
     white-space: nowrap;
 }
 
-/* ── Achievements ── */
 .stats-achievements {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -372,7 +324,6 @@
     box-shadow: 0 4px 16px rgba(99,102,241,0.15);
 }
 
-/* ── Header row (always visible) ── */
 .achievement-header {
     display: flex;
     align-items: center;
@@ -445,7 +396,6 @@
     opacity: 1;
 }
 
-/* ── Expandable body ── */
 .achievement-body {
     max-height: 0;
     overflow: hidden;
@@ -458,7 +408,6 @@
     gap: 8px;
 }
 
-/* ── Flavor (joke) block ── */
 .achievement-flavor-block {
     border-left: 2px solid var(--accent);
     background: rgba(99,102,241,0.07);
@@ -488,7 +437,6 @@
     letter-spacing: 3px;
 }
 
-/* ── Info (real) block ── */
 .achievement-info-block {
     background: var(--bg-surface);
     padding: 7px 10px;
@@ -500,7 +448,6 @@
     line-height: 1.5;
 }
 
-/* ── Empty states ── */
 .stats-empty-state {
     display: flex;
     flex-direction: column;
@@ -519,7 +466,6 @@
     margin: 0;
 }
 
-/* ── Responsive ── */
 @media (max-width: 800px) {
     .stats-grid-2col {
         grid-template-columns: 1fr;

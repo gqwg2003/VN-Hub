@@ -1,11 +1,9 @@
-/* ===== Fonts ===== */
 @font-face {
     font-family: 'BloodCyrillic';
     src: url('../Assets/Fonts/cyr BLOOD CYRILLIC.TTF') format('truetype');
     font-display: block;
 }
 
-/* ===== Splash Screen ===== */
 #splash {
     position: fixed;
     inset: 0;
@@ -43,7 +41,6 @@
     color: var(--text-secondary);
 }
 
-/* ===== CSS Variables ===== */
 :root {
     --bg-base: #0D0D1A;
     --bg-surface: #13132A;
@@ -81,7 +78,6 @@
     --font-mono: 'JetBrains Mono', 'Consolas', monospace;
 }
 
-/* Light theme */
 :root[data-theme="light"] {
     --bg-base: #F0F0F5;
     --bg-surface: #FFFFFF;
@@ -99,7 +95,6 @@
     --danger: #D03040;
 }
 
-/* ===== Reset ===== */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -126,7 +121,6 @@ body {
     position: relative;
 }
 
-/* ===== Custom background overlay ===== */
 body::before {
     content: '';
     position: fixed;
@@ -142,7 +136,6 @@ body::before {
     transition: opacity var(--transition-slow), filter var(--transition-slow);
 }
 
-/* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -157,7 +150,6 @@ body::before {
     background: var(--accent-soft);
 }
 
-/* ===== Reading Tab Strip ===== */
 .reading-strip {
     display: flex;
     align-items: center;
@@ -192,7 +184,6 @@ body::before {
     font-weight: 600;
 }
 
-/* ===== Responsive: narrow sidebar ===== */
 @media (max-width: 800px) {
     :root {
         --sidebar-width: 56px;

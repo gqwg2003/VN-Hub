@@ -1,11 +1,9 @@
-/* ===== Card Grid ===== */
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 16px;
 }
 
-/* Grid size: small */
 .card-grid.grid-small {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 12px;
@@ -14,13 +12,11 @@
 .card-grid.grid-small .vn-card-title { font-size: 11px; }
 .card-grid.grid-small .vn-card-playtime { display: none; }
 
-/* Grid size: medium (default) */
 .card-grid.grid-medium {
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 16px;
 }
 
-/* Responsive card grid */
 @media (max-width: 600px) {
     .card-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
@@ -28,7 +24,6 @@
     }
 }
 
-/* Grid size: list */
 .card-grid.grid-list {
     grid-template-columns: 1fr;
     gap: 4px;
@@ -172,7 +167,6 @@
 .vn-card-icon.heart svg { stroke: var(--heart); fill: var(--heart); width: 12px; height: 12px; }
 .vn-card-icon.star svg { stroke: var(--star); fill: var(--star); width: 12px; height: 12px; }
 
-/* Play button on card */
 .vn-card-play {
     position: absolute;
     bottom: 52px;
@@ -228,10 +222,7 @@
     height: 10px;
 }
 
-@keyframes pulse-running {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
-}
+
 
 /* ===== Empty State ===== */
 .empty-state {
@@ -320,14 +311,7 @@
     border-radius: 4px;
     background: var(--bg-elevated);
 }
-@keyframes shimmer {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-.shimmer {
-    animation: shimmer 1.5s ease-in-out infinite;
-}
+
 
 .card-grid.grid-small .vn-card-vndb { display: none; }
 
