@@ -118,7 +118,7 @@ function applyCustomization() {
 
     const colorEntries = Object.entries(c.colors).filter(([_, v]) => v);
     if (colorEntries.length) {
-        css += ':root {\n';
+        css += ':root, :root[data-theme="light"] {\n';
         for (const [key, val] of colorEntries) {
             const cssVar = CUSTOM_COLOR_CSS_VARS[key];
             if (cssVar && /^#[0-9a-fA-F]{6}$/.test(val)) {
@@ -165,7 +165,10 @@ function applyCustomization() {
     }
 
     root.style.setProperty('--panel-surface-opacity', String(c.panelSurfaceOpacity));
-    root.style.setProperty('--sidebar-width', `${c.sidebarWidth}px`);
+    root.dataset.sidebarConfiguredWidth = `${c.sidebarWidth}px`;
+    if (!document.getElementById('sidebar').classList.contains('collapsed')) {
+        root.style.setProperty('--sidebar-width', `${c.sidebarWidth}px`);
+    }
     root.style.setProperty('--radius', `${c.cardRadius}px`);
     root.style.setProperty('--radius-lg', `${Math.round(c.cardRadius * 1.5)}px`);
 }

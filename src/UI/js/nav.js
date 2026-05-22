@@ -7,6 +7,31 @@ function initNavigation() {
     });
 }
 
+function initSidebarCollapse() {
+    const sidebar = document.getElementById('sidebar');
+    const btn = document.getElementById('sidebarCollapseBtn');
+    const root = document.documentElement;
+
+    function setCollapsed(collapsed) {
+        if (collapsed) {
+            root.dataset.sidebarConfiguredWidth = getComputedStyle(root).getPropertyValue('--sidebar-width').trim();
+            root.style.setProperty('--sidebar-width', '56px');
+            sidebar.classList.add('collapsed');
+        } else {
+            root.style.setProperty('--sidebar-width', root.dataset.sidebarConfiguredWidth || '220px');
+            sidebar.classList.remove('collapsed');
+        }
+        localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
+    }
+
+    btn.addEventListener('click', () => setCollapsed(!sidebar.classList.contains('collapsed')));
+
+    if (localStorage.getItem('sidebar-collapsed') === '1') {
+        sidebar.classList.add('collapsed');
+        root.style.setProperty('--sidebar-width', '56px');
+    }
+}
+
 function switchTab(tab) {
     state.activeTab = tab;
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));

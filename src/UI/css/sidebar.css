@@ -10,6 +10,7 @@
     padding: 16px 12px;
     gap: 24px;
     user-select: none;
+    transition: width 200ms ease, min-width 200ms ease, padding 200ms ease;
 }
 
 .sidebar::before {
@@ -99,4 +100,64 @@
     .sidebar {
         display: none;
     }
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sidebar-collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    flex-shrink: 0;
+}
+
+.sidebar-collapse-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.sidebar-collapse-btn svg {
+    transition: transform 200ms ease;
+}
+
+.sidebar.collapsed {
+    padding: 16px 8px;
+    overflow: hidden;
+}
+
+.sidebar.collapsed .sidebar-logo span,
+.sidebar.collapsed .nav-btn span,
+.sidebar.collapsed .group-section-label,
+.sidebar.collapsed #groupList {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-logo {
+    justify-content: center;
+    padding: 4px 0;
+}
+
+.sidebar.collapsed .nav-btn {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-collapse-btn svg {
+    transform: rotate(180deg);
 }

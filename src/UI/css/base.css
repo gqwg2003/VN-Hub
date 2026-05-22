@@ -136,6 +136,17 @@ body::before {
     transition: opacity var(--transition-slow), filter var(--transition-slow);
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+::placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }

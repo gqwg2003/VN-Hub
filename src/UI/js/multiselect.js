@@ -109,8 +109,8 @@ function bulkSetGroup() {
     clearSelection();
 }
 
-function bulkAddTag() {
-    const tag = prompt(t('bulkTagPrompt') || 'Enter tag to add:');
+async function bulkAddTag() {
+    const tag = await showPromptModal(t('bulkTagPrompt') || 'Enter tag to add:');
     if (!tag || !tag.trim()) return;
     const trimmed = tag.trim();
     state.selectedIds.forEach(id => {

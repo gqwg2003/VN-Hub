@@ -25,6 +25,7 @@ async function loadPartials() {
 document.addEventListener('DOMContentLoaded', async () => {
     await loadPartials();
     initNavigation();
+    initSidebarCollapse();
     initSearch();
     initAddModal();
     initDetail();
