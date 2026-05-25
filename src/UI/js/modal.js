@@ -16,8 +16,8 @@ function initAddModal() {
 function openAddModal() {
     document.getElementById('addTitle').value = '';
     document.getElementById('addExe').value = '';
-    document.getElementById('addSkipVndb').checked = false;
-    const skipWrap = document.getElementById('addSkipVndbWrap');
+    document.getElementById('addSkipMeta').checked = false;
+    const skipWrap = document.getElementById('addSkipMetaWrap');
     if (skipWrap) skipWrap.style.display = state.settings?.vndbEnabled !== false ? '' : 'none';
     document.getElementById('addModal').style.display = '';
     document.getElementById('addTitle').focus();
@@ -30,7 +30,7 @@ function closeAddModal() {
 function confirmAdd() {
     const title = document.getElementById('addTitle').value.trim();
     const exePath = document.getElementById('addExe').value || null;
-    const skipVndb = document.getElementById('addSkipVndb').checked;
+    const skipVndb = document.getElementById('addSkipMeta').checked;
 
     if (!title && !exePath) {
         document.getElementById('addTitle').focus();

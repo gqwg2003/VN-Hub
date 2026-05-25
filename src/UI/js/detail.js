@@ -29,10 +29,10 @@ function initDetailHeader() {
 
     document.getElementById('btnBrowseExe').addEventListener('click', () => send('pickExe'));
     document.getElementById('btnChangeCover').addEventListener('click', () => send('pickImage'));
-    document.getElementById('btnFetchVndb').addEventListener('click', () => {
+    document.getElementById('btnFetchMeta').addEventListener('click', () => {
         if (state.detailEntry) {
             send('fetchVndb', { id: state.detailEntry.id });
-            showToast(t('vndbSearching'), 'info');
+            showToast(t('metaSearching'), 'info');
         }
     });
     document.getElementById('btnOpenVnFolder').addEventListener('click', () => {
@@ -60,7 +60,7 @@ function initDetailFields() {
         }
     });
 
-    document.getElementById('detailSkipVndb').addEventListener('change', (e) => {
+    document.getElementById('detailSkipMeta').addEventListener('change', (e) => {
         if (state.detailEntry) {
             state.detailEntry.skipVndb = e.target.checked;
             saveDetail();
@@ -228,13 +228,13 @@ function renderDetail() {
         ratingWrap.style.display = 'none';
     }
 
-    const vndbBtn = document.getElementById('btnFetchVndb');
-    if (vndbBtn) vndbBtn.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
+    const metaBtn = document.getElementById('btnFetchMeta');
+    if (metaBtn) metaBtn.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
 
-    const skipVndbCheck = document.getElementById('detailSkipVndb');
-    const skipVndbWrap = document.getElementById('detailSkipVndbWrap');
-    if (skipVndbCheck) skipVndbCheck.checked = e.skipVndb === true;
-    if (skipVndbWrap) skipVndbWrap.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
+    const skipMetaCheck = document.getElementById('detailSkipMeta');
+    const skipMetaWrap = document.getElementById('detailSkipMetaWrap');
+    if (skipMetaCheck) skipMetaCheck.checked = e.skipVndb === true;
+    if (skipMetaWrap) skipMetaWrap.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
 
     const favBtn = document.getElementById('detailFav');
     const pinBtn = document.getElementById('detailPin');

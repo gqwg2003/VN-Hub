@@ -78,7 +78,7 @@
         <p class="detail-description" id="detailDesc"></p>
     </div>
     <div class="detail-field" id="detailRatingWrap" style="display:none">
-        <label data-i18n="vndbRating">VNDB Rating</label>
+        <label data-i18n="metadataRating">Rating</label>
         <span class="detail-rating" id="detailRating"></span>
     </div>
     <div class="detail-field">
@@ -146,15 +146,15 @@
         <button class="btn-secondary btn-small" id="btnShowSessions" data-i18n="showSessions">Show Sessions</button>
         <div class="session-list" id="sessionList" style="display:none;"></div>
     </div>
-    <div class="detail-field" id="detailSkipVndbWrap">
+    <div class="detail-field" id="detailSkipMetaWrap">
         <label class="toggle-label">
-            <input type="checkbox" id="detailSkipVndb">
-            <span data-i18n="skipVndbLabel">Don't fetch data from VNDB</span>
+            <input type="checkbox" id="detailSkipMeta">
+            <span data-i18n="skipMetaLabel">Don't fetch metadata automatically</span>
         </label>
-        <p class="settings-hint" data-i18n="skipVndbHint">When enabled, VNDB metadata will not be automatically fetched for this entry.</p>
+        <p class="settings-hint" data-i18n="skipMetaHint">When enabled, metadata will not be automatically fetched for this entry.</p>
     </div>
     <div class="detail-danger">
-        <button class="btn-secondary btn-small" id="btnFetchVndb" data-i18n="vndbSearch">Search VNDB</button>
+        <button class="btn-secondary btn-small" id="btnFetchMeta" data-i18n="metaSearch">Search Metadata</button>
         <button class="btn-danger" id="btnDeleteVn" data-i18n="deleteEntry">Delete Entry</button>
     </div>
 </div>
