@@ -42,7 +42,7 @@ public static class LibraryHandler
 
                 var settings = SettingsService.Load();
                 if (settings.VndbEnabled && !entry.SkipVndb)
-                    _ = Task.Run(() => VndbHandler.FetchAndApplyVndb(entry.Id, entry.Title, CancellationToken.None));
+                    _ = Task.Run(() => MetadataHandler.FetchAndApplyMetadata(entry.Id, entry.Title, CancellationToken.None));
                 break;
             }
 

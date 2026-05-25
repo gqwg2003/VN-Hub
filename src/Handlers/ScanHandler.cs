@@ -47,7 +47,7 @@ public static class ScanHandler
                         var entry = LibraryService.AddVn(safeTitle, null, item.ExePath);
                         list.Add(entry);
                         if (settings.VndbEnabled)
-                            _ = Task.Run(() => VndbHandler.FetchAndApplyVndb(entry.Id, entry.Title, CancellationToken.None));
+                            _ = Task.Run(() => MetadataHandler.FetchAndApplyMetadata(entry.Id, entry.Title, CancellationToken.None));
                     }
                     return list;
                 });

@@ -56,7 +56,7 @@ public static class Bridge
             "exportCsv", "exportHtml"
         }, SettingsHandler.Handle);
 
-        Register(new[] { "fetchVndb" }, VndbHandler.Handle);
+        Register(new[] { "fetchVndb" }, MetadataHandler.Handle);
 
         Register(new[]
         {

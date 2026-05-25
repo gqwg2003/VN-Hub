@@ -66,6 +66,23 @@ function initSettings() {
         saveSettingsFromUI();
     });
 
+    document.getElementById('settingsMetadataProvider').addEventListener('change', (e) => {
+        const val = e.target.value;
+        state.settings.metadataProvider = val;
+        toggleIgdbCredentials(val);
+        saveSettingsFromUI();
+    });
+
+    document.getElementById('settingsIgdbClientId').addEventListener('change', (e) => {
+        state.settings.igdbClientId = e.target.value.trim();
+        saveSettingsFromUI();
+    });
+
+    document.getElementById('settingsIgdbClientSecret').addEventListener('change', (e) => {
+        state.settings.igdbClientSecret = e.target.value.trim();
+        saveSettingsFromUI();
+    });
+
     document.getElementById('settingsAutoStart').addEventListener('change', (e) => {
         state.settings.autoStart = e.target.checked;
         send('setAutoStart', { enabled: e.target.checked });
@@ -167,6 +184,9 @@ function initSettings() {
             backupInterval: 'startup',
             shortcuts: {},
             proxyAddress: '',
+            metadataProvider: 'vndb',
+            igdbClientId: '',
+            igdbClientSecret: '',
             sortBy: 'title',
             sortDir: 'asc',
             gridSize: 'medium',
@@ -205,6 +225,11 @@ function renderSettings() {
         b.classList.toggle('active', b.dataset.theme === s.theme);
     });
     document.getElementById('settingsVndb').checked = s.vndbEnabled !== false;
+    const provider = s.metadataProvider || 'vndb';
+    document.getElementById('settingsMetadataProvider').value = provider;
+    toggleIgdbCredentials(provider);
+    document.getElementById('settingsIgdbClientId').value = s.igdbClientId || '';
+    document.getElementById('settingsIgdbClientSecret').value = s.igdbClientSecret || '';
     document.getElementById('settingsAutoStart').checked = s.autoStart === true;
     document.getElementById('settingsMinimizeToTray').checked = s.minimizeToTray === true;
     document.getElementById('settingsStartMinimized').checked = s.startMinimized === true;
@@ -226,6 +251,10 @@ function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme || 'dark');
     if (typeof applyCustomization === 'function') applyCustomization();
     if (typeof renderCustomColors === 'function') renderCustomColors();
+}
+
+function toggleIgdbCredentials(provider) {
+    document.getElementById('igdbCredentialsGroup').style.display = provider === 'igdb' ? '' : 'none';
 }
 
 function saveSettingsFromUI() {

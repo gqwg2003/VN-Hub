@@ -50,7 +50,7 @@ public static class VndbService
     private static readonly TimeSpan ApiTimeout = TimeSpan.FromSeconds(15);
     private static readonly TimeSpan DownloadTimeout = TimeSpan.FromSeconds(60);
 
-    public static async Task<VndbResult?> SearchAsync(string title, CancellationToken cancellationToken = default)
+    public static async Task<MetadataResult?> SearchAsync(string title, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
 
@@ -91,9 +91,9 @@ public static class VndbService
                 }
             }
 
-            return new VndbResult
+            return new MetadataResult
             {
-                VndbId = best.Id ?? "",
+                ExternalId = best.Id ?? "",
                 Title = best.Title ?? "",
                 ImageUrl = best.Image?.Url,
                 Description = CleanDescription(best.Description),
@@ -160,17 +160,6 @@ public static class VndbService
         desc = System.Text.RegularExpressions.Regex.Replace(desc, @"\[/?[a-zA-Z]+[^\]]*\]", "");
 
         return desc.Trim();
-    }
-
-    public class VndbResult
-    {
-        public string VndbId { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string? ImageUrl { get; set; }
-        public string? Description { get; set; }
-        public List<string> Tags { get; set; } = new();
-        public double? Rating { get; set; }
-        public int? LengthMinutes { get; set; }
     }
 
     private class VndbApiResponse

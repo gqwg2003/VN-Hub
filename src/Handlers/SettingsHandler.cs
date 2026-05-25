@@ -47,6 +47,9 @@ public static class SettingsHandler
                     settings.ScanSkipExisting,
                     settings.ScanRecursive,
                     settings.Customization,
+                    settings.MetadataProvider,
+                    settings.IgdbClientId,
+                    settings.IgdbClientSecret,
                     coversPath = coversDir,
                     logsPath = LogService.GetLogDir()
                 });
@@ -60,6 +63,8 @@ public static class SettingsHandler
                 s.ProxyAddress = Validation.SanitizeProxy(s.ProxyAddress);
                 SettingsService.Save(s);
                 VndbService.ConfigureProxy(s.ProxyAddress);
+                IgdbService.Instance.ConfigureProxy(s.ProxyAddress);
+                AniListService.Instance.ConfigureProxy(s.ProxyAddress);
                 Bridge.SendToJs("settingsSaved", new { ok = true, proxyAddress = s.ProxyAddress });
                 break;
             }

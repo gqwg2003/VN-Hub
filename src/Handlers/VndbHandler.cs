@@ -5,7 +5,7 @@ using VnHub.Services;
 
 namespace VnHub.Handlers;
 
-public static class VndbHandler
+public static class MetadataHandler
 {
     private static CancellationTokenSource? _fetchCts;
 
@@ -30,17 +30,19 @@ public static class VndbHandler
         {
             var vnEntry = VnRepository.GetById(p.Id);
             if (vnEntry != null)
-                await FetchAndApplyVndb(vnEntry.Id, vnEntry.Title, token);
+                await FetchAndApplyMetadata(vnEntry.Id, vnEntry.Title, token);
         });
 
         return Task.CompletedTask;
     }
 
-    internal static async Task FetchAndApplyVndb(string vnId, string title, CancellationToken ct)
+    internal static async Task FetchAndApplyMetadata(string vnId, string title, CancellationToken ct)
     {
         try
         {
-            var result = await VndbService.SearchAsync(title, ct);
+            var settings = SettingsService.Load();
+            var provider = GetProvider(settings);
+            var result = await provider.SearchAsync(title, ct);
             if (ct.IsCancellationRequested) return;
 
             if (result == null)
@@ -52,7 +54,7 @@ public static class VndbHandler
             var entry = VnRepository.GetById(vnId);
             if (entry == null) return;
 
-            entry.VndbId = result.VndbId;
+            entry.VndbId = result.ExternalId;
             entry.Description = result.Description;
             entry.Rating = result.Rating;
 
@@ -93,15 +95,15 @@ public static class VndbHandler
                 Bridge.SendToJs("vndbResult", new { id = vnId, found = true, title = result.Title, coverError });
             });
 
-            LogService.Info($"VNDB data applied: {title} → {result.VndbId}");
+            LogService.Info($"Metadata applied ({provider.DisplayName}): {title} → {result.ExternalId}");
         }
         catch (OperationCanceledException)
         {
-            LogService.Info($"VNDB fetch cancelled for {vnId}");
+            LogService.Info($"Metadata fetch cancelled for {vnId}");
         }
         catch (Exception ex)
         {
-            LogService.Error($"VNDB fetch failed for {vnId}", ex);
+            LogService.Error($"Metadata fetch failed for {vnId}", ex);
             try
             {
                 Bridge.InvokeOnUiThread(() =>
@@ -110,4 +112,12 @@ public static class VndbHandler
             catch { /* webview may be disposed */ }
         }
     }
+
+    private static IMetadataProvider GetProvider(AppSettings settings) =>
+        settings.MetadataProvider switch
+        {
+            "igdb" => IgdbService.Instance,
+            "anilist" => AniListService.Instance,
+            _ => VndbProvider.Instance
+        };
 }
