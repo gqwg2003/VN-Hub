@@ -201,6 +201,8 @@ const LANG_RU = {
     metadataProviderHint: 'Выберите базу данных для получения метаданных при добавлении VN.',
     igdbCredentials: 'Данные IGDB',
     igdbCredentialsHint: 'Получите бесплатные учётные данные API на dev.twitch.tv — создайте приложение и скопируйте Client ID и Client Secret.',
+    rawgCredentials: 'API-ключ RAWG',
+    rawgCredentialsHint: 'Получите бесплатный API-ключ на rawg.io — зарегистрируйтесь и скопируйте ключ из настроек аккаунта.',
     invalidProxy: 'Неверный формат прокси. Используйте http://host:port',
     backupNow: 'Создать копию',
     backupCreated: 'Резервная копия создана',

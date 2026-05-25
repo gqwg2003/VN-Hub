@@ -69,7 +69,7 @@ function initSettings() {
     document.getElementById('settingsMetadataProvider').addEventListener('change', (e) => {
         const val = e.target.value;
         state.settings.metadataProvider = val;
-        toggleIgdbCredentials(val);
+        toggleProviderCredentials(val);
         saveSettingsFromUI();
     });
 
@@ -80,6 +80,11 @@ function initSettings() {
 
     document.getElementById('settingsIgdbClientSecret').addEventListener('change', (e) => {
         state.settings.igdbClientSecret = e.target.value.trim();
+        saveSettingsFromUI();
+    });
+
+    document.getElementById('settingsRawgApiKey').addEventListener('change', (e) => {
+        state.settings.rawgApiKey = e.target.value.trim();
         saveSettingsFromUI();
     });
 
@@ -187,6 +192,7 @@ function initSettings() {
             metadataProvider: 'vndb',
             igdbClientId: '',
             igdbClientSecret: '',
+            rawgApiKey: '',
             sortBy: 'title',
             sortDir: 'asc',
             gridSize: 'medium',
@@ -227,9 +233,10 @@ function renderSettings() {
     document.getElementById('settingsVndb').checked = s.vndbEnabled !== false;
     const provider = s.metadataProvider || 'vndb';
     document.getElementById('settingsMetadataProvider').value = provider;
-    toggleIgdbCredentials(provider);
+    toggleProviderCredentials(provider);
     document.getElementById('settingsIgdbClientId').value = s.igdbClientId || '';
     document.getElementById('settingsIgdbClientSecret').value = s.igdbClientSecret || '';
+    document.getElementById('settingsRawgApiKey').value = s.rawgApiKey || '';
     document.getElementById('settingsAutoStart').checked = s.autoStart === true;
     document.getElementById('settingsMinimizeToTray').checked = s.minimizeToTray === true;
     document.getElementById('settingsStartMinimized').checked = s.startMinimized === true;
@@ -253,8 +260,9 @@ function applyTheme(theme) {
     if (typeof renderCustomColors === 'function') renderCustomColors();
 }
 
-function toggleIgdbCredentials(provider) {
+function toggleProviderCredentials(provider) {
     document.getElementById('igdbCredentialsGroup').style.display = provider === 'igdb' ? '' : 'none';
+    document.getElementById('rawgCredentialsGroup').style.display = provider === 'rawg' ? '' : 'none';
 }
 
 function saveSettingsFromUI() {

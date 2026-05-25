@@ -15,6 +15,9 @@ static class Program
         VndbService.ConfigureProxy(settings.ProxyAddress);
         IgdbService.Instance.ConfigureProxy(settings.ProxyAddress);
         AniListService.Instance.ConfigureProxy(settings.ProxyAddress);
+        BangumiService.Instance.ConfigureProxy(settings.ProxyAddress);
+        SteamService.Instance.ConfigureProxy(settings.ProxyAddress);
+        RawgService.Instance.ConfigureProxy(settings.ProxyAddress);
         BackupService.BackupOnStartup();
         Application.Run(new MainWindow());
     }

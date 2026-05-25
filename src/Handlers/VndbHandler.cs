@@ -118,6 +118,9 @@ public static class MetadataHandler
         {
             "igdb" => IgdbService.Instance,
             "anilist" => AniListService.Instance,
+            "bangumi" => BangumiService.Instance,
+            "steam" => SteamService.Instance,
+            "rawg" => RawgService.Instance,
             _ => VndbProvider.Instance
         };
 }

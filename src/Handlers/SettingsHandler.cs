@@ -50,6 +50,7 @@ public static class SettingsHandler
                     settings.MetadataProvider,
                     settings.IgdbClientId,
                     settings.IgdbClientSecret,
+                    settings.RawgApiKey,
                     coversPath = coversDir,
                     logsPath = LogService.GetLogDir()
                 });
@@ -65,6 +66,9 @@ public static class SettingsHandler
                 VndbService.ConfigureProxy(s.ProxyAddress);
                 IgdbService.Instance.ConfigureProxy(s.ProxyAddress);
                 AniListService.Instance.ConfigureProxy(s.ProxyAddress);
+                BangumiService.Instance.ConfigureProxy(s.ProxyAddress);
+                SteamService.Instance.ConfigureProxy(s.ProxyAddress);
+                RawgService.Instance.ConfigureProxy(s.ProxyAddress);
                 Bridge.SendToJs("settingsSaved", new { ok = true, proxyAddress = s.ProxyAddress });
                 break;
             }

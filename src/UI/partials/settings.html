@@ -218,6 +218,9 @@
             <option value="vndb">VNDB (vndb.org)</option>
             <option value="igdb">IGDB (igdb.com)</option>
             <option value="anilist">AniList (anilist.co)</option>
+            <option value="bangumi">Bangumi (bangumi.tv)</option>
+            <option value="steam">Steam (store.steampowered.com)</option>
+            <option value="rawg">RAWG (rawg.io)</option>
         </select>
     </div>
     <p class="settings-hint" data-i18n="metadataProviderHint">Choose the database used to fetch metadata when adding a VN.</p>
@@ -231,6 +234,13 @@
         <input type="password" id="settingsIgdbClientSecret" class="settings-input" placeholder="Client Secret">
     </div>
     <p class="settings-hint" data-i18n="igdbCredentialsHint">Get free API credentials at dev.twitch.tv &mdash; create an application and copy the Client ID and Client Secret.</p>
+</div>
+<div class="settings-group" id="rawgCredentialsGroup" style="display: none;">
+    <label class="settings-label" data-i18n="rawgCredentials">RAWG API Key</label>
+    <div class="settings-row">
+        <input type="text" id="settingsRawgApiKey" class="settings-input" placeholder="API Key">
+    </div>
+    <p class="settings-hint" data-i18n="rawgCredentialsHint">Get a free API key at rawg.io &mdash; register and copy the key from your account settings.</p>
 </div>
 <div class="settings-group">
     <label class="settings-label" data-i18n="proxyAddress">Proxy</label>

@@ -37,6 +37,7 @@ public class AppSettings
     public string MetadataProvider { get; set; } = "vndb";
     public string IgdbClientId { get; set; } = "";
     public string IgdbClientSecret { get; set; } = "";
+    public string RawgApiKey { get; set; } = "";
 }
 
 public class CustomizationSettings

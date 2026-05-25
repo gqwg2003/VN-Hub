@@ -201,6 +201,8 @@ const LANG_JA = {
     metadataProviderHint: 'VN追加時にメタデータを取得するデータベースを選択します。',
     igdbCredentials: 'IGDB 認証情報',
     igdbCredentialsHint: 'dev.twitch.tv で無料のAPIキーを取得してください — アプリを作成し、Client ID と Client Secret をコピーします。',
+    rawgCredentials: 'RAWG APIキー',
+    rawgCredentialsHint: 'rawg.io で無料のAPIキーを取得してください — 登録し、アカウント設定からキーをコピーします。',
     invalidProxy: 'プロキシ形式が無効です。http://host:port を使用してください',
     backupNow: '今すぐバックアップ',
     backupCreated: 'バックアップが作成されました',
