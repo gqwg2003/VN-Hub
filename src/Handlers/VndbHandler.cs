@@ -8,6 +8,7 @@ namespace VnHub.Handlers;
 public static class MetadataHandler
 {
     private static CancellationTokenSource? _fetchCts;
+    private static readonly object _fetchLock = new();
 
     public static Task Handle(string action, JsonElement? payload)
     {
@@ -21,16 +22,28 @@ public static class MetadataHandler
             return Task.CompletedTask;
         }
 
-        _fetchCts?.Cancel();
-        _fetchCts?.Dispose();
-        _fetchCts = new CancellationTokenSource();
-        var token = _fetchCts.Token;
+        CancellationToken token;
+        lock (_fetchLock)
+        {
+            _fetchCts?.Cancel();
+            _fetchCts?.Dispose();
+            _fetchCts = new CancellationTokenSource();
+            token = _fetchCts.Token;
+        }
 
         _ = Task.Run(async () =>
         {
-            var vnEntry = VnRepository.GetById(p.Id);
-            if (vnEntry != null)
-                await FetchAndApplyMetadata(vnEntry.Id, vnEntry.Title, token);
+            try
+            {
+                var vnEntry = VnRepository.GetById(p.Id);
+                if (vnEntry != null)
+                    await FetchAndApplyMetadata(vnEntry.Id, vnEntry.Title, token);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                LogService.Error($"Metadata fetch task failed for {p.Id}", ex);
+            }
         });
 
         return Task.CompletedTask;

@@ -145,6 +145,23 @@ public static class VnRepository
         return ReadEntries(cmd);
     }
 
+    public static List<string> GetAllTitles()
+    {
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = "SELECT LOWER(title) FROM vn_entries";
+        var list = new List<string>();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            if (reader.IsDBNull(0)) continue;
+            var title = reader.GetString(0);
+            if (!string.IsNullOrEmpty(title))
+                list.Add(title);
+        }
+        return list;
+    }
+
     private static string EscapeFts(string query)
     {
         var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -193,25 +210,39 @@ public static class VnRepository
         using var transaction = conn.BeginTransaction();
         try
         {
+            var existing = new HashSet<string>(StringComparer.Ordinal);
+            const int batchSize = 500;
+            for (int start = 0; start < entries.Count; start += batchSize)
+            {
+                var chunk = entries.Skip(start).Take(batchSize).ToList();
+                using var checkCmd = conn.CreateCommand();
+                var placeholders = new string[chunk.Count];
+                for (int i = 0; i < chunk.Count; i++)
+                {
+                    var param = "@id" + i;
+                    placeholders[i] = param;
+                    checkCmd.Parameters.AddWithValue(param, chunk[i].Id);
+                }
+                checkCmd.CommandText = $"SELECT id FROM vn_entries WHERE id IN ({string.Join(", ", placeholders)})";
+                using var reader = checkCmd.ExecuteReader();
+                while (reader.Read())
+                    existing.Add(reader.GetString(0));
+            }
+
             int count = 0;
             foreach (var entry in entries)
             {
-                var checkCmd = conn.CreateCommand();
-                checkCmd.CommandText = "SELECT COUNT(*) FROM vn_entries WHERE id = @id";
-                checkCmd.Parameters.AddWithValue("@id", entry.Id);
-                var exists = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+                if (existing.Contains(entry.Id))
+                    continue;
 
-                if (!exists)
-                {
-                    var cmd = conn.CreateCommand();
-                    cmd.CommandText = """
-                        INSERT INTO vn_entries (id, title, cover_path, exe_path, date_added, status, is_favorite, is_pinned, notes, tags, play_time_seconds, last_launched_at, group_id, vndb_id, description, rating, user_rating, completed_at, story_rating, art_rating, music_rating, character_rating, links, reading_progress, skip_vndb)
-                        VALUES (@id, @title, @cover, @exe, @date, @status, @fav, @pin, @notes, @tags, @playtime, @lastlaunched, @groupid, @vndbid, @desc, @rating, @userrating, @completedat, @storyrating, @artrating, @musicrating, @charrating, @links, @readprogress, @skipvndb)
-                        """;
-                    BindEntry(cmd, entry);
-                    cmd.ExecuteNonQuery();
-                    count++;
-                }
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = """
+                    INSERT INTO vn_entries (id, title, cover_path, exe_path, date_added, status, is_favorite, is_pinned, notes, tags, play_time_seconds, last_launched_at, group_id, vndb_id, description, rating, user_rating, completed_at, story_rating, art_rating, music_rating, character_rating, links, reading_progress, skip_vndb)
+                    VALUES (@id, @title, @cover, @exe, @date, @status, @fav, @pin, @notes, @tags, @playtime, @lastlaunched, @groupid, @vndbid, @desc, @rating, @userrating, @completedat, @storyrating, @artrating, @musicrating, @charrating, @links, @readprogress, @skipvndb)
+                    """;
+                BindEntry(cmd, entry);
+                cmd.ExecuteNonQuery();
+                count++;
             }
             transaction.Commit();
             return count;
@@ -367,35 +398,62 @@ public static class VnRepository
     {
         var list = new List<VnEntry>();
         using var reader = cmd.ExecuteReader();
+
+        int oId = reader.GetOrdinal("id");
+        int oTitle = reader.GetOrdinal("title");
+        int oCover = reader.GetOrdinal("cover_path");
+        int oExe = reader.GetOrdinal("exe_path");
+        int oDate = reader.GetOrdinal("date_added");
+        int oStatus = reader.GetOrdinal("status");
+        int oFav = reader.GetOrdinal("is_favorite");
+        int oPin = reader.GetOrdinal("is_pinned");
+        int oNotes = reader.GetOrdinal("notes");
+        int oTags = reader.GetOrdinal("tags");
+        int oPlaytime = reader.GetOrdinal("play_time_seconds");
+        int oLastLaunched = reader.GetOrdinal("last_launched_at");
+        int oGroupId = reader.GetOrdinal("group_id");
+        int oVndbId = reader.GetOrdinal("vndb_id");
+        int oDesc = reader.GetOrdinal("description");
+        int oRating = reader.GetOrdinal("rating");
+        int oUserRating = reader.GetOrdinal("user_rating");
+        int oCompletedAt = reader.GetOrdinal("completed_at");
+        int oStoryRating = reader.GetOrdinal("story_rating");
+        int oArtRating = reader.GetOrdinal("art_rating");
+        int oMusicRating = reader.GetOrdinal("music_rating");
+        int oCharRating = reader.GetOrdinal("character_rating");
+        int oLinks = reader.GetOrdinal("links");
+        int oReadProgress = reader.GetOrdinal("reading_progress");
+        int oSkipVndb = reader.GetOrdinal("skip_vndb");
+
         while (reader.Read())
         {
             list.Add(new VnEntry
             {
-                Id = reader.GetString(reader.GetOrdinal("id")),
-                Title = reader.GetString(reader.GetOrdinal("title")),
-                CoverPath = reader.IsDBNull(reader.GetOrdinal("cover_path")) ? null : reader.GetString(reader.GetOrdinal("cover_path")),
-                ExePath = reader.IsDBNull(reader.GetOrdinal("exe_path")) ? null : reader.GetString(reader.GetOrdinal("exe_path")),
-                DateAdded = reader.IsDBNull(reader.GetOrdinal("date_added")) ? "" : reader.GetString(reader.GetOrdinal("date_added")),
-                Status = (VnStatus)reader.GetInt32(reader.GetOrdinal("status")),
-                IsFavorite = reader.GetInt32(reader.GetOrdinal("is_favorite")) == 1,
-                IsPinned = reader.GetInt32(reader.GetOrdinal("is_pinned")) == 1,
-                Notes = reader.IsDBNull(reader.GetOrdinal("notes")) ? null : reader.GetString(reader.GetOrdinal("notes")),
-                Tags = reader.IsDBNull(reader.GetOrdinal("tags")) ? "[]" : reader.GetString(reader.GetOrdinal("tags")),
-                PlayTimeSeconds = reader.IsDBNull(reader.GetOrdinal("play_time_seconds")) ? 0 : reader.GetInt64(reader.GetOrdinal("play_time_seconds")),
-                LastLaunchedAt = reader.IsDBNull(reader.GetOrdinal("last_launched_at")) ? null : reader.GetString(reader.GetOrdinal("last_launched_at")),
-                GroupId = reader.IsDBNull(reader.GetOrdinal("group_id")) ? null : reader.GetString(reader.GetOrdinal("group_id")),
-                VndbId = reader.IsDBNull(reader.GetOrdinal("vndb_id")) ? null : reader.GetString(reader.GetOrdinal("vndb_id")),
-                Description = reader.IsDBNull(reader.GetOrdinal("description")) ? null : reader.GetString(reader.GetOrdinal("description")),
-                Rating = reader.IsDBNull(reader.GetOrdinal("rating")) ? null : reader.GetDouble(reader.GetOrdinal("rating")),
-                UserRating = reader.IsDBNull(reader.GetOrdinal("user_rating")) ? null : reader.GetDouble(reader.GetOrdinal("user_rating")),
-                CompletedAt = reader.IsDBNull(reader.GetOrdinal("completed_at")) ? null : reader.GetString(reader.GetOrdinal("completed_at")),
-                StoryRating = reader.IsDBNull(reader.GetOrdinal("story_rating")) ? null : reader.GetDouble(reader.GetOrdinal("story_rating")),
-                ArtRating = reader.IsDBNull(reader.GetOrdinal("art_rating")) ? null : reader.GetDouble(reader.GetOrdinal("art_rating")),
-                MusicRating = reader.IsDBNull(reader.GetOrdinal("music_rating")) ? null : reader.GetDouble(reader.GetOrdinal("music_rating")),
-                CharacterRating = reader.IsDBNull(reader.GetOrdinal("character_rating")) ? null : reader.GetDouble(reader.GetOrdinal("character_rating")),
-                Links = reader.IsDBNull(reader.GetOrdinal("links")) ? "[]" : reader.GetString(reader.GetOrdinal("links")),
-                ReadingProgress = reader.IsDBNull(reader.GetOrdinal("reading_progress")) ? 0 : reader.GetInt32(reader.GetOrdinal("reading_progress")),
-                SkipVndb = !reader.IsDBNull(reader.GetOrdinal("skip_vndb")) && reader.GetInt32(reader.GetOrdinal("skip_vndb")) == 1
+                Id = reader.GetString(oId),
+                Title = reader.GetString(oTitle),
+                CoverPath = reader.IsDBNull(oCover) ? null : reader.GetString(oCover),
+                ExePath = reader.IsDBNull(oExe) ? null : reader.GetString(oExe),
+                DateAdded = reader.IsDBNull(oDate) ? "" : reader.GetString(oDate),
+                Status = (VnStatus)reader.GetInt32(oStatus),
+                IsFavorite = reader.GetInt32(oFav) == 1,
+                IsPinned = reader.GetInt32(oPin) == 1,
+                Notes = reader.IsDBNull(oNotes) ? null : reader.GetString(oNotes),
+                Tags = reader.IsDBNull(oTags) ? "[]" : reader.GetString(oTags),
+                PlayTimeSeconds = reader.IsDBNull(oPlaytime) ? 0 : reader.GetInt64(oPlaytime),
+                LastLaunchedAt = reader.IsDBNull(oLastLaunched) ? null : reader.GetString(oLastLaunched),
+                GroupId = reader.IsDBNull(oGroupId) ? null : reader.GetString(oGroupId),
+                VndbId = reader.IsDBNull(oVndbId) ? null : reader.GetString(oVndbId),
+                Description = reader.IsDBNull(oDesc) ? null : reader.GetString(oDesc),
+                Rating = reader.IsDBNull(oRating) ? null : reader.GetDouble(oRating),
+                UserRating = reader.IsDBNull(oUserRating) ? null : reader.GetDouble(oUserRating),
+                CompletedAt = reader.IsDBNull(oCompletedAt) ? null : reader.GetString(oCompletedAt),
+                StoryRating = reader.IsDBNull(oStoryRating) ? null : reader.GetDouble(oStoryRating),
+                ArtRating = reader.IsDBNull(oArtRating) ? null : reader.GetDouble(oArtRating),
+                MusicRating = reader.IsDBNull(oMusicRating) ? null : reader.GetDouble(oMusicRating),
+                CharacterRating = reader.IsDBNull(oCharRating) ? null : reader.GetDouble(oCharRating),
+                Links = reader.IsDBNull(oLinks) ? "[]" : reader.GetString(oLinks),
+                ReadingProgress = reader.IsDBNull(oReadProgress) ? 0 : reader.GetInt32(oReadProgress),
+                SkipVndb = !reader.IsDBNull(oSkipVndb) && reader.GetInt32(oSkipVndb) == 1
             });
         }
         return list;

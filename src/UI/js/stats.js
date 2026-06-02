@@ -13,7 +13,13 @@ function initStatsTabs() {
     });
 }
 
+let _statsRenderSig = null;
+
 function renderStats(data) {
+    const sig = currentLang + '\u241F' + JSON.stringify(data);
+    if (sig === _statsRenderSig) return;
+    _statsRenderSig = sig;
+
     const statusLabels = getStatusLabels();
     const statusColors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)', 'var(--status-plan)'];
 

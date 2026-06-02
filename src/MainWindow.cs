@@ -117,6 +117,8 @@ public class MainWindow : Form
 
     private void OnGameFinished(string vnId)
     {
+        // _trayIcon is set to null after Dispose() in OnFormClosing, so this also covers the disposed case.
+        if (_trayIcon == null) return;
         try
         {
             var entry = VnRepository.GetById(vnId);
@@ -159,10 +161,13 @@ public class MainWindow : Form
         LauncherService.SaveAllPlayTime();
         LogService.Info("=== VN-Hub shutting down ===");
 
+        LauncherService.GameExited -= OnGameFinished;
+
         if (_trayIcon != null)
         {
             _trayIcon.Visible = false;
             _trayIcon.Dispose();
+            _trayIcon = null;
         }
         base.OnFormClosing(e);
     }

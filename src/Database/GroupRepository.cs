@@ -49,15 +49,30 @@ public static class GroupRepository
     public static void Delete(string id)
     {
         using var conn = AppDb.Open();
-        var cmd = conn.CreateCommand();
-        cmd.CommandText = "UPDATE vn_entries SET group_id = NULL WHERE group_id = @id";
-        cmd.Parameters.AddWithValue("@id", id);
-        cmd.ExecuteNonQuery();
+        using var transaction = conn.BeginTransaction();
+        try
+        {
+            using (var clearCmd = conn.CreateCommand())
+            {
+                clearCmd.CommandText = "UPDATE vn_entries SET group_id = NULL WHERE group_id = @id";
+                clearCmd.Parameters.AddWithValue("@id", id);
+                clearCmd.ExecuteNonQuery();
+            }
 
-        cmd = conn.CreateCommand();
-        cmd.CommandText = "DELETE FROM groups WHERE id = @id";
-        cmd.Parameters.AddWithValue("@id", id);
-        cmd.ExecuteNonQuery();
+            using (var deleteCmd = conn.CreateCommand())
+            {
+                deleteCmd.CommandText = "DELETE FROM groups WHERE id = @id";
+                deleteCmd.Parameters.AddWithValue("@id", id);
+                deleteCmd.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 
     public static void SetVnGroup(string vnId, string? groupId)

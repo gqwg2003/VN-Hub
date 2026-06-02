@@ -5,51 +5,23 @@ using System.Text.Json;
 
 namespace VnHub.Services;
 
-public class BangumiService : IMetadataProvider
+public class BangumiService : MetadataServiceBase
 {
     public static readonly BangumiService Instance = new();
 
-    public string Id => "bangumi";
-    public string DisplayName => "Bangumi";
+    public override string Id => "bangumi";
+    public override string DisplayName => "Bangumi";
 
-    private HttpClient _http;
-    private string _currentProxy = "";
+    protected override string UserAgent => "VNHub/1.0";
 
-    private BangumiService()
+    private BangumiService() { }
+
+    protected override void ConfigureClient(HttpClient client)
     {
-        _http = CreateClient(null);
-    }
-
-    public void ConfigureProxy(string? proxyAddress)
-    {
-        var addr = proxyAddress?.Trim() ?? "";
-        if (addr == _currentProxy) return;
-        _currentProxy = addr;
-        _http = CreateClient(addr);
-    }
-
-    private static HttpClient CreateClient(string? proxyAddress)
-    {
-        HttpClientHandler handler;
-        if (!string.IsNullOrWhiteSpace(proxyAddress))
-        {
-            handler = new HttpClientHandler
-            {
-                Proxy = new System.Net.WebProxy(proxyAddress),
-                UseProxy = true
-            };
-        }
-        else
-        {
-            handler = new HttpClientHandler();
-        }
-        var client = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VNHub", "1.0"));
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        return client;
     }
 
-    public async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
+    public override async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
 
@@ -62,10 +34,9 @@ public class BangumiService : IMetadataProvider
                 limit = 1
             });
 
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            cts.CancelAfter(TimeSpan.FromSeconds(15));
+            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
 
-            var response = await _http.PostAsync(
+            var response = await Http.PostAsync(
                 "https://api.bgm.tv/v0/search/subjects",
                 new StringContent(body, Encoding.UTF8, "application/json"),
                 cts.Token);

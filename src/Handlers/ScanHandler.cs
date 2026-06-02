@@ -1,5 +1,6 @@
 using System.Text.Json;
 using VnHub.Common;
+using VnHub.Database;
 using VnHub.Models;
 using VnHub.Services;
 
@@ -24,8 +25,7 @@ public static class ScanHandler
                     var selectedPath = dialog.SelectedPath;
                     _ = Task.Run(() =>
                     {
-                        var existingTitles = new HashSet<string>(
-                            LibraryService.GetLibrary().Select(e => e.Title.ToLowerInvariant()));
+                        var existingTitles = new HashSet<string>(VnRepository.GetAllTitles());
                         var results = ScanService.ScanFolder(selectedPath, existingTitles, settings);
                         Bridge.SendToJs("scanResults", new { path = selectedPath, items = results });
                     });
@@ -47,7 +47,22 @@ public static class ScanHandler
                         var entry = LibraryService.AddVn(safeTitle, null, item.ExePath);
                         list.Add(entry);
                         if (settings.VndbEnabled)
-                            _ = Task.Run(() => MetadataHandler.FetchAndApplyMetadata(entry.Id, entry.Title, CancellationToken.None));
+                        {
+                            var id = entry.Id;
+                            var entryTitle = entry.Title;
+                            _ = Task.Run(async () =>
+                            {
+                                try
+                                {
+                                    await MetadataHandler.FetchAndApplyMetadata(id, entryTitle, CancellationToken.None);
+                                }
+                                catch (OperationCanceledException) { }
+                                catch (Exception ex)
+                                {
+                                    LogService.Error($"Metadata fetch failed for {id}", ex);
+                                }
+                            });
+                        }
                     }
                     return list;
                 });

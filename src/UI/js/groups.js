@@ -3,6 +3,9 @@ function initGroups() {
     state.activeGroupId = null;
 }
 
+const GROUP_COLORS = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6',
+                      '#ef4444', '#22c55e', '#06b6d4', '#a855f7', '#f97316', '#64748b', '#e11d48', '#0ea5e9'];
+
 function getGroupVnCount(groupId) {
     if (!state.entries) return 0;
     return state.entries.filter(e => e.groupId === groupId).length;
@@ -94,8 +97,7 @@ async function promptAddGroup() {
     const name = await showPromptModal(t('groupName') || 'Group name');
     if (!name) return;
 
-    const colors = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6'];
-    const color = colors[state.groups.length % colors.length];
+    const color = GROUP_COLORS[state.groups.length % GROUP_COLORS.length];
 
     send('addGroup', { name, color });
 }
@@ -103,11 +105,9 @@ async function promptAddGroup() {
 function showGroupColorPicker(anchor, group) {
     document.querySelector('.group-color-picker')?.remove();
 
-    const colors = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6',
-                    '#ef4444', '#22c55e', '#06b6d4', '#a855f7', '#f97316', '#64748b', '#e11d48', '#0ea5e9'];
     const picker = document.createElement('div');
     picker.className = 'group-color-picker';
-    picker.innerHTML = colors.map(c =>
+    picker.innerHTML = GROUP_COLORS.map(c =>
         `<span class="gcp-swatch${c === group.color ? ' active' : ''}" data-color="${c}" style="background:${c}"></span>`
     ).join('') + `<input type="color" class="gcp-custom" value="${group.color}" title="${t('groupColor')}">`;
 

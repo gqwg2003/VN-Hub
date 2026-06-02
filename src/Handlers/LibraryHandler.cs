@@ -42,7 +42,18 @@ public static class LibraryHandler
 
                 var settings = SettingsService.Load();
                 if (settings.VndbEnabled && !entry.SkipVndb)
-                    _ = Task.Run(() => MetadataHandler.FetchAndApplyMetadata(entry.Id, entry.Title, CancellationToken.None));
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await MetadataHandler.FetchAndApplyMetadata(entry.Id, entry.Title, CancellationToken.None);
+                        }
+                        catch (OperationCanceledException) { }
+                        catch (Exception ex)
+                        {
+                            LogService.Error($"Metadata fetch failed for {entry.Id}", ex);
+                        }
+                    });
                 break;
             }
 

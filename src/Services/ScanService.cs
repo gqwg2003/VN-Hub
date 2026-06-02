@@ -4,6 +4,11 @@ namespace VnHub.Services;
 
 public static class ScanService
 {
+    private static readonly Regex NameNormalizeRegex = new(@"[\s_\-.]", RegexOptions.Compiled);
+    private static readonly Regex X64SuffixRegex = new(@"(x64|64bit|_64|64)$", RegexOptions.Compiled);
+    private static readonly Regex X86SuffixRegex = new(@"(x86|32bit|_32|32)$", RegexOptions.Compiled);
+    private static readonly Regex TitleBracketRegex = new(@"\[.*?\]|\(.*?\)", RegexOptions.Compiled);
+
     private static readonly HashSet<string> DefaultBlacklistExe = new(StringComparer.OrdinalIgnoreCase)
     {
         "uninstall", "unins000", "unins001", "setup", "install",
@@ -118,7 +123,11 @@ public static class ScanService
         {
             all.AddRange(Directory.GetFiles(dir, "*.exe", SearchOption.AllDirectories));
         }
-        catch { return all; }
+        catch (Exception ex)
+        {
+            LogService.Warn($"FindExecutables: enumeration failed for '{dir}': {ex.Message}");
+            return all;
+        }
 
         return all
             .Where(exe =>
@@ -140,20 +149,20 @@ public static class ScanService
     {
         if (exes.Count == 1) return exes[0];
 
-        var normalizedFolder = Regex.Replace(folderName, @"[\s_\-.]", "").ToLowerInvariant();
+        var normalizedFolder = NameNormalizeRegex.Replace(folderName, "").ToLowerInvariant();
 
         var nameMatch = exes
             .OrderByDescending(e =>
             {
-                var n = Regex.Replace(Path.GetFileNameWithoutExtension(e), @"[\s_\-.]", "").ToLowerInvariant();
+                var n = NameNormalizeRegex.Replace(Path.GetFileNameWithoutExtension(e), "").ToLowerInvariant();
                 return n == normalizedFolder ? 3 :
                        n.Contains(normalizedFolder) || normalizedFolder.Contains(n) ? 2 : 0;
             })
             .First();
 
-        if (Regex.Replace(Path.GetFileNameWithoutExtension(nameMatch), @"[\s_\-.]", "").ToLowerInvariant()
+        if (NameNormalizeRegex.Replace(Path.GetFileNameWithoutExtension(nameMatch), "").ToLowerInvariant()
             .Contains(normalizedFolder) || normalizedFolder.Contains(
-                Regex.Replace(Path.GetFileNameWithoutExtension(nameMatch), @"[\s_\-.]", "").ToLowerInvariant()))
+                NameNormalizeRegex.Replace(Path.GetFileNameWithoutExtension(nameMatch), "").ToLowerInvariant()))
         {
             return nameMatch;
         }
@@ -165,10 +174,10 @@ public static class ScanService
         });
         if (x64 != null)
         {
-            var base64 = Regex.Replace(Path.GetFileNameWithoutExtension(x64).ToLowerInvariant(), @"(x64|64bit|_64|64)$", "");
+            var base64 = X64SuffixRegex.Replace(Path.GetFileNameWithoutExtension(x64).ToLowerInvariant(), "");
             var hasX86 = exes.Any(e =>
             {
-                var n = Regex.Replace(Path.GetFileNameWithoutExtension(e).ToLowerInvariant(), @"(x86|32bit|_32|32)$", "");
+                var n = X86SuffixRegex.Replace(Path.GetFileNameWithoutExtension(e).ToLowerInvariant(), "");
                 return n == base64 && e != x64;
             });
             if (hasX86) return x64;
@@ -189,7 +198,7 @@ public static class ScanService
 
     private static string CleanTitle(string folderName)
     {
-        var cleaned = Regex.Replace(folderName, @"\[.*?\]|\(.*?\)", "").Trim();
+        var cleaned = TitleBracketRegex.Replace(folderName, "").Trim();
         return string.IsNullOrWhiteSpace(cleaned) ? folderName : cleaned;
     }
 

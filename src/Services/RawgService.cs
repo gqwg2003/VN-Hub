@@ -1,53 +1,19 @@
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace VnHub.Services;
 
-public class RawgService : IMetadataProvider
+public class RawgService : MetadataServiceBase
 {
     public static readonly RawgService Instance = new();
 
-    public string Id => "rawg";
-    public string DisplayName => "RAWG";
+    public override string Id => "rawg";
+    public override string DisplayName => "RAWG";
 
-    private HttpClient _http;
-    private string _currentProxy = "";
+    protected override string UserAgent => "VNHub/1.0";
 
-    private RawgService()
-    {
-        _http = CreateClient(null);
-    }
+    private RawgService() { }
 
-    public void ConfigureProxy(string? proxyAddress)
-    {
-        var addr = proxyAddress?.Trim() ?? "";
-        if (addr == _currentProxy) return;
-        _currentProxy = addr;
-        _http = CreateClient(addr);
-    }
-
-    private static HttpClient CreateClient(string? proxyAddress)
-    {
-        HttpClientHandler handler;
-        if (!string.IsNullOrWhiteSpace(proxyAddress))
-        {
-            handler = new HttpClientHandler
-            {
-                Proxy = new System.Net.WebProxy(proxyAddress),
-                UseProxy = true
-            };
-        }
-        else
-        {
-            handler = new HttpClientHandler();
-        }
-        var client = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VNHub", "1.0"));
-        return client;
-    }
-
-    public async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
+    public override async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
 
@@ -61,11 +27,10 @@ public class RawgService : IMetadataProvider
 
         try
         {
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            cts.CancelAfter(TimeSpan.FromSeconds(15));
+            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
 
             var searchUrl = $"https://api.rawg.io/api/games?search={Uri.EscapeDataString(title)}&key={Uri.EscapeDataString(apiKey)}&page_size=1";
-            var searchResponse = await _http.GetAsync(searchUrl, cts.Token);
+            var searchResponse = await Http.GetAsync(searchUrl, cts.Token);
             if (!searchResponse.IsSuccessStatusCode) return null;
 
             var searchJson = await searchResponse.Content.ReadAsStringAsync(cts.Token);
@@ -83,7 +48,7 @@ public class RawgService : IMetadataProvider
                 ? imgEl.GetString() : null;
 
             var detailsUrl = $"https://api.rawg.io/api/games/{id}?key={Uri.EscapeDataString(apiKey)}";
-            var detailsResponse = await _http.GetAsync(detailsUrl, cts.Token);
+            var detailsResponse = await Http.GetAsync(detailsUrl, cts.Token);
 
             string? description = null;
             var tags = new List<string>();

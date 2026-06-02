@@ -72,7 +72,7 @@ public static class VndbService
             var response = await Http.PostAsync("https://api.vndb.org/kana/vn", content, apiCts.Token);
             if (!response.IsSuccessStatusCode) return null;
 
-            var responseJson = await response.Content.ReadAsStringAsync();
+            var responseJson = await response.Content.ReadAsStringAsync(apiCts.Token);
             var result = JsonSerializer.Deserialize<VndbApiResponse>(responseJson, Bridge.JsonOpts);
 
             if (result?.Results == null || result.Results.Count == 0) return null;
@@ -131,9 +131,13 @@ public static class VndbService
 
             var coversDir = VnHub.Common.AppPaths.EnsureCoversDir();
 
-            var ext = ".jpg";
-            if (imageUrl.Contains(".png", StringComparison.OrdinalIgnoreCase)) ext = ".png";
-            else if (imageUrl.Contains(".webp", StringComparison.OrdinalIgnoreCase)) ext = ".webp";
+            var contentType = response.Content.Headers.ContentType?.MediaType ?? "";
+            var ext = contentType switch
+            {
+                "image/png" => ".png",
+                "image/webp" => ".webp",
+                _ => ".jpg"
+            };
 
             var fileName = $"{vnId}{ext}";
             var filePath = Path.Combine(coversDir, fileName);

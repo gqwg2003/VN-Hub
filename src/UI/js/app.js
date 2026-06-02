@@ -16,9 +16,14 @@ async function loadPartials() {
         { id: 'contentSettings', src: 'partials/settings.html' }
     ];
     await Promise.all(partials.map(async ({ id, src }) => {
-        const resp = await fetch(src);
-        const html = await resp.text();
-        document.getElementById(id).innerHTML = html;
+        try {
+            const resp = await fetch(src);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const html = await resp.text();
+            document.getElementById(id).innerHTML = html;
+        } catch (err) {
+            console.error(`Failed to load partial '${src}':`, err);
+        }
     }));
 }
 

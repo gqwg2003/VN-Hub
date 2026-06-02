@@ -8,35 +8,73 @@ public static class StatsService
 {
     public static object Compute(List<VnEntry> entries)
     {
-        var totalVn = entries.Count;
-        var byStatus = new Dictionary<int, int>();
-        for (int i = 0; i <= 4; i++) byStatus[i] = 0;
-        long totalPlayTime = 0;
-        int favCount = 0;
-        double ratingSum = 0;
-        int ratingCount = 0;
-        var monthlyAdds = new Dictionary<string, int>();
-        var byRating = new Dictionary<int, int>();
-        var tagFreq = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        long completionTimeSum = 0;
-        int completionCount = 0;
-        double storySum = 0; int storyCount = 0;
-        double artSum = 0;   int artCount = 0;
-        double musicSum = 0; int musicCount = 0;
-        double charSum = 0;  int charCount = 0;
+        var agg = Aggregate(entries);
+        var tagFreq = ComputeTagFrequency(entries);
+
+        var topPlayed = BuildTopPlayed(entries);
+        var topRated = BuildTopRated(entries);
+
+        var avgRating = agg.RatingCount > 0 ? Math.Round(agg.RatingSum / agg.RatingCount, 1) : 0.0;
+        var topTags = BuildTopTags(tagFreq);
+        var avgCompletionTime = agg.CompletionCount > 0 ? agg.CompletionTimeSum / agg.CompletionCount : 0L;
+        var categoryAvgs = BuildCategoryAvgs(agg);
+
+        var (achievements, newlyUnlocked) = EvaluateAchievements(agg, tagFreq, topRated.Count > 0);
+
+        return new
+        {
+            totalVn = agg.TotalVn,
+            byStatus = agg.ByStatus,
+            totalPlayTime = agg.TotalPlayTime,
+            monthlyAdds = agg.MonthlyAdds,
+            topPlayed,
+            topRated,
+            favCount = agg.FavCount,
+            avgRating,
+            byRating = agg.ByRating,
+            topTags,
+            avgCompletionTime,
+            categoryAvgs,
+            achievements,
+            newlyUnlocked
+        };
+    }
+
+    private sealed class Aggregates
+    {
+        public int TotalVn;
+        public Dictionary<int, int> ByStatus = new();
+        public long TotalPlayTime;
+        public int FavCount;
+        public double RatingSum;
+        public int RatingCount;
+        public Dictionary<string, int> MonthlyAdds = new();
+        public Dictionary<int, int> ByRating = new();
+        public long CompletionTimeSum;
+        public int CompletionCount;
+        public double StorySum; public int StoryCount;
+        public double ArtSum;   public int ArtCount;
+        public double MusicSum; public int MusicCount;
+        public double CharSum;  public int CharCount;
+    }
+
+    private static Aggregates Aggregate(List<VnEntry> entries)
+    {
+        var a = new Aggregates { TotalVn = entries.Count };
+        for (int i = 0; i <= 4; i++) a.ByStatus[i] = 0;
 
         foreach (var e in entries)
         {
-            byStatus[(int)e.Status]++;
-            totalPlayTime += e.PlayTimeSeconds;
-            if (e.IsFavorite) favCount++;
+            a.ByStatus[(int)e.Status]++;
+            a.TotalPlayTime += e.PlayTimeSeconds;
+            if (e.IsFavorite) a.FavCount++;
             if (e.UserRating.HasValue)
             {
-                ratingSum += e.UserRating.Value;
-                ratingCount++;
+                a.RatingSum += e.UserRating.Value;
+                a.RatingCount++;
                 int r = Math.Clamp((int)Math.Round(e.UserRating.Value), 1, 10);
-                byRating.TryGetValue(r, out int rc);
-                byRating[r] = rc + 1;
+                a.ByRating.TryGetValue(r, out int rc);
+                a.ByRating[r] = rc + 1;
             }
             if (!string.IsNullOrEmpty(e.DateAdded))
             {
@@ -44,92 +82,87 @@ public static class StatsService
                 {
                     var d = DateTime.Parse(e.DateAdded, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                     var key = d.ToString("yyyy-MM");
-                    monthlyAdds.TryGetValue(key, out int c);
-                    monthlyAdds[key] = c + 1;
-                }
-                catch { }
-            }
-            if (!string.IsNullOrEmpty(e.Tags) && e.Tags != "[]")
-            {
-                try
-                {
-                    var tags = JsonSerializer.Deserialize<List<string>>(e.Tags);
-                    if (tags != null)
-                        foreach (var tag in tags)
-                        {
-                            if (string.IsNullOrWhiteSpace(tag)) continue;
-                            tagFreq.TryGetValue(tag, out int tc);
-                            tagFreq[tag] = tc + 1;
-                        }
+                    a.MonthlyAdds.TryGetValue(key, out int c);
+                    a.MonthlyAdds[key] = c + 1;
                 }
                 catch { }
             }
             if (e.Status == VnStatus.Completed && e.PlayTimeSeconds > 0)
             {
-                completionTimeSum += e.PlayTimeSeconds;
-                completionCount++;
+                a.CompletionTimeSum += e.PlayTimeSeconds;
+                a.CompletionCount++;
             }
-            if (e.StoryRating.HasValue)     { storySum += e.StoryRating.Value;     storyCount++; }
-            if (e.ArtRating.HasValue)       { artSum   += e.ArtRating.Value;       artCount++;   }
-            if (e.MusicRating.HasValue)     { musicSum += e.MusicRating.Value;     musicCount++; }
-            if (e.CharacterRating.HasValue) { charSum  += e.CharacterRating.Value; charCount++;  }
+            if (e.StoryRating.HasValue)     { a.StorySum += e.StoryRating.Value;     a.StoryCount++; }
+            if (e.ArtRating.HasValue)       { a.ArtSum   += e.ArtRating.Value;       a.ArtCount++;   }
+            if (e.MusicRating.HasValue)     { a.MusicSum += e.MusicRating.Value;     a.MusicCount++; }
+            if (e.CharacterRating.HasValue) { a.CharSum  += e.CharacterRating.Value; a.CharCount++;  }
         }
 
-        var topPlayed = entries
-            .Where(e => e.PlayTimeSeconds > 0)
-            .OrderByDescending(e => e.PlayTimeSeconds)
-            .Take(10)
-            .Select(e => new { id = e.Id, title = e.Title, cover = e.CoverPath, playTime = e.PlayTimeSeconds, userRating = e.UserRating })
-            .ToList();
-        var topRated = entries
-            .Where(e => e.UserRating.HasValue)
-            .OrderByDescending(e => e.UserRating!.Value)
-            .Take(10)
-            .Select(e => new { id = e.Id, title = e.Title, cover = e.CoverPath, playTime = e.PlayTimeSeconds, userRating = e.UserRating })
-            .ToList();
-        var avgRating = ratingCount > 0 ? Math.Round(ratingSum / ratingCount, 1) : 0.0;
+        return a;
+    }
 
-        var topTags = tagFreq
-            .OrderByDescending(kv => kv.Value)
-            .Take(12)
-            .Select(kv => new { tag = kv.Key, count = kv.Value })
-            .ToList();
-        var avgCompletionTime = completionCount > 0 ? completionTimeSum / completionCount : 0L;
-        var categoryAvgs = new
+    private static Dictionary<string, int> ComputeTagFrequency(List<VnEntry> entries)
+    {
+        var tagFreq = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var e in entries)
         {
-            story     = storyCount > 0 ? (double?)Math.Round(storySum / storyCount, 1) : null,
-            art       = artCount   > 0 ? (double?)Math.Round(artSum   / artCount,   1) : null,
-            music     = musicCount > 0 ? (double?)Math.Round(musicSum / musicCount, 1) : null,
-            character = charCount  > 0 ? (double?)Math.Round(charSum  / charCount,  1) : null,
-        };
+            if (string.IsNullOrEmpty(e.Tags) || e.Tags == "[]") continue;
+            try
+            {
+                var tags = JsonSerializer.Deserialize<List<string>>(e.Tags);
+                if (tags != null)
+                    foreach (var tag in tags)
+                    {
+                        if (string.IsNullOrWhiteSpace(tag)) continue;
+                        tagFreq.TryGetValue(tag, out int tc);
+                        tagFreq[tag] = tc + 1;
+                    }
+            }
+            catch { }
+        }
+        return tagFreq;
+    }
 
+    private static List<object> BuildTopPlayed(List<VnEntry> entries) => entries
+        .Where(e => e.PlayTimeSeconds > 0)
+        .OrderByDescending(e => e.PlayTimeSeconds)
+        .Take(10)
+        .Select(e => (object)new { id = e.Id, title = e.Title, cover = e.CoverPath, playTime = e.PlayTimeSeconds, userRating = e.UserRating })
+        .ToList();
+
+    private static List<object> BuildTopRated(List<VnEntry> entries) => entries
+        .Where(e => e.UserRating.HasValue)
+        .OrderByDescending(e => e.UserRating!.Value)
+        .Take(10)
+        .Select(e => (object)new { id = e.Id, title = e.Title, cover = e.CoverPath, playTime = e.PlayTimeSeconds, userRating = e.UserRating })
+        .ToList();
+
+    private static List<object> BuildTopTags(Dictionary<string, int> tagFreq) => tagFreq
+        .OrderByDescending(kv => kv.Value)
+        .Take(12)
+        .Select(kv => (object)new { tag = kv.Key, count = kv.Value })
+        .ToList();
+
+    private static object BuildCategoryAvgs(Aggregates a) => new
+    {
+        story     = a.StoryCount > 0 ? (double?)Math.Round(a.StorySum / a.StoryCount, 1) : null,
+        art       = a.ArtCount   > 0 ? (double?)Math.Round(a.ArtSum   / a.ArtCount,   1) : null,
+        music     = a.MusicCount > 0 ? (double?)Math.Round(a.MusicSum / a.MusicCount, 1) : null,
+        character = a.CharCount  > 0 ? (double?)Math.Round(a.CharSum  / a.CharCount,  1) : null,
+    };
+
+    private static (object achievements, object newlyUnlocked) EvaluateAchievements(
+        Aggregates a, Dictionary<string, int> tagFreq, bool hasRating)
+    {
         var ctx = new AchievementService.StatsContext
         {
-            TotalVn = totalVn,
-            Completed = byStatus[(int)VnStatus.Completed],
-            FavCount = favCount,
-            HasRating = topRated.Count > 0,
-            TotalHours = totalPlayTime / 3600.0,
+            TotalVn = a.TotalVn,
+            Completed = a.ByStatus[(int)VnStatus.Completed],
+            FavCount = a.FavCount,
+            HasRating = hasRating,
+            TotalHours = a.TotalPlayTime / 3600.0,
             TagCounts = tagFreq
         };
-        var (achievements, newlyUnlocked) = AchievementService.Evaluate(ctx);
-
-        return new
-        {
-            totalVn,
-            byStatus,
-            totalPlayTime,
-            monthlyAdds,
-            topPlayed,
-            topRated,
-            favCount,
-            avgRating,
-            byRating,
-            topTags,
-            avgCompletionTime,
-            categoryAvgs,
-            achievements,
-            newlyUnlocked
-        };
+        return AchievementService.Evaluate(ctx);
     }
 }

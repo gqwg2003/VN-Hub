@@ -1,5 +1,14 @@
 function initSettings() {
+    const bindOnce = (el, ev, fn) => {
+        if (el && !el.dataset.bound) {
+            el.dataset.bound = '1';
+            el.addEventListener(ev, fn);
+        }
+    };
+
     document.querySelectorAll('.settings-tab').forEach(tab => {
+        if (tab.dataset.bound) return;
+        tab.dataset.bound = '1';
         tab.addEventListener('click', () => {
             document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
@@ -10,6 +19,8 @@ function initSettings() {
     });
 
     document.querySelectorAll('.theme-btn').forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = '1';
         btn.addEventListener('click', () => {
             document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -19,16 +30,16 @@ function initSettings() {
         });
     });
 
-    document.getElementById('btnPickDefaultFolder').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnPickDefaultFolder'), 'click', () => {
         state.pickTarget = 'settings';
         send('pickFolder');
     });
 
-    document.getElementById('btnOpenDbFolder').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnOpenDbFolder'), 'click', () => {
         send('openDbFolder');
     });
 
-    document.getElementById('settingsProxy').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsProxy'), 'change', (e) => {
         const val = e.target.value.trim();
         if (val && !/^https?:\/\/.+:\d+/.test(val)) {
             showToast(t('invalidProxy') || 'Invalid proxy format. Use http://host:port', 'error');
@@ -38,77 +49,77 @@ function initSettings() {
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsLanguage').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsLanguage'), 'change', (e) => {
         state.settings.language = e.target.value;
         setLanguage(e.target.value);
         saveSettingsFromUI();
         document.getElementById('langMachineTranslationHint').style.display = e.target.value === 'ja' ? '' : 'none';
     });
 
-    document.getElementById('btnExportLibrary').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnExportLibrary'), 'click', () => {
         send('exportLibrary');
     });
 
-    document.getElementById('btnImportLibrary').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnImportLibrary'), 'click', () => {
         send('importLibrary');
     });
 
-    document.getElementById('btnExportCsv').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnExportCsv'), 'click', () => {
         send('exportCsv');
     });
 
-    document.getElementById('btnExportHtml').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnExportHtml'), 'click', () => {
         send('exportHtml');
     });
 
-    document.getElementById('settingsVndb').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsVndb'), 'change', (e) => {
         state.settings.vndbEnabled = e.target.checked;
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsMetadataProvider').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsMetadataProvider'), 'change', (e) => {
         const val = e.target.value;
         state.settings.metadataProvider = val;
         toggleProviderCredentials(val);
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsIgdbClientId').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsIgdbClientId'), 'change', (e) => {
         state.settings.igdbClientId = e.target.value.trim();
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsIgdbClientSecret').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsIgdbClientSecret'), 'change', (e) => {
         state.settings.igdbClientSecret = e.target.value.trim();
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsRawgApiKey').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsRawgApiKey'), 'change', (e) => {
         state.settings.rawgApiKey = e.target.value.trim();
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsAutoStart').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsAutoStart'), 'change', (e) => {
         state.settings.autoStart = e.target.checked;
         send('setAutoStart', { enabled: e.target.checked });
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsMinimizeToTray').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsMinimizeToTray'), 'change', (e) => {
         state.settings.minimizeToTray = e.target.checked;
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsStartMinimized').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsStartMinimized'), 'change', (e) => {
         state.settings.startMinimized = e.target.checked;
         saveSettingsFromUI();
     });
 
-    document.getElementById('btnBackupNow').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnBackupNow'), 'click', () => {
         send('backupNow');
     });
 
-    document.getElementById('btnShowBackups').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnShowBackups'), 'click', () => {
         const list = document.getElementById('backupList');
         if (list.style.display === 'none') {
             send('getBackups');
@@ -118,54 +129,54 @@ function initSettings() {
         }
     });
 
-    document.getElementById('settingsBackupInterval').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsBackupInterval'), 'change', (e) => {
         state.settings.backupInterval = e.target.value;
         saveSettingsFromUI();
     });
 
-    document.getElementById('settingsMaxBackups').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsMaxBackups'), 'change', (e) => {
         state.settings.maxBackups = parseInt(e.target.value) || 5;
         saveSettingsFromUI();
     });
 
-    document.getElementById('btnOpenCoversFolder').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnOpenCoversFolder'), 'click', () => {
         send('openCoversFolder');
     });
 
-    document.getElementById('btnOpenLogsFolder').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnOpenLogsFolder'), 'click', () => {
         send('openLogsFolder');
     });
 
-    document.getElementById('btnClearLogs').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnClearLogs'), 'click', () => {
         send('clearLogs');
     });
 
-    document.getElementById('settingsScanBlacklistExe').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanBlacklistExe'), 'change', (e) => {
         state.settings.scanBlacklistExe = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
         saveSettingsFromUI();
     });
-    document.getElementById('settingsScanBlacklistDirs').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanBlacklistDirs'), 'change', (e) => {
         state.settings.scanBlacklistDirs = e.target.value.split('\n').map(s => s.trim()).filter(Boolean);
         saveSettingsFromUI();
     });
-    document.getElementById('settingsScanSortBy').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanSortBy'), 'change', (e) => {
         state.settings.scanSortBy = e.target.value;
         saveSettingsFromUI();
     });
-    document.getElementById('settingsScanSortDir').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanSortDir'), 'change', (e) => {
         state.settings.scanSortDir = e.target.value;
         saveSettingsFromUI();
     });
-    document.getElementById('settingsScanSkipExisting').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanSkipExisting'), 'change', (e) => {
         state.settings.scanSkipExisting = e.target.checked;
         saveSettingsFromUI();
     });
-    document.getElementById('settingsScanRecursive').addEventListener('change', (e) => {
+    bindOnce(document.getElementById('settingsScanRecursive'), 'change', (e) => {
         state.settings.scanRecursive = e.target.checked;
         saveSettingsFromUI();
     });
 
-    document.getElementById('btnResetSettings').addEventListener('click', () => {
+    bindOnce(document.getElementById('btnResetSettings'), 'click', () => {
         if (!confirm(t('resetSettingsConfirm'))) return;
         const preserved = {
             dbPath: state.settings.dbPath,

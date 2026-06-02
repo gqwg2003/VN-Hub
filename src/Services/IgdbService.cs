@@ -5,51 +5,21 @@ using System.Text.Json;
 
 namespace VnHub.Services;
 
-public class IgdbService : IMetadataProvider
+public class IgdbService : MetadataServiceBase
 {
     public static readonly IgdbService Instance = new();
 
-    public string Id => "igdb";
-    public string DisplayName => "IGDB";
+    public override string Id => "igdb";
+    public override string DisplayName => "IGDB";
 
-    private HttpClient _http;
-    private string _currentProxy = "";
+    protected override string UserAgent => "VNHub/1.0";
+
     private string _cachedToken = "";
     private DateTime _tokenExpiry = DateTime.MinValue;
 
-    private IgdbService()
-    {
-        _http = CreateClient(null);
-    }
+    private IgdbService() { }
 
-    public void ConfigureProxy(string? proxyAddress)
-    {
-        var addr = proxyAddress?.Trim() ?? "";
-        if (addr == _currentProxy) return;
-        _currentProxy = addr;
-        _http = CreateClient(addr);
-        _cachedToken = "";
-    }
-
-    private static HttpClient CreateClient(string? proxyAddress)
-    {
-        HttpClientHandler handler;
-        if (!string.IsNullOrWhiteSpace(proxyAddress))
-        {
-            handler = new HttpClientHandler
-            {
-                Proxy = new System.Net.WebProxy(proxyAddress),
-                UseProxy = true
-            };
-        }
-        else
-        {
-            handler = new HttpClientHandler();
-        }
-        var client = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VNHub", "1.0"));
-        return client;
-    }
+    protected override void OnProxyChanged() => _cachedToken = "";
 
     private async Task<string?> GetTokenAsync(string clientId, string clientSecret, CancellationToken ct)
     {
@@ -59,9 +29,8 @@ public class IgdbService : IMetadataProvider
         try
         {
             var url = $"https://id.twitch.tv/oauth2/token?client_id={Uri.EscapeDataString(clientId)}&client_secret={Uri.EscapeDataString(clientSecret)}&grant_type=client_credentials";
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            cts.CancelAfter(TimeSpan.FromSeconds(15));
-            var resp = await _http.PostAsync(url, null, cts.Token);
+            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
+            var resp = await Http.PostAsync(url, null, cts.Token);
             if (!resp.IsSuccessStatusCode) return null;
 
             var json = await resp.Content.ReadAsStringAsync(cts.Token);
@@ -80,7 +49,7 @@ public class IgdbService : IMetadataProvider
         }
     }
 
-    public async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
+    public override async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
 
@@ -101,8 +70,7 @@ public class IgdbService : IMetadataProvider
             var escaped = title.Replace("\\", "\\\\").Replace("\"", "\\\"");
             var query = $"search \"{escaped}\"; fields name,summary,cover.url,genres.name,themes.name,rating; limit 1;";
 
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            cts.CancelAfter(TimeSpan.FromSeconds(15));
+            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
 
             using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/games")
             {
@@ -111,7 +79,7 @@ public class IgdbService : IMetadataProvider
             req.Headers.Add("Client-ID", clientId);
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await _http.SendAsync(req, cts.Token);
+            var response = await Http.SendAsync(req, cts.Token);
             if (!response.IsSuccessStatusCode) return null;
 
             var responseJson = await response.Content.ReadAsStringAsync(cts.Token);

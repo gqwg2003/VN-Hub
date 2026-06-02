@@ -111,7 +111,7 @@ Object.assign(bridgeHandlers, {
     gameStarted(data) {
         if (data?.id) {
             state.runningGames.add(data.id);
-            renderGrid();
+            patchRunningCards([data.id]);
             updateLaunchButton();
         }
     },

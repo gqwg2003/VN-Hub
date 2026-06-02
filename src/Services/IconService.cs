@@ -46,7 +46,10 @@ public static class IconService
                     img.Save(destPath, ImageFormat.Png);
                     return destName;
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    LogService.Warn($"ExtractIconFromExe: failed to use image '{found}': {ex.Message}");
+                }
             }
         }
 
@@ -72,7 +75,10 @@ public static class IconService
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogService.Warn($"ExtractIconFromExe: PrivateExtractIcons failed for '{exePath}': {ex.Message}");
+        }
 
         try
         {
@@ -91,8 +97,9 @@ public static class IconService
             scaled.Save(destPath, ImageFormat.Png);
             return destName;
         }
-        catch
+        catch (Exception ex)
         {
+            LogService.Warn($"ExtractIconFromExe: ExtractAssociatedIcon failed for '{exePath}': {ex.Message}");
             return null;
         }
     }
@@ -116,7 +123,10 @@ public static class IconService
                     candidates.Add((file, fi.Length, hasKw));
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                LogService.Warn($"FindBestImageInDir: enumeration failed for '{directory}' ({ext}): {ex.Message}");
+            }
         }
 
         var best = candidates

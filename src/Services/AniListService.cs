@@ -1,54 +1,21 @@
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
 namespace VnHub.Services;
 
-public class AniListService : IMetadataProvider
+public class AniListService : MetadataServiceBase
 {
     public static readonly AniListService Instance = new();
 
-    public string Id => "anilist";
-    public string DisplayName => "AniList";
+    public override string Id => "anilist";
+    public override string DisplayName => "AniList";
 
-    private HttpClient _http;
-    private string _currentProxy = "";
+    protected override string UserAgent => "VNHub/1.0";
 
-    private AniListService()
-    {
-        _http = CreateClient(null);
-    }
+    private AniListService() { }
 
-    public void ConfigureProxy(string? proxyAddress)
-    {
-        var addr = proxyAddress?.Trim() ?? "";
-        if (addr == _currentProxy) return;
-        _currentProxy = addr;
-        _http = CreateClient(addr);
-    }
-
-    private static HttpClient CreateClient(string? proxyAddress)
-    {
-        HttpClientHandler handler;
-        if (!string.IsNullOrWhiteSpace(proxyAddress))
-        {
-            handler = new HttpClientHandler
-            {
-                Proxy = new System.Net.WebProxy(proxyAddress),
-                UseProxy = true
-            };
-        }
-        else
-        {
-            handler = new HttpClientHandler();
-        }
-        var client = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("VNHub", "1.0"));
-        return client;
-    }
-
-    public async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
+    public override async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(title)) return null;
 
@@ -68,10 +35,9 @@ public class AniListService : IMetadataProvider
             var body = JsonSerializer.Serialize(new { query = gqlQuery, variables = new { search = title } });
             var content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-            cts.CancelAfter(TimeSpan.FromSeconds(15));
+            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
 
-            var response = await _http.PostAsync("https://graphql.anilist.co", content, cts.Token);
+            var response = await Http.PostAsync("https://graphql.anilist.co", content, cts.Token);
             if (!response.IsSuccessStatusCode) return null;
 
             var responseJson = await response.Content.ReadAsStringAsync(cts.Token);

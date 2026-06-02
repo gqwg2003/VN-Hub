@@ -72,8 +72,7 @@ public static class LibraryService
         var destName = $"{safeId}{ext}";
         var destPath = Path.Combine(coversDir, destName);
 
-        var fullDest = Path.GetFullPath(destPath);
-        if (!fullDest.StartsWith(Path.GetFullPath(coversDir), StringComparison.OrdinalIgnoreCase))
+        if (PathGuard.EnsureWithin(coversDir, destPath) == null)
         {
             LogService.Warn($"SetCover: path traversal attempt with vnId '{vnId}'");
             return null;

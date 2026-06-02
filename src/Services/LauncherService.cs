@@ -8,6 +8,7 @@ public static class LauncherService
     private static readonly Dictionary<string, Process> _tracked = new();
     private static readonly Dictionary<string, DateTime> _startTimes = new();
     private static readonly Dictionary<string, string> _exeDirs = new();
+    private static readonly Dictionary<string, string> _exeNames = new();
     private static readonly HashSet<string> _inGracePeriod = new();
     private static readonly object _lock = new();
 
@@ -69,6 +70,7 @@ public static class LauncherService
             _tracked[vnId] = proc;
             _startTimes[vnId] = DateTime.UtcNow;
             _exeDirs[vnId] = dir;
+            _exeNames[vnId] = exeName;
         }
 
         try
@@ -89,6 +91,7 @@ public static class LauncherService
     {
         DateTime startTime;
         string? exeDir = null;
+        string? exeName = null;
 
         lock (_lock)
         {
@@ -99,6 +102,7 @@ public static class LauncherService
                 return;
             }
             _exeDirs.TryGetValue(vnId, out exeDir);
+            _exeNames.TryGetValue(vnId, out exeName);
         }
 
         var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
@@ -110,7 +114,7 @@ public static class LauncherService
             {
                 await Task.Delay(GraceDelayMs);
 
-                var replacement = FindReplacementProcess(exeDir);
+                var replacement = FindReplacementProcess(exeDir, exeName);
                 if (replacement != null)
                 {
                     lock (_lock)
@@ -149,6 +153,7 @@ public static class LauncherService
         {
             if (!_tracked.Remove(vnId)) return;
             _exeDirs.Remove(vnId);
+            _exeNames.Remove(vnId);
             if (_startTimes.TryGetValue(vnId, out var start))
             {
                 _startTimes.Remove(vnId);
@@ -165,7 +170,7 @@ public static class LauncherService
         GameExited?.Invoke(vnId);
     }
 
-    private static Process? FindReplacementProcess(string exeDir)
+    private static Process? FindReplacementProcess(string exeDir, string? expectedExeName = null)
     {
         try
         {
@@ -177,8 +182,15 @@ public static class LauncherService
                     if (p.HasExited) continue;
                     if (p.MainWindowHandle == IntPtr.Zero) continue;
                     var path = p.MainModule?.FileName;
-                    if (path != null && path.StartsWith(dirWithSep, StringComparison.OrdinalIgnoreCase))
-                        return p;
+                    if (path == null || !path.StartsWith(dirWithSep, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    if (!string.IsNullOrEmpty(expectedExeName)
+                        && !p.ProcessName.StartsWith(expectedExeName, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    LogService.Info($"Adopting replacement process {p.ProcessName} (PID {p.Id}) from {exeDir}");
+                    return p;
                 }
                 catch { /* access denied for some processes — skip */ }
             }
@@ -250,6 +262,7 @@ public static class LauncherService
             _tracked.Clear();
             _startTimes.Clear();
             _exeDirs.Clear();
+            _exeNames.Clear();
             _inGracePeriod.Clear();
         }
     }

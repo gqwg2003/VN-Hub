@@ -1,7 +1,11 @@
+function escapeRegExp(str) {
+    return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function highlightText(text, query) {
     if (!query) return escapeHTML(text);
     const escaped = escapeHTML(text);
-    const terms = query.split(/\s+/).filter(Boolean).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const terms = query.split(/\s+/).filter(Boolean).map(escapeRegExp);
     if (terms.length === 0) return escaped;
     const re = new RegExp(`(${terms.join('|')})`, 'gi');
     return escaped.replace(re, '<mark>$1</mark>');
@@ -45,11 +49,119 @@ function showSkeletonGrid() {
 
 const VIRTUAL = {
     allItems: [],
-    rendered: new Set(),
+    rendered: 0,
     observer: null,
     batchSize: 40,
     sentinel: null
 };
+
+function cardSignature(entry) {
+    return [
+        entry.id,
+        entry.title,
+        entry.coverPath || '',
+        entry.status,
+        entry.isFavorite ? 1 : 0,
+        entry.isPinned ? 1 : 0,
+        state.runningGames.has(entry.id) ? 1 : 0,
+        entry.exePath ? 1 : 0,
+        entry.playTimeSeconds || 0,
+        state.activeTab === 'reading' ? (entry.lastLaunchedAt || '') : '',
+        entry.vndbId ? 1 : 0,
+        entry.readingProgress || 0,
+        state.searchQuery || '',
+        currentLang
+    ].join('\u241F');
+}
+
+function buildCard(entry) {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = cardHTML(entry);
+    const card = wrapper.firstElementChild;
+    card.dataset.sig = cardSignature(entry);
+    bindCardEvents(card);
+    return card;
+}
+
+function teardownVirtual() {
+    if (VIRTUAL.sentinel) {
+        VIRTUAL.sentinel.remove();
+        VIRTUAL.sentinel = null;
+    }
+    if (VIRTUAL.observer) {
+        VIRTUAL.observer.disconnect();
+        VIRTUAL.observer = null;
+    }
+}
+
+function setupSentinel(grid) {
+    VIRTUAL.sentinel = document.createElement('div');
+    VIRTUAL.sentinel.className = 'grid-sentinel';
+    VIRTUAL.sentinel.style.height = '1px';
+    grid.after(VIRTUAL.sentinel);
+
+    VIRTUAL.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && VIRTUAL.rendered < VIRTUAL.allItems.length) {
+            appendNextBatch(grid);
+            if (VIRTUAL.rendered >= VIRTUAL.allItems.length) {
+                teardownVirtual();
+            }
+        }
+    }, { rootMargin: '200px' });
+
+    VIRTUAL.observer.observe(VIRTUAL.sentinel);
+}
+
+function appendNextBatch(grid) {
+    const start = VIRTUAL.rendered;
+    const end = Math.min(start + VIRTUAL.batchSize, VIRTUAL.allItems.length);
+    const fragment = document.createDocumentFragment();
+    for (let i = start; i < end; i++) {
+        fragment.appendChild(buildCard(VIRTUAL.allItems[i]));
+    }
+    grid.appendChild(fragment);
+    VIRTUAL.rendered = end;
+}
+
+// Keyed reconciliation: reuse existing card nodes by id, rebuild a card only
+// when its data signature changed, and reorder nodes in place. Nodes without
+// an id (e.g. skeleton placeholders) are discarded.
+function reconcileCards(grid, items) {
+    const existing = new Map();
+    for (const node of Array.from(grid.children)) {
+        const id = node.dataset && node.dataset.id;
+        if (id) existing.set(id, node);
+        else node.remove();
+    }
+
+    let pointer = grid.firstChild;
+    for (const entry of items) {
+        const old = existing.get(entry.id);
+        let card;
+        if (old) {
+            existing.delete(entry.id);
+            card = old.dataset.sig === cardSignature(entry) ? old : buildCard(entry);
+        } else {
+            card = buildCard(entry);
+        }
+
+        if (card === old) {
+            if (card === pointer) {
+                pointer = pointer.nextSibling;
+            } else {
+                grid.insertBefore(card, pointer);
+            }
+        } else {
+            if (old) {
+                if (old === pointer) pointer = pointer.nextSibling;
+                old.remove();
+            }
+            grid.insertBefore(card, pointer);
+        }
+    }
+
+    for (const node of existing.values()) node.remove();
+}
 
 function renderGrid() {
     const grid = document.getElementById('cardGrid');
@@ -60,7 +172,8 @@ function renderGrid() {
     if (filtered.length === 0) {
         grid.innerHTML = '';
         VIRTUAL.allItems = [];
-        VIRTUAL.rendered.clear();
+        VIRTUAL.rendered = 0;
+        teardownVirtual();
         renderEmptyState(empty);
         empty.style.display = '';
         renderReadingStrip([]);
@@ -72,61 +185,16 @@ function renderGrid() {
 
     grid.className = 'card-grid grid-' + state.gridSize;
 
+    const visibleCount = Math.min(filtered.length, Math.max(VIRTUAL.batchSize, VIRTUAL.rendered));
+
     VIRTUAL.allItems = filtered;
-    VIRTUAL.rendered.clear();
-    grid.innerHTML = '';
+    reconcileCards(grid, filtered.slice(0, visibleCount));
+    VIRTUAL.rendered = visibleCount;
 
-    if (VIRTUAL.sentinel) {
-        VIRTUAL.sentinel.remove();
-        VIRTUAL.sentinel = null;
+    teardownVirtual();
+    if (filtered.length > visibleCount) {
+        setupSentinel(grid);
     }
-    if (VIRTUAL.observer) {
-        VIRTUAL.observer.disconnect();
-    }
-
-    appendBatch(grid, 0, VIRTUAL.batchSize);
-
-    if (VIRTUAL.allItems.length > VIRTUAL.batchSize) {
-        VIRTUAL.sentinel = document.createElement('div');
-        VIRTUAL.sentinel.className = 'grid-sentinel';
-        VIRTUAL.sentinel.style.height = '1px';
-        grid.after(VIRTUAL.sentinel);
-
-        VIRTUAL.observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && VIRTUAL.rendered.size < VIRTUAL.allItems.length) {
-                const start = VIRTUAL.rendered.size;
-                appendBatch(grid, start, start + VIRTUAL.batchSize);
-                if (VIRTUAL.rendered.size >= VIRTUAL.allItems.length) {
-                    VIRTUAL.observer.disconnect();
-                    VIRTUAL.sentinel.remove();
-                }
-            }
-        }, { rootMargin: '200px' });
-
-        VIRTUAL.observer.observe(VIRTUAL.sentinel);
-    }
-}
-
-function appendBatch(grid, start, end) {
-    const items = VIRTUAL.allItems;
-    const realEnd = Math.min(end, items.length);
-    const fragment = document.createDocumentFragment();
-
-    for (let i = start; i < realEnd; i++) {
-        if (VIRTUAL.rendered.has(i)) continue;
-        VIRTUAL.rendered.add(i);
-
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = cardHTML(items[i]);
-        const card = wrapper.firstElementChild;
-        fragment.appendChild(card);
-    }
-
-    grid.appendChild(fragment);
-
-    grid.querySelectorAll('.vn-card:not([data-bound])').forEach(card => {
-        bindCardEvents(card);
-    });
 }
 
 function renderEmptyState(el) {
@@ -357,11 +425,7 @@ function patchCard(entry) {
         renderGrid();
         return;
     }
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = cardHTML(entry);
-    const newCard = wrapper.firstElementChild;
-    oldCard.replaceWith(newCard);
-    bindCardEvents(newCard);
+    oldCard.replaceWith(buildCard(entry));
 }
 
 function patchRunningCards(ids) {
@@ -372,12 +436,7 @@ function patchRunningCards(ids) {
         if (!entry) continue;
         const card = grid.querySelector(`.vn-card[data-id="${CSS.escape(id)}"]`);
         if (!card) continue;
-
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = cardHTML(entry);
-        const newCard = wrapper.firstElementChild;
-        card.replaceWith(newCard);
-        bindCardEvents(newCard);
+        card.replaceWith(buildCard(entry));
     }
 }
 

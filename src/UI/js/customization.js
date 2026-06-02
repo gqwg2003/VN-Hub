@@ -190,7 +190,7 @@ function renderCustomFontList() {
     }
     container.innerHTML = c.fonts.map(name => {
         const active = name === c.activeFont;
-        const safe = escapeHtml(name);
+        const safe = escapeHTML(name);
         return `<div class="custom-font-item ${active ? 'active' : ''}">
             <input type="radio" name="customFontRadio" data-font="${safe}" ${active ? 'checked' : ''}>
             <span class="custom-font-item-label" title="${safe}">${safe}</span>
@@ -373,127 +373,161 @@ function resetCustomizationSection(section) {
 
 function initCustomization() {
     const addBtn = document.getElementById('btnAddFont');
-    if (addBtn) addBtn.addEventListener('click', () => send('pickFont'));
+    if (addBtn && !addBtn.dataset.bound) { addBtn.dataset.bound = '1'; addBtn.addEventListener('click', () => send('pickFont')); }
 
     const pickBg = document.getElementById('btnPickBackground');
-    if (pickBg) pickBg.addEventListener('click', () => send('pickBackground'));
+    if (pickBg && !pickBg.dataset.bound) { pickBg.dataset.bound = '1'; pickBg.addEventListener('click', () => send('pickBackground')); }
 
     const clearBg = document.getElementById('btnClearBackground');
-    if (clearBg) clearBg.addEventListener('click', () => {
-        ensureCustomization().backgroundImage = '';
-        send('clearBackground');
-    });
+    if (clearBg && !clearBg.dataset.bound) {
+        clearBg.dataset.bound = '1';
+        clearBg.addEventListener('click', () => {
+            ensureCustomization().backgroundImage = '';
+            send('clearBackground');
+        });
+    }
 
     const op = document.getElementById('settingsBgOpacity');
-    if (op) op.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10) / 100;
-        ensureCustomization().backgroundOpacity = v;
-        document.getElementById('bgOpacityValue').textContent = e.target.value + '%';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (op && !op.dataset.bound) {
+        op.dataset.bound = '1';
+        op.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10) / 100;
+            ensureCustomization().backgroundOpacity = v;
+            document.getElementById('bgOpacityValue').textContent = e.target.value + '%';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const bl = document.getElementById('settingsBgBlur');
-    if (bl) bl.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10);
-        ensureCustomization().backgroundBlur = v;
-        document.getElementById('bgBlurValue').textContent = v + 'px';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (bl && !bl.dataset.bound) {
+        bl.dataset.bound = '1';
+        bl.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10);
+            ensureCustomization().backgroundBlur = v;
+            document.getElementById('bgBlurValue').textContent = v + 'px';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const pickSidebar = document.getElementById('btnPickSidebarBackground');
-    if (pickSidebar) pickSidebar.addEventListener('click', () => send('pickSidebarBackground'));
+    if (pickSidebar && !pickSidebar.dataset.bound) { pickSidebar.dataset.bound = '1'; pickSidebar.addEventListener('click', () => send('pickSidebarBackground')); }
 
     const clearSidebar = document.getElementById('btnClearSidebarBackground');
-    if (clearSidebar) clearSidebar.addEventListener('click', () => {
-        ensureCustomization().sidebarBackgroundImage = '';
-        send('clearSidebarBackground');
-    });
+    if (clearSidebar && !clearSidebar.dataset.bound) {
+        clearSidebar.dataset.bound = '1';
+        clearSidebar.addEventListener('click', () => {
+            ensureCustomization().sidebarBackgroundImage = '';
+            send('clearSidebarBackground');
+        });
+    }
 
     const sidebarOp = document.getElementById('settingsSidebarBgOpacity');
-    if (sidebarOp) sidebarOp.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10) / 100;
-        ensureCustomization().sidebarBackgroundOpacity = v;
-        document.getElementById('sidebarBgOpacityValue').textContent = e.target.value + '%';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (sidebarOp && !sidebarOp.dataset.bound) {
+        sidebarOp.dataset.bound = '1';
+        sidebarOp.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10) / 100;
+            ensureCustomization().sidebarBackgroundOpacity = v;
+            document.getElementById('sidebarBgOpacityValue').textContent = e.target.value + '%';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const sidebarBl = document.getElementById('settingsSidebarBgBlur');
-    if (sidebarBl) sidebarBl.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10);
-        ensureCustomization().sidebarBackgroundBlur = v;
-        document.getElementById('sidebarBgBlurValue').textContent = v + 'px';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (sidebarBl && !sidebarBl.dataset.bound) {
+        sidebarBl.dataset.bound = '1';
+        sidebarBl.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10);
+            ensureCustomization().sidebarBackgroundBlur = v;
+            document.getElementById('sidebarBgBlurValue').textContent = v + 'px';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const pickTopbar = document.getElementById('btnPickTopbarBackground');
-    if (pickTopbar) pickTopbar.addEventListener('click', () => send('pickTopbarBackground'));
+    if (pickTopbar && !pickTopbar.dataset.bound) { pickTopbar.dataset.bound = '1'; pickTopbar.addEventListener('click', () => send('pickTopbarBackground')); }
 
     const clearTopbar = document.getElementById('btnClearTopbarBackground');
-    if (clearTopbar) clearTopbar.addEventListener('click', () => {
-        ensureCustomization().topbarBackgroundImage = '';
-        send('clearTopbarBackground');
-    });
+    if (clearTopbar && !clearTopbar.dataset.bound) {
+        clearTopbar.dataset.bound = '1';
+        clearTopbar.addEventListener('click', () => {
+            ensureCustomization().topbarBackgroundImage = '';
+            send('clearTopbarBackground');
+        });
+    }
 
     const topbarOp = document.getElementById('settingsTopbarBgOpacity');
-    if (topbarOp) topbarOp.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10) / 100;
-        ensureCustomization().topbarBackgroundOpacity = v;
-        document.getElementById('topbarBgOpacityValue').textContent = e.target.value + '%';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (topbarOp && !topbarOp.dataset.bound) {
+        topbarOp.dataset.bound = '1';
+        topbarOp.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10) / 100;
+            ensureCustomization().topbarBackgroundOpacity = v;
+            document.getElementById('topbarBgOpacityValue').textContent = e.target.value + '%';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const topbarBl = document.getElementById('settingsTopbarBgBlur');
-    if (topbarBl) topbarBl.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10);
-        ensureCustomization().topbarBackgroundBlur = v;
-        document.getElementById('topbarBgBlurValue').textContent = v + 'px';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (topbarBl && !topbarBl.dataset.bound) {
+        topbarBl.dataset.bound = '1';
+        topbarBl.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10);
+            ensureCustomization().topbarBackgroundBlur = v;
+            document.getElementById('topbarBgBlurValue').textContent = v + 'px';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const panelOp = document.getElementById('settingsPanelSurfaceOpacity');
-    if (panelOp) panelOp.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10) / 100;
-        ensureCustomization().panelSurfaceOpacity = v;
-        document.getElementById('panelSurfaceOpacityValue').textContent = e.target.value + '%';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (panelOp && !panelOp.dataset.bound) {
+        panelOp.dataset.bound = '1';
+        panelOp.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10) / 100;
+            ensureCustomization().panelSurfaceOpacity = v;
+            document.getElementById('panelSurfaceOpacityValue').textContent = e.target.value + '%';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const sidebarW = document.getElementById('settingsSidebarWidth');
-    if (sidebarW) sidebarW.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10);
-        ensureCustomization().sidebarWidth = v;
-        document.getElementById('sidebarWidthValue').textContent = v + 'px';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (sidebarW && !sidebarW.dataset.bound) {
+        sidebarW.dataset.bound = '1';
+        sidebarW.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10);
+            ensureCustomization().sidebarWidth = v;
+            document.getElementById('sidebarWidthValue').textContent = v + 'px';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     const cardR = document.getElementById('settingsCardRadius');
-    if (cardR) cardR.addEventListener('input', e => {
-        const v = parseInt(e.target.value, 10);
-        ensureCustomization().cardRadius = v;
-        document.getElementById('cardRadiusValue').textContent = v + 'px';
-        applyCustomization();
-        debouncedSaveCustomization();
-    });
+    if (cardR && !cardR.dataset.bound) {
+        cardR.dataset.bound = '1';
+        cardR.addEventListener('input', e => {
+            const v = parseInt(e.target.value, 10);
+            ensureCustomization().cardRadius = v;
+            document.getElementById('cardRadiusValue').textContent = v + 'px';
+            applyCustomization();
+            debouncedSaveCustomization();
+        });
+    }
 
     document.querySelectorAll('[data-customization-reset]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            resetCustomizationSection(btn.dataset.customizationReset);
-        });
+        if (!btn.dataset.bound) {
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', () => {
+                resetCustomizationSection(btn.dataset.customizationReset);
+            });
+        }
     });
 
     renderCustomization();
 }
 
-function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
-}
