@@ -245,15 +245,16 @@ Object.assign(bridgeHandlers, {
     },
     vndbResult(data) {
         if (!data) return;
+        const provider = data.provider || 'VNDB';
         if (data.disabled) {
-            showToast(t('vndbDisabled'), 'warning');
+            showToast(t('vndbDisabled').replace('{0}', provider), 'warning');
         } else if (data.found) {
-            let msg = t('vndbFound').replace('{0}', data.title || '');
+            let msg = t('vndbFound').replace('{0}', data.title || '').replace('{1}', provider);
             if (data.coverError) msg += ' (cover: ' + data.coverError + ')';
             showToast(msg, data.coverError ? 'warning' : 'success');
         } else {
             const err = data.error ? ': ' + data.error : '';
-            showToast(t('vndbNotFound') + err, 'warning');
+            showToast(t('vndbNotFound').replace('{0}', provider) + err, 'warning');
         }
     },
     autoStartSet() { },

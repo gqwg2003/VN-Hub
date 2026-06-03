@@ -18,7 +18,8 @@ public static class MetadataHandler
         var settings = SettingsService.Load();
         if (!settings.VndbEnabled)
         {
-            Bridge.SendToJs("vndbResult", new { id = p.Id, found = false, disabled = true });
+            var disabledProvider = GetProvider(settings);
+            Bridge.SendToJs("vndbResult", new { id = p.Id, found = false, disabled = true, provider = disabledProvider.DisplayName });
             return Task.CompletedTask;
         }
 
@@ -51,16 +52,18 @@ public static class MetadataHandler
 
     internal static async Task FetchAndApplyMetadata(string vnId, string title, CancellationToken ct)
     {
+        IMetadataProvider? provider = null;
         try
         {
             var settings = SettingsService.Load();
-            var provider = GetProvider(settings);
+            provider = GetProvider(settings);
             var result = await provider.SearchAsync(title, ct);
             if (ct.IsCancellationRequested) return;
 
             if (result == null)
             {
-                Bridge.InvokeOnUiThread(() => Bridge.SendToJs("vndbResult", new { id = vnId, found = false }));
+                var providerName = provider.DisplayName;
+                Bridge.InvokeOnUiThread(() => Bridge.SendToJs("vndbResult", new { id = vnId, found = false, provider = providerName }));
                 return;
             }
 
@@ -102,10 +105,11 @@ public static class MetadataHandler
             VnHub.Common.Validation.Normalize(entry);
             VnRepository.Update(entry);
 
+            var foundProviderName = provider.DisplayName;
             Bridge.InvokeOnUiThread(() =>
             {
                 Bridge.SendToJs("vnUpdated", entry);
-                Bridge.SendToJs("vndbResult", new { id = vnId, found = true, title = result.Title, coverError });
+                Bridge.SendToJs("vndbResult", new { id = vnId, found = true, title = result.Title, coverError, provider = foundProviderName });
             });
 
             LogService.Info($"Metadata applied ({provider.DisplayName}): {title} → {result.ExternalId}");
@@ -119,8 +123,9 @@ public static class MetadataHandler
             LogService.Error($"Metadata fetch failed for {vnId}", ex);
             try
             {
+                var errProviderName = provider?.DisplayName ?? "VNDB";
                 Bridge.InvokeOnUiThread(() =>
-                    Bridge.SendToJs("vndbResult", new { id = vnId, found = false, error = ex.Message }));
+                    Bridge.SendToJs("vndbResult", new { id = vnId, found = false, error = ex.Message, provider = errProviderName }));
             }
             catch { /* webview may be disposed */ }
         }
