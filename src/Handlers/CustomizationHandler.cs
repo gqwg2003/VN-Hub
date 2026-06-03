@@ -15,41 +15,34 @@ public static class CustomizationHandler
         {
             case "pickFont":
             {
-                Bridge.InvokeOnUiThread(() =>
+                FileDialogHelper.PickFile(FileDialogHelper.FontFilter, fileName =>
                 {
-                    using var dialog = new OpenFileDialog
+                    try
                     {
-                        Filter = "Fonts|*.ttf;*.otf;*.woff;*.woff2|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                        var copied = CopyToDir(fileName, AppPaths.EnsureFontsDir(), FontExtensions);
+                        if (copied != null)
+                        {
+                            var settings = SettingsService.Load();
+                            if (!settings.Customization.Fonts.Contains(copied))
+                                settings.Customization.Fonts.Add(copied);
+                            settings.Customization.ActiveFont = copied;
+                            SettingsService.Save(settings);
+                            Bridge.SendToJs("fontAdded", new
+                            {
+                                fileName = copied,
+                                fonts = settings.Customization.Fonts,
+                                activeFont = copied
+                            });
+                        }
+                        else
+                        {
+                            Bridge.SendToJs("onError", new { message = "Unsupported font format." });
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            var copied = CopyToDir(dialog.FileName, AppPaths.EnsureFontsDir(), FontExtensions);
-                            if (copied != null)
-                            {
-                                var settings = SettingsService.Load();
-                                if (!settings.Customization.Fonts.Contains(copied))
-                                    settings.Customization.Fonts.Add(copied);
-                                settings.Customization.ActiveFont = copied;
-                                SettingsService.Save(settings);
-                                Bridge.SendToJs("fontAdded", new
-                                {
-                                    fileName = copied,
-                                    fonts = settings.Customization.Fonts,
-                                    activeFont = copied
-                                });
-                            }
-                            else
-                            {
-                                Bridge.SendToJs("onError", new { message = "Unsupported font format." });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogService.Error("pickFont failed", ex);
-                            Bridge.SendToJs("onError", new { message = $"Font import failed: {ex.Message}" });
-                        }
+                        LogService.Error("pickFont failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Font import failed: {ex.Message}" });
                     }
                 });
                 break;
@@ -111,35 +104,28 @@ public static class CustomizationHandler
 
             case "pickBackground":
             {
-                Bridge.InvokeOnUiThread(() =>
+                FileDialogHelper.PickFile(FileDialogHelper.ImageFilter, fileName =>
                 {
-                    using var dialog = new OpenFileDialog
+                    try
                     {
-                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                        var copied = CopyToDir(fileName, AppPaths.EnsureBackgroundsDir(), ImageExtensions);
+                        if (copied != null)
+                        {
+                            CleanupOldBackgrounds(copied);
+                            var settings = SettingsService.Load();
+                            settings.Customization.BackgroundImage = copied;
+                            SettingsService.Save(settings);
+                            Bridge.SendToJs("backgroundPicked", new { fileName = copied });
+                        }
+                        else
+                        {
+                            Bridge.SendToJs("onError", new { message = "Unsupported image format." });
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            var copied = CopyToDir(dialog.FileName, AppPaths.EnsureBackgroundsDir(), ImageExtensions);
-                            if (copied != null)
-                            {
-                                CleanupOldBackgrounds(copied);
-                                var settings = SettingsService.Load();
-                                settings.Customization.BackgroundImage = copied;
-                                SettingsService.Save(settings);
-                                Bridge.SendToJs("backgroundPicked", new { fileName = copied });
-                            }
-                            else
-                            {
-                                Bridge.SendToJs("onError", new { message = "Unsupported image format." });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogService.Error("pickBackground failed", ex);
-                            Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
-                        }
+                        LogService.Error("pickBackground failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
                     }
                 });
                 break;
@@ -174,34 +160,27 @@ public static class CustomizationHandler
 
             case "pickSidebarBackground":
             {
-                Bridge.InvokeOnUiThread(() =>
+                FileDialogHelper.PickFile(FileDialogHelper.ImageFilter, fileName =>
                 {
-                    using var dialog = new OpenFileDialog
+                    try
                     {
-                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                        var copied = CopyPanelBackground(fileName, "sidebar", ImageExtensions);
+                        if (copied != null)
+                        {
+                            var settings = SettingsService.Load();
+                            settings.Customization.SidebarBackgroundImage = copied;
+                            SettingsService.Save(settings);
+                            Bridge.SendToJs("sidebarBackgroundPicked", new { fileName = copied });
+                        }
+                        else
+                        {
+                            Bridge.SendToJs("onError", new { message = "Unsupported image format." });
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            var copied = CopyPanelBackground(dialog.FileName, "sidebar", ImageExtensions);
-                            if (copied != null)
-                            {
-                                var settings = SettingsService.Load();
-                                settings.Customization.SidebarBackgroundImage = copied;
-                                SettingsService.Save(settings);
-                                Bridge.SendToJs("sidebarBackgroundPicked", new { fileName = copied });
-                            }
-                            else
-                            {
-                                Bridge.SendToJs("onError", new { message = "Unsupported image format." });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogService.Error("pickSidebarBackground failed", ex);
-                            Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
-                        }
+                        LogService.Error("pickSidebarBackground failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
                     }
                 });
                 break;
@@ -228,34 +207,27 @@ public static class CustomizationHandler
 
             case "pickTopbarBackground":
             {
-                Bridge.InvokeOnUiThread(() =>
+                FileDialogHelper.PickFile(FileDialogHelper.ImageFilter, fileName =>
                 {
-                    using var dialog = new OpenFileDialog
+                    try
                     {
-                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                        var copied = CopyPanelBackground(fileName, "topbar", ImageExtensions);
+                        if (copied != null)
+                        {
+                            var settings = SettingsService.Load();
+                            settings.Customization.TopbarBackgroundImage = copied;
+                            SettingsService.Save(settings);
+                            Bridge.SendToJs("topbarBackgroundPicked", new { fileName = copied });
+                        }
+                        else
+                        {
+                            Bridge.SendToJs("onError", new { message = "Unsupported image format." });
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            var copied = CopyPanelBackground(dialog.FileName, "topbar", ImageExtensions);
-                            if (copied != null)
-                            {
-                                var settings = SettingsService.Load();
-                                settings.Customization.TopbarBackgroundImage = copied;
-                                SettingsService.Save(settings);
-                                Bridge.SendToJs("topbarBackgroundPicked", new { fileName = copied });
-                            }
-                            else
-                            {
-                                Bridge.SendToJs("onError", new { message = "Unsupported image format." });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogService.Error("pickTopbarBackground failed", ex);
-                            Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
-                        }
+                        LogService.Error("pickTopbarBackground failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Background import failed: {ex.Message}" });
                     }
                 });
                 break;

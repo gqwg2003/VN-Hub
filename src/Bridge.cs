@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Web.WebView2.WinForms;
+using VnHub.Common;
 using VnHub.Handlers;
 using VnHub.Services;
 
@@ -9,11 +10,7 @@ public static class Bridge
 {
     private static WebView2 _webView = null!;
 
-    internal static readonly JsonSerializerOptions JsonOpts = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true
-    };
+    internal static readonly JsonSerializerOptions JsonOpts = JsonHelpers.CommonOpts;
 
     private static readonly Dictionary<string, Func<string, JsonElement?, Task>> ActionHandlers = BuildActionHandlers();
 
@@ -51,13 +48,23 @@ public static class Bridge
         Register(new[]
         {
             "getSettings", "saveSettings",
-            "openDbFolder", "openCoversFolder", "openLogsFolder", "clearLogs", "readLogs",
-            "exportLibrary", "importLibrary",
             "setAutoStart",
-            "getBackups", "backupNow", "restoreBackup",
-            "exportCsv", "exportHtml", "exportJson",
             "exportSettings", "importSettings"
         }, SettingsHandler.Handle);
+
+        Register(new[] { "getBackups", "backupNow", "restoreBackup" }, BackupHandler.Handle);
+
+        Register(new[]
+        {
+            "exportLibrary", "importLibrary",
+            "exportCsv", "exportHtml", "exportJson"
+        }, ExportHandler.Handle);
+
+        Register(new[]
+        {
+            "openDbFolder", "openCoversFolder", "openLogsFolder",
+            "clearLogs", "readLogs"
+        }, FolderAccessHandler.Handle);
 
         Register(new[] { "fetchVndb", "refreshMetadata" }, MetadataHandler.Handle);
 

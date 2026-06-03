@@ -179,12 +179,9 @@ public static class StatsService
         var result = new List<(DateTime, long)>(raw.Count);
         foreach (var o in raw)
         {
-            var type = o.GetType();
-            var dayStr = type.GetProperty("day")?.GetValue(o) as string;
-            var secObj = type.GetProperty("seconds")?.GetValue(o);
-            if (string.IsNullOrEmpty(dayStr) || secObj == null) continue;
-            if (DateTime.TryParse(dayStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out var d))
-                result.Add((d.Date, Convert.ToInt64(secObj)));
+            if (string.IsNullOrEmpty(o.Day)) continue;
+            if (DateTime.TryParse(o.Day, CultureInfo.InvariantCulture, DateTimeStyles.None, out var d))
+                result.Add((d.Date, o.Seconds));
         }
         return result;
     }

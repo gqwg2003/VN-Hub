@@ -2,6 +2,8 @@ using Microsoft.Data.Sqlite;
 
 namespace VnHub.Database;
 
+public sealed record DayStat(string Day, long Seconds);
+
 public static class SessionRepository
 {
     public static void Insert(string vnId, DateTime startedAt, DateTime endedAt, long seconds)
@@ -39,17 +41,17 @@ public static class SessionRepository
         return list;
     }
 
-    public static List<object> GetWeeklyStats()
+    public static List<DayStat> GetWeeklyStats()
     {
         return GetStatsByDays(7);
     }
 
-    public static List<object> GetMonthlyStats()
+    public static List<DayStat> GetMonthlyStats()
     {
         return GetStatsByDays(30);
     }
 
-    public static List<object> GetStatsByDays(int days)
+    public static List<DayStat> GetStatsByDays(int days)
     {
         using var conn = AppDb.Open();
         var cmd = conn.CreateCommand();
@@ -63,27 +65,24 @@ public static class SessionRepository
         }
         else
         {
-            cmd.CommandText = $"""
+            cmd.CommandText = """
                 SELECT date(started_at, 'localtime') as day, SUM(seconds) as total
                 FROM play_sessions
-                WHERE started_at >= date('now', '-{days} days')
+                WHERE started_at >= date('now', @cutoff)
                 GROUP BY day ORDER BY day
                 """;
+            cmd.Parameters.AddWithValue("@cutoff", $"-{days} days");
         }
         return ReadDayStats(cmd);
     }
 
-    private static List<object> ReadDayStats(SqliteCommand cmd)
+    private static List<DayStat> ReadDayStats(SqliteCommand cmd)
     {
-        var list = new List<object>();
+        var list = new List<DayStat>();
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            list.Add(new
-            {
-                day = reader.GetString(0),
-                seconds = reader.GetInt64(1)
-            });
+            list.Add(new DayStat(reader.GetString(0), reader.GetInt64(1)));
         }
         return list;
     }

@@ -15,7 +15,7 @@ public static class BackupService
             var dbPath = Database.AppDb.DbPath;
             if (!File.Exists(dbPath)) return;
 
-            var backupDir = Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
+            var backupDir = BackupDir();
             Directory.CreateDirectory(backupDir);
 
             if (interval != "startup")
@@ -32,22 +32,9 @@ public static class BackupService
                 }
             }
 
-            var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HHmmss");
-            var destPath = Path.Combine(backupDir, $"vnhub-{timestamp}.db");
-
-            File.Copy(dbPath, destPath, overwrite: false);
+            var destPath = CreateBackup(backupDir);
             LogService.Info($"Database backed up to {destPath}");
-
-            var maxBackups = settings.MaxBackups > 0 ? settings.MaxBackups : 5;
-            var backups = Directory.GetFiles(backupDir, "vnhub-*.db")
-                .OrderByDescending(f => f)
-                .ToArray();
-
-            for (int i = maxBackups; i < backups.Length; i++)
-            {
-                File.Delete(backups[i]);
-                LogService.Info($"Old backup removed: {Path.GetFileName(backups[i])}");
-            }
+            PruneBackups(backupDir, settings.MaxBackups);
         }
         catch (Exception ex)
         {
@@ -60,26 +47,12 @@ public static class BackupService
         try
         {
             var settings = SettingsService.Load();
-            var dbPath = Database.AppDb.DbPath;
-            if (!File.Exists(dbPath)) return null;
+            if (!File.Exists(Database.AppDb.DbPath)) return null;
 
-            var backupDir = Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
-            Directory.CreateDirectory(backupDir);
-
-            var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HHmmss");
-            var destPath = Path.Combine(backupDir, $"vnhub-{timestamp}.db");
-            File.Copy(dbPath, destPath, overwrite: false);
+            var backupDir = BackupDir();
+            var destPath = CreateBackup(backupDir);
             LogService.Info($"Manual backup created: {destPath}");
-
-            var maxBackups = settings.MaxBackups > 0 ? settings.MaxBackups : 5;
-            var backups = Directory.GetFiles(backupDir, "vnhub-*.db")
-                .OrderByDescending(f => f)
-                .ToArray();
-            for (int i = maxBackups; i < backups.Length; i++)
-            {
-                File.Delete(backups[i]);
-            }
-
+            PruneBackups(backupDir, settings.MaxBackups);
             return destPath;
         }
         catch (Exception ex)
@@ -89,11 +62,38 @@ public static class BackupService
         }
     }
 
+    private static string BackupDir()
+    {
+        var dbPath = Database.AppDb.DbPath;
+        return Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
+    }
+
+    private static string CreateBackup(string backupDir)
+    {
+        Directory.CreateDirectory(backupDir);
+        var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HHmmss");
+        var destPath = Path.Combine(backupDir, $"vnhub-{timestamp}.db");
+        File.Copy(Database.AppDb.DbPath, destPath, overwrite: false);
+        return destPath;
+    }
+
+    private static void PruneBackups(string backupDir, int maxBackups)
+    {
+        if (maxBackups <= 0) maxBackups = 5;
+        var backups = Directory.GetFiles(backupDir, "vnhub-*.db")
+            .OrderByDescending(f => f)
+            .ToArray();
+        for (int i = maxBackups; i < backups.Length; i++)
+        {
+            File.Delete(backups[i]);
+            LogService.Info($"Old backup removed: {Path.GetFileName(backups[i])}");
+        }
+    }
+
     public static List<object> GetBackups()
     {
         var list = new List<object>();
-        var dbPath = Database.AppDb.DbPath;
-        var backupDir = Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
+        var backupDir = BackupDir();
         if (!Directory.Exists(backupDir)) return list;
 
         var files = Directory.GetFiles(backupDir, "vnhub-*.db")
@@ -124,7 +124,7 @@ public static class BackupService
             }
 
             var dbPath = Database.AppDb.DbPath;
-            var backupDir = Path.Combine(Path.GetDirectoryName(dbPath)!, "backups");
+            var backupDir = BackupDir();
             var backupPath = Path.Combine(backupDir, fileName);
 
             var safe = PathGuard.EnsureWithin(backupDir, backupPath);

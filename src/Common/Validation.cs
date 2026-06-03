@@ -34,16 +34,13 @@ public static class Validation
     public static string SanitizeTitle(string? title)
     {
         if (string.IsNullOrWhiteSpace(title)) return "Untitled";
-        var trimmed = title.Trim();
-        if (trimmed.Length > MaxTitleLength) trimmed = trimmed.Substring(0, MaxTitleLength);
-        return trimmed;
+        return StringHelpers.Truncate(title.Trim(), MaxTitleLength);
     }
 
     public static string? SanitizeNotes(string? notes)
     {
         if (notes == null) return null;
-        if (notes.Length > MaxNotesLength) return notes.Substring(0, MaxNotesLength);
-        return notes;
+        return StringHelpers.Truncate(notes, MaxNotesLength);
     }
 
     public static double? ClampRating(double? value, double min = 0, double max = 10)
@@ -106,8 +103,7 @@ public static class Validation
         foreach (var raw in tags)
         {
             if (string.IsNullOrWhiteSpace(raw)) continue;
-            var t = raw.Trim();
-            if (t.Length > MaxTagLength) t = t.Substring(0, MaxTagLength);
+            var t = StringHelpers.Truncate(raw.Trim(), MaxTagLength);
             if (seen.Add(t)) result.Add(t);
             if (result.Count >= MaxTagsPerEntry) break;
         }
@@ -118,7 +114,7 @@ public static class Validation
     {
         if (string.IsNullOrWhiteSpace(linksJson)) return "[]";
         List<LinkDto>? links;
-        try { links = JsonSerializer.Deserialize<List<LinkDto>>(linksJson, LinkOpts); }
+        try { links = JsonSerializer.Deserialize<List<LinkDto>>(linksJson, JsonHelpers.CommonOpts); }
         catch { return "[]"; }
         if (links == null) return "[]";
 
@@ -128,19 +124,12 @@ public static class Validation
             if (l == null) continue;
             var url = l.Url?.Trim() ?? "";
             if (!IsValidHttpUrl(url)) continue;
-            var label = string.IsNullOrWhiteSpace(l.Label) ? url : l.Label.Trim();
-            if (label.Length > MaxLinkLabelLength) label = label.Substring(0, MaxLinkLabelLength);
+            var label = string.IsNullOrWhiteSpace(l.Label) ? url : StringHelpers.Truncate(l.Label.Trim(), MaxLinkLabelLength);
             result.Add(new LinkDto { Label = label, Url = url });
             if (result.Count >= MaxLinksPerEntry) break;
         }
-        return JsonSerializer.Serialize(result, LinkOpts);
+        return JsonSerializer.Serialize(result, JsonHelpers.CommonOpts);
     }
-
-    private static readonly JsonSerializerOptions LinkOpts = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true
-    };
 
     private class LinkDto
     {

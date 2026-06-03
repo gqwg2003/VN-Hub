@@ -11,13 +11,9 @@ static class Program
         ApplicationConfiguration.Initialize();
         LogService.Initialize();
         AppDb.Initialize();
+        AppServices.Initialize();
         var settings = SettingsService.Load();
-        VndbService.ConfigureProxy(settings.ProxyAddress);
-        IgdbService.Instance.ConfigureProxy(settings.ProxyAddress);
-        AniListService.Instance.ConfigureProxy(settings.ProxyAddress);
-        BangumiService.Instance.ConfigureProxy(settings.ProxyAddress);
-        SteamService.Instance.ConfigureProxy(settings.ProxyAddress);
-        RawgService.Instance.ConfigureProxy(settings.ProxyAddress);
+        AppServices.Metadata.ConfigureProxies(settings.ProxyAddress);
         BackupService.BackupOnStartup();
         Application.Run(new MainWindow());
     }

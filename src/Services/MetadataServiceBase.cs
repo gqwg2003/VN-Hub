@@ -64,5 +64,20 @@ public abstract class MetadataServiceBase : IMetadataProvider
         return cts;
     }
 
+    protected async Task<MetadataResult?> ExecuteSearchAsync(
+        string title,
+        Func<string, CancellationToken, Task<MetadataResult?>> core,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return null;
+        try { return await core(title, ct); }
+        catch (OperationCanceledException) { return null; }
+        catch (Exception ex)
+        {
+            LogService.Error($"{DisplayName} search failed", ex);
+            return null;
+        }
+    }
+
     public abstract Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default);
 }

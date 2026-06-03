@@ -13,46 +13,25 @@ public static class MediaHandler
         {
             case "pickFolder":
             {
-                Bridge.InvokeOnUiThread(() =>
-                {
-                    using var dialog = new FolderBrowserDialog();
-                    var settings = SettingsService.Load();
-                    if (!string.IsNullOrEmpty(settings.DefaultFolder))
-                        dialog.InitialDirectory = settings.DefaultFolder;
-
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                        Bridge.SendToJs("folderPicked", new { path = dialog.SelectedPath });
-                });
+                var settings = SettingsService.Load();
+                FileDialogHelper.PickFolder(settings.DefaultFolder,
+                    path => Bridge.SendToJs("folderPicked", new { path }));
                 break;
             }
 
             case "pickImage":
             {
-                Bridge.InvokeOnUiThread(() =>
-                {
-                    using var dialog = new OpenFileDialog
-                    {
-                        Filter = "Images|*.png;*.jpg;*.jpeg;*.webp;*.bmp|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                        Bridge.SendToJs("imagePicked", new { path = dialog.FileName });
-                });
+                FileDialogHelper.PickFile(FileDialogHelper.ImageFilter,
+                    path => Bridge.SendToJs("imagePicked", new { path }));
                 break;
             }
 
             case "pickExe":
             {
-                Bridge.InvokeOnUiThread(() =>
+                FileDialogHelper.PickFile(FileDialogHelper.ExeFilter, path =>
                 {
-                    using var dialog = new OpenFileDialog
-                    {
-                        Filter = "Executables|*.exe|All files|*.*"
-                    };
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                    {
-                        var title = IconService.GetTitleFromExe(dialog.FileName);
-                        Bridge.SendToJs("exePicked", new { path = dialog.FileName, suggestedTitle = title });
-                    }
+                    var title = IconService.GetTitleFromExe(path);
+                    Bridge.SendToJs("exePicked", new { path, suggestedTitle = title });
                 });
                 break;
             }

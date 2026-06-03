@@ -132,13 +132,5 @@ public static class MetadataHandler
     }
 
     private static IMetadataProvider GetProvider(AppSettings settings) =>
-        settings.MetadataProvider switch
-        {
-            "igdb" => IgdbService.Instance,
-            "anilist" => AniListService.Instance,
-            "bangumi" => BangumiService.Instance,
-            "steam" => SteamService.Instance,
-            "rawg" => RawgService.Instance,
-            _ => VndbProvider.Instance
-        };
+        AppServices.Metadata.Resolve(settings.MetadataProvider);
 }

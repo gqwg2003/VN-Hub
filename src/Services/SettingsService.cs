@@ -70,19 +70,38 @@ public static class SettingsService
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
+    private static readonly object Gate = new();
+
     public static AppSettings Load()
     {
-        if (!File.Exists(SettingsPath))
-            return new AppSettings();
+        lock (Gate)
+        {
+            if (!File.Exists(SettingsPath))
+                return new AppSettings();
 
-        var json = File.ReadAllText(SettingsPath);
-        return JsonSerializer.Deserialize<AppSettings>(json, JsonOpts) ?? new AppSettings();
+            try
+            {
+                var json = File.ReadAllText(SettingsPath);
+                return JsonSerializer.Deserialize<AppSettings>(json, JsonOpts) ?? new AppSettings();
+            }
+            catch (Exception ex)
+            {
+                LogService.Error("Failed to load settings, using defaults", ex);
+                return new AppSettings();
+            }
+        }
     }
 
     public static void Save(AppSettings settings)
     {
-        Directory.CreateDirectory(SettingsDir);
-        var json = JsonSerializer.Serialize(settings, JsonOpts);
-        File.WriteAllText(SettingsPath, json);
+        lock (Gate)
+        {
+            Directory.CreateDirectory(SettingsDir);
+            var json = JsonSerializer.Serialize(settings, JsonOpts);
+
+            var tempPath = SettingsPath + ".tmp";
+            File.WriteAllText(tempPath, json);
+            File.Move(tempPath, SettingsPath, overwrite: true);
+        }
     }
 }

@@ -14,14 +14,7 @@ public static class GroupRepository
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            list.Add(new VnGroup
-            {
-                Id = reader.GetString(0),
-                Name = reader.GetString(1),
-                Color = reader.IsDBNull(2) ? "#6366f1" : reader.GetString(2),
-                Filter = reader.IsDBNull(3) ? null : reader.GetString(3),
-                SortOrder = reader.IsDBNull(4) ? 0 : reader.GetInt32(4)
-            });
+            list.Add(MapGroup(reader));
         }
         return list;
     }
@@ -34,15 +27,17 @@ public static class GroupRepository
         cmd.Parameters.AddWithValue("@id", id);
         using var reader = cmd.ExecuteReader();
         if (!reader.Read()) return null;
-        return new VnGroup
-        {
-            Id = reader.GetString(0),
-            Name = reader.GetString(1),
-            Color = reader.IsDBNull(2) ? "#6366f1" : reader.GetString(2),
-            Filter = reader.IsDBNull(3) ? null : reader.GetString(3),
-            SortOrder = reader.IsDBNull(4) ? 0 : reader.GetInt32(4)
-        };
+        return MapGroup(reader);
     }
+
+    private static VnGroup MapGroup(SqliteDataReader reader) => new()
+    {
+        Id = reader.GetString(0),
+        Name = reader.GetString(1),
+        Color = reader.IsDBNull(2) ? "#6366f1" : reader.GetString(2),
+        Filter = reader.IsDBNull(3) ? null : reader.GetString(3),
+        SortOrder = reader.IsDBNull(4) ? 0 : reader.GetInt32(4)
+    };
 
     public static void Insert(VnGroup group)
     {

@@ -7,8 +7,6 @@ namespace VnHub.Services;
 
 public class IgdbService : MetadataServiceBase
 {
-    public static readonly IgdbService Instance = new();
-
     public override string Id => "igdb";
     public override string DisplayName => "IGDB";
 
@@ -16,8 +14,6 @@ public class IgdbService : MetadataServiceBase
 
     private string _cachedToken = "";
     private DateTime _tokenExpiry = DateTime.MinValue;
-
-    private IgdbService() { }
 
     protected override void OnProxyChanged() => _cachedToken = "";
 
@@ -49,10 +45,11 @@ public class IgdbService : MetadataServiceBase
         }
     }
 
-    public override async Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
-    {
-        if (string.IsNullOrWhiteSpace(title)) return null;
+    public override Task<MetadataResult?> SearchAsync(string title, CancellationToken ct = default)
+        => ExecuteSearchAsync(title, SearchCoreAsync, ct);
 
+    private async Task<MetadataResult?> SearchCoreAsync(string title, CancellationToken ct)
+    {
         var settings = SettingsService.Load();
         var clientId = settings.IgdbClientId?.Trim() ?? "";
         var clientSecret = settings.IgdbClientSecret?.Trim() ?? "";
@@ -62,72 +59,56 @@ public class IgdbService : MetadataServiceBase
             return null;
         }
 
-        try
+        var token = await GetTokenAsync(clientId, clientSecret, ct);
+        if (string.IsNullOrEmpty(token)) return null;
+
+        var escaped = title.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        var query = $"search \"{escaped}\"; fields name,summary,cover.url,genres.name,themes.name,rating; limit 1;";
+
+        using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/games")
         {
-            var token = await GetTokenAsync(clientId, clientSecret, ct);
-            if (string.IsNullOrEmpty(token)) return null;
+            Content = new StringContent(query, Encoding.UTF8, "text/plain")
+        };
+        req.Headers.Add("Client-ID", clientId);
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var escaped = title.Replace("\\", "\\\\").Replace("\"", "\\\"");
-            var query = $"search \"{escaped}\"; fields name,summary,cover.url,genres.name,themes.name,rating; limit 1;";
+        var response = await Http.SendAsync(req, cts.Token);
+        if (!response.IsSuccessStatusCode) return null;
 
-            using var cts = LinkedTimeout(ct, TimeSpan.FromSeconds(15));
+        var responseJson = await response.Content.ReadAsStringAsync(cts.Token);
+        using var doc = JsonDocument.Parse(responseJson);
+        var arr = doc.RootElement;
+        if (arr.ValueKind != JsonValueKind.Array || arr.GetArrayLength() == 0) return null;
 
-            using var req = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/games")
-            {
-                Content = new StringContent(query, Encoding.UTF8, "text/plain")
-            };
-            req.Headers.Add("Client-ID", clientId);
-            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var item = arr[0];
+        var id = item.GetProperty("id").GetRawText();
+        var itemTitle = item.TryGetProperty("name", out var nameEl) ? nameEl.GetString() ?? title : title;
+        var description = item.StringOrNull("summary");
 
-            var response = await Http.SendAsync(req, cts.Token);
-            if (!response.IsSuccessStatusCode) return null;
+        double? rating = null;
+        if (item.TryGetProperty("rating", out var ratingEl))
+            rating = ratingEl.GetDouble();
 
-            var responseJson = await response.Content.ReadAsStringAsync(cts.Token);
-            using var doc = JsonDocument.Parse(responseJson);
-            var arr = doc.RootElement;
-            if (arr.ValueKind != JsonValueKind.Array || arr.GetArrayLength() == 0) return null;
-
-            var item = arr[0];
-            var id = item.GetProperty("id").GetRawText();
-            var itemTitle = item.TryGetProperty("name", out var nameEl) ? nameEl.GetString() ?? title : title;
-            var description = item.TryGetProperty("summary", out var sumEl) ? sumEl.GetString() : null;
-
-            double? rating = null;
-            if (item.TryGetProperty("rating", out var ratingEl))
-                rating = ratingEl.GetDouble();
-
-            string? imageUrl = null;
-            if (item.TryGetProperty("cover", out var cover) && cover.TryGetProperty("url", out var urlEl))
-            {
-                var raw = urlEl.GetString() ?? "";
-                imageUrl = (raw.StartsWith("//") ? "https:" : "") + raw.Replace("t_thumb", "t_cover_big");
-            }
-
-            var tags = new List<string>();
-            if (item.TryGetProperty("genres", out var genres))
-                foreach (var g in genres.EnumerateArray())
-                    if (g.TryGetProperty("name", out var gn) && gn.GetString() is { } gnStr)
-                        tags.Add(gnStr);
-            if (item.TryGetProperty("themes", out var themes))
-                foreach (var th in themes.EnumerateArray())
-                    if (th.TryGetProperty("name", out var tn) && tn.GetString() is { } tnStr)
-                        tags.Add(tnStr);
-
-            return new MetadataResult
-            {
-                ExternalId = id,
-                Title = itemTitle,
-                ImageUrl = imageUrl,
-                Description = description,
-                Tags = tags,
-                Rating = rating
-            };
-        }
-        catch (OperationCanceledException) { return null; }
-        catch (Exception ex)
+        string? imageUrl = null;
+        if (item.TryGetProperty("cover", out var cover) && cover.TryGetProperty("url", out var urlEl))
         {
-            LogService.Error("IGDB search failed", ex);
-            return null;
+            var raw = urlEl.GetString() ?? "";
+            imageUrl = (raw.StartsWith("//") ? "https:" : "") + raw.Replace("t_thumb", "t_cover_big");
         }
+
+        var tags = item.NamedArray("genres", "name");
+        tags.AddRange(item.NamedArray("themes", "name"));
+
+        return new MetadataResult
+        {
+            ExternalId = id,
+            Title = itemTitle,
+            ImageUrl = imageUrl,
+            Description = description,
+            Tags = tags,
+            Rating = rating
+        };
     }
 }
