@@ -35,6 +35,12 @@ function initDetailHeader() {
             showToast(t('metaSearching'), 'info');
         }
     });
+    document.getElementById('btnRefreshMeta').addEventListener('click', () => {
+        if (state.detailEntry) {
+            send('refreshMetadata', { id: state.detailEntry.id });
+            showToast(t('metaSearching'), 'info');
+        }
+    });
     document.getElementById('btnOpenVnFolder').addEventListener('click', () => {
         if (state.detailEntry) send('openFolder', { id: state.detailEntry.id });
     });
@@ -230,6 +236,9 @@ function renderDetail() {
 
     const metaBtn = document.getElementById('btnFetchMeta');
     if (metaBtn) metaBtn.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
+
+    const refreshMetaBtn = document.getElementById('btnRefreshMeta');
+    if (refreshMetaBtn) refreshMetaBtn.style.display = (state.settings.vndbEnabled !== false) ? '' : 'none';
 
     const skipMetaCheck = document.getElementById('detailSkipMeta');
     const skipMetaWrap = document.getElementById('detailSkipMetaWrap');

@@ -4,6 +4,8 @@ namespace VnHub.Database;
 
 public static class AppDb
 {
+    private const int CurrentSchemaVersion = 1;
+
     private static string _dbPath = null!;
 
     public static string DbPath => _dbPath;
@@ -75,6 +77,9 @@ public static class AppDb
             """;
         cmd.ExecuteNonQuery();
 
+        AddColumnIfMissing(conn, "groups", "filter", "TEXT");
+        AddColumnIfMissing(conn, "groups", "sort_order", "INTEGER DEFAULT 0");
+
         cmd.CommandText = """
             CREATE TABLE IF NOT EXISTS play_sessions (
                 id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,6 +134,57 @@ public static class AppDb
             END;
             """;
         cmd.ExecuteNonQuery();
+
+        CreateIndexes(conn);
+        ApplySchemaVersion(conn);
+    }
+
+    private static void CreateIndexes(SqliteConnection conn)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_status ON vn_entries(status);
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_group_id ON vn_entries(group_id);
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_is_favorite ON vn_entries(is_favorite);
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_is_pinned ON vn_entries(is_pinned);
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_date_added ON vn_entries(date_added);
+            CREATE INDEX IF NOT EXISTS idx_vn_entries_completed_at ON vn_entries(completed_at);
+            CREATE INDEX IF NOT EXISTS idx_play_sessions_vn_id ON play_sessions(vn_id);
+            CREATE INDEX IF NOT EXISTS idx_play_sessions_started_at ON play_sessions(started_at);
+            """;
+        cmd.ExecuteNonQuery();
+    }
+
+    private static void ApplySchemaVersion(SqliteConnection conn)
+    {
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            CREATE TABLE IF NOT EXISTS schema_version (
+                version    INTEGER PRIMARY KEY,
+                applied_at TEXT,
+                description TEXT
+            );
+            """;
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = "SELECT MAX(version) FROM schema_version";
+        var result = cmd.ExecuteScalar();
+        var currentVersion = result is null || result is DBNull ? 0 : Convert.ToInt32(result);
+
+        if (currentVersion >= CurrentSchemaVersion) return;
+
+        using var tx = conn.BeginTransaction();
+        var insert = conn.CreateCommand();
+        insert.Transaction = tx;
+        insert.CommandText = """
+            INSERT OR IGNORE INTO schema_version (version, applied_at, description)
+            VALUES ($version, $appliedAt, $description);
+            """;
+        insert.Parameters.AddWithValue("$version", CurrentSchemaVersion);
+        insert.Parameters.AddWithValue("$appliedAt", DateTime.UtcNow.ToString("o"));
+        insert.Parameters.AddWithValue("$description", "Indexes, schema versioning, smart group columns");
+        insert.ExecuteNonQuery();
+        tx.Commit();
     }
 
     private static void MigrateFtsDescription(SqliteConnection conn)
@@ -174,7 +230,7 @@ public static class AppDb
             if (reader.GetString(1) == column) return;
         }
         reader.Close();
-        cmd.CommandText = $"ALTER TABLE {table} ADD COLUMN {column} {type}";
+        cmd.CommandText = $"ALTER TABLE {table} ADD COLUMN \"{column}\" {type}";
         cmd.ExecuteNonQuery();
     }
 }

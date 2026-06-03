@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using VnHub.Common;
 using VnHub.Models;
 
@@ -6,6 +7,14 @@ namespace VnHub.Services;
 
 public static class ExportService
 {
+    public static string WriteJson(IEnumerable<VnEntry> entries, string? destination = null)
+    {
+        var json = JsonSerializer.Serialize(entries, Bridge.JsonOpts);
+        string path = destination ?? Path.Combine(AppPaths.EnsureRoot(), $"vnhub_export_{DateTime.Now:yyyyMMdd_HHmmss}.json");
+        File.WriteAllText(path, json, Encoding.UTF8);
+        return path;
+    }
+
     public static string WriteCsv(IEnumerable<VnEntry> entries)
     {
         var sb = new StringBuilder();

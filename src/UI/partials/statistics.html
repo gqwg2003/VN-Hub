@@ -1,4 +1,7 @@
-<h2 data-i18n="statistics">Statistics</h2>
+<div class="stats-header">
+    <h2 data-i18n="statistics">Statistics</h2>
+    <button class="btn-secondary btn-small" id="statsExportBtn" data-i18n="statsExport">Export Stats</button>
+</div>
 <div class="stats-tabs">
     <button class="stats-tab active" data-tab="overview" data-i18n="statsTabOverview">Overview</button>
     <button class="stats-tab" data-tab="achievements" data-i18n="achievements">Achievements</button>
@@ -6,6 +9,11 @@
 
 <div class="stats-tab-content active" data-tab-content="overview">
     <div class="stats-cards" id="statsCards"></div>
+
+    <div class="stats-section stats-panel">
+        <h3 data-i18n="statsHeatmap">Activity Heatmap</h3>
+        <div class="stats-heatmap" id="statsHeatmap"></div>
+    </div>
 
     <div class="stats-grid-2col">
         <div class="stats-section stats-panel">

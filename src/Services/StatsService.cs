@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using VnHub.Database;
 using VnHub.Models;
 
 namespace VnHub.Services;
@@ -21,6 +22,10 @@ public static class StatsService
 
         var (achievements, newlyUnlocked) = EvaluateAchievements(agg, tagFreq, topRated.Count > 0);
 
+        var activity = ReadDailyActivity();
+        var heatmap = BuildHeatmap(activity);
+        var streak = ComputeStreak(activity);
+
         return new
         {
             totalVn = agg.TotalVn,
@@ -36,7 +41,9 @@ public static class StatsService
             avgCompletionTime,
             categoryAvgs,
             achievements,
-            newlyUnlocked
+            newlyUnlocked,
+            heatmap,
+            streak
         };
     }
 
@@ -164,5 +171,57 @@ public static class StatsService
             TagCounts = tagFreq
         };
         return AchievementService.Evaluate(ctx);
+    }
+
+    private static List<(DateTime Day, long Seconds)> ReadDailyActivity()
+    {
+        var raw = SessionRepository.GetStatsByDays(0);
+        var result = new List<(DateTime, long)>(raw.Count);
+        foreach (var o in raw)
+        {
+            var type = o.GetType();
+            var dayStr = type.GetProperty("day")?.GetValue(o) as string;
+            var secObj = type.GetProperty("seconds")?.GetValue(o);
+            if (string.IsNullOrEmpty(dayStr) || secObj == null) continue;
+            if (DateTime.TryParse(dayStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out var d))
+                result.Add((d.Date, Convert.ToInt64(secObj)));
+        }
+        return result;
+    }
+
+    private static List<object> BuildHeatmap(List<(DateTime Day, long Seconds)> activity) => activity
+        .Where(x => x.Seconds > 0)
+        .Select(x => (object)new { day = x.Day.ToString("yyyy-MM-dd"), seconds = x.Seconds })
+        .ToList();
+
+    private static object ComputeStreak(List<(DateTime Day, long Seconds)> activity)
+    {
+        var played = activity
+            .Where(x => x.Seconds > 0)
+            .Select(x => x.Day.Date)
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+
+        int longest = 0, run = 0;
+        DateTime? prev = null;
+        foreach (var d in played)
+        {
+            run = prev.HasValue && d == prev.Value.AddDays(1) ? run + 1 : 1;
+            if (run > longest) longest = run;
+            prev = d;
+        }
+
+        var set = new HashSet<DateTime>(played);
+        int current = 0;
+        var cursor = DateTime.Today;
+        if (!set.Contains(cursor)) cursor = cursor.AddDays(-1);
+        while (set.Contains(cursor))
+        {
+            current++;
+            cursor = cursor.AddDays(-1);
+        }
+
+        return new { current, longest };
     }
 }

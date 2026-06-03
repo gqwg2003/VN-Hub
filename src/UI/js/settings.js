@@ -72,6 +72,19 @@ function initSettings() {
         send('exportHtml');
     });
 
+    bindOnce(document.getElementById('btnExportJson'), 'click', () => {
+        send('exportJson');
+    });
+
+    bindOnce(document.getElementById('btnExportSettings'), 'click', () => {
+        send('exportSettings');
+    });
+
+    bindOnce(document.getElementById('btnImportSettings'), 'click', () => {
+        if (!confirm(t('importSettingsConfirm'))) return;
+        send('importSettings');
+    });
+
     bindOnce(document.getElementById('settingsVndb'), 'change', (e) => {
         state.settings.vndbEnabled = e.target.checked;
         saveSettingsFromUI();
@@ -147,7 +160,17 @@ function initSettings() {
         send('openLogsFolder');
     });
 
+    bindOnce(document.getElementById('btnViewLogs'), 'click', () => {
+        const viewer = document.getElementById('logViewer');
+        if (viewer && !viewer.hidden) {
+            viewer.hidden = true;
+            return;
+        }
+        send('readLogs');
+    });
+
     bindOnce(document.getElementById('btnClearLogs'), 'click', () => {
+        if (!confirm(t('clearLogsConfirm'))) return;
         send('clearLogs');
     });
 

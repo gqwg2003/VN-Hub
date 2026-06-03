@@ -90,6 +90,7 @@ function restoreSortAndGridUI() {
     document.querySelectorAll('.grid-toggle-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.size === state.gridSize);
     });
+    refreshLibrary();
 }
 
 function initTagDropdown() {

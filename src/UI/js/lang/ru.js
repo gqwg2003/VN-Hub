@@ -183,6 +183,8 @@ const LANG_RU = {
     maxBackups: 'Макс. копий',
     logs: 'Логи',
     openLogsFolder: 'Открыть логи',
+    viewLogs: 'Показать логи',
+    logsEmpty: 'Лог пуст.',
     clearLogs: 'Очистить логи',
     logsClearedMsg: 'Удалено файлов логов: {0}.',
     shortcutHint: 'Нажмите на кнопку и введите новую комбинацию клавиш.',
@@ -616,4 +618,30 @@ const LANG_RU = {
     sidebarWidth: 'Ширина сайдбара',
     cardRadius: 'Скругление углов',
     customColorsHint: 'Нажмите кнопку сброса рядом с цветом, чтобы вернуть значение по умолчанию.',
+
+    statsExport: 'Экспорт статистики',
+    statsExported: 'Статистика экспортирована в:',
+    statsCurrentStreak: 'Текущая серия',
+    statsLongestStreak: 'Самая длинная серия',
+    statsHeatmap: 'Карта активности',
+    statsHeatmapLess: 'Меньше',
+    statsHeatmapMore: 'Больше',
+
+    removeTag: '- Тег',
+    bulkRemoveTagPrompt: 'Введите тег для удаления:',
+
+    refreshMetadata: 'Обновить метаданные',
+
+    addSmartGroup: 'Добавить умную группу',
+    smartGroupName: 'Название умной группы',
+    filterByStatus: 'Статус: 0=Читаю, 1=Завершено, 2=Отложено, 3=Брошено, 4=В планах (пусто = любой)',
+    filterByTag: 'Тег (пусто = любой)',
+    filterByFavorite: 'Только избранное? yes / no (пусто = любой)',
+    filterByMinRating: 'Минимальный рейтинг (пусто = любой)',
+    smartGroupNoCriteria: 'Умной группе нужен хотя бы один критерий',
+
+    clearLogsConfirm: 'Удалить все файлы журналов? Это действие необратимо.',
+    importSettingsConfirm: 'Импорт заменит текущие настройки. Продолжить?',
+    settingsExported: 'Настройки экспортированы в:',
+    settingsImported: 'Настройки успешно импортированы.',
 };

@@ -15,45 +15,7 @@ public static class SettingsHandler
         {
             case "getSettings":
             {
-                var settings = SettingsService.Load();
-                settings.DbPath = AppDb.DbPath;
-                var coversDir = AppPaths.CoversDir;
-                Bridge.SendToJs("receiveSettings", new
-                {
-                    settings.Theme,
-                    settings.DefaultFolder,
-                    settings.Language,
-                    settings.DbPath,
-                    settings.VndbEnabled,
-                    settings.AutoStart,
-                    settings.MinimizeToTray,
-                    settings.StartMinimized,
-                    settings.MaxBackups,
-                    settings.BackupInterval,
-                    settings.Shortcuts,
-                    settings.ProxyAddress,
-                    settings.SortBy,
-                    settings.SortDir,
-                    settings.GridSize,
-                    settings.WindowX,
-                    settings.WindowY,
-                    settings.WindowWidth,
-                    settings.WindowHeight,
-                    settings.WindowMaximized,
-                    settings.ScanBlacklistExe,
-                    settings.ScanBlacklistDirs,
-                    settings.ScanSortBy,
-                    settings.ScanSortDir,
-                    settings.ScanSkipExisting,
-                    settings.ScanRecursive,
-                    settings.Customization,
-                    settings.MetadataProvider,
-                    settings.IgdbClientId,
-                    settings.IgdbClientSecret,
-                    settings.RawgApiKey,
-                    coversPath = coversDir,
-                    logsPath = LogService.GetLogDir()
-                });
+                SendSettings();
                 break;
             }
 
@@ -250,6 +212,13 @@ public static class SettingsHandler
                 break;
             }
 
+            case "readLogs":
+            {
+                var content = await Task.Run(() => LogService.ReadRecentLog(500));
+                Bridge.SendToJs("logsLoaded", new { content });
+                break;
+            }
+
             case "exportCsv":
             {
                 var entries = await Task.Run(() => VnRepository.GetAll());
@@ -267,6 +236,148 @@ public static class SettingsHandler
                 LogService.Info($"Exported HTML: {path}");
                 break;
             }
+
+            case "exportJson":
+            {
+                Bridge.InvokeOnUiThread(() =>
+                {
+                    using var dialog = new SaveFileDialog
+                    {
+                        Filter = "JSON|*.json",
+                        FileName = "vnhub-library.json"
+                    };
+                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    try
+                    {
+                        var entries = VnRepository.GetAll();
+                        var path = ExportService.WriteJson(entries, dialog.FileName);
+                        Bridge.SendToJs("exportDone", new { path, format = "json" });
+                        LogService.Info($"Library exported to JSON {path} ({entries.Count} entries)");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.Error("JSON export failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Export failed: {ex.Message}" });
+                    }
+                });
+                break;
+            }
+
+            case "exportSettings":
+            {
+                Bridge.InvokeOnUiThread(() =>
+                {
+                    using var dialog = new SaveFileDialog
+                    {
+                        Filter = "JSON|*.json",
+                        FileName = "vnhub-settings.json"
+                    };
+                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    try
+                    {
+                        var settings = SettingsService.Load();
+                        var json = JsonSerializer.Serialize(settings, SettingsJsonOpts);
+                        File.WriteAllText(dialog.FileName, json);
+                        Bridge.SendToJs("settingsExported", new { path = dialog.FileName });
+                        LogService.Info($"Settings exported to {dialog.FileName}");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.Error("Settings export failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Settings export failed: {ex.Message}" });
+                    }
+                });
+                break;
+            }
+
+            case "importSettings":
+            {
+                Bridge.InvokeOnUiThread(() =>
+                {
+                    using var dialog = new OpenFileDialog
+                    {
+                        Filter = "JSON|*.json|All files|*.*"
+                    };
+                    if (dialog.ShowDialog() != DialogResult.OK) return;
+                    try
+                    {
+                        var json = File.ReadAllText(dialog.FileName);
+                        var imported = JsonSerializer.Deserialize<AppSettings>(json, SettingsJsonOpts);
+                        if (imported == null)
+                        {
+                            Bridge.SendToJs("onError", new { message = "Invalid settings file." });
+                            return;
+                        }
+                        imported.ProxyAddress = Validation.SanitizeProxy(imported.ProxyAddress);
+                        SettingsService.Save(imported);
+                        VndbService.ConfigureProxy(imported.ProxyAddress);
+                        IgdbService.Instance.ConfigureProxy(imported.ProxyAddress);
+                        AniListService.Instance.ConfigureProxy(imported.ProxyAddress);
+                        BangumiService.Instance.ConfigureProxy(imported.ProxyAddress);
+                        SteamService.Instance.ConfigureProxy(imported.ProxyAddress);
+                        RawgService.Instance.ConfigureProxy(imported.ProxyAddress);
+                        SendSettings();
+                        Bridge.SendToJs("settingsImported", new { ok = true });
+                        LogService.Info($"Settings imported from {dialog.FileName}");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.Error("Settings import failed", ex);
+                        Bridge.SendToJs("onError", new { message = $"Settings import failed: {ex.Message}" });
+                    }
+                });
+                break;
+            }
         }
+    }
+
+    private static readonly JsonSerializerOptions SettingsJsonOpts = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true
+    };
+
+    private static void SendSettings()
+    {
+        var settings = SettingsService.Load();
+        settings.DbPath = AppDb.DbPath;
+        var coversDir = AppPaths.CoversDir;
+        Bridge.SendToJs("receiveSettings", new
+        {
+            settings.Theme,
+            settings.DefaultFolder,
+            settings.Language,
+            settings.DbPath,
+            settings.VndbEnabled,
+            settings.AutoStart,
+            settings.MinimizeToTray,
+            settings.StartMinimized,
+            settings.MaxBackups,
+            settings.BackupInterval,
+            settings.Shortcuts,
+            settings.ProxyAddress,
+            settings.SortBy,
+            settings.SortDir,
+            settings.GridSize,
+            settings.WindowX,
+            settings.WindowY,
+            settings.WindowWidth,
+            settings.WindowHeight,
+            settings.WindowMaximized,
+            settings.ScanBlacklistExe,
+            settings.ScanBlacklistDirs,
+            settings.ScanSortBy,
+            settings.ScanSortDir,
+            settings.ScanSkipExisting,
+            settings.ScanRecursive,
+            settings.Customization,
+            settings.MetadataProvider,
+            settings.IgdbClientId,
+            settings.IgdbClientSecret,
+            settings.RawgApiKey,
+            coversPath = coversDir,
+            logsPath = LogService.GetLogDir()
+        });
     }
 }

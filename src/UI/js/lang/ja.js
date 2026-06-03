@@ -183,6 +183,8 @@ const LANG_JA = {
     maxBackups: '最大バックアップ数',
     logs: 'ログ',
     openLogsFolder: 'ログフォルダを開く',
+    viewLogs: 'ログを表示',
+    logsEmpty: 'ログは空です。',
     clearLogs: 'ログをクリア',
     logsClearedMsg: '{0}件のログファイルを削除しました。',
     shortcutHint: 'ショートカットボタンをクリックして新しいキーの組み合わせを押してください。',
@@ -616,4 +618,30 @@ const LANG_JA = {
     sidebarWidth: 'サイドバー幅',
     cardRadius: '角の丸み',
     customColorsHint: '色の横のリセットボタンでデフォルトに戻せます。',
+
+    statsExport: '統計をエクスポート',
+    statsExported: '統計のエクスポート先:',
+    statsCurrentStreak: '現在の連続日数',
+    statsLongestStreak: '最長の連続日数',
+    statsHeatmap: 'アクティビティヒートマップ',
+    statsHeatmapLess: '少',
+    statsHeatmapMore: '多',
+
+    removeTag: '- タグ',
+    bulkRemoveTagPrompt: '削除するタグを入力:',
+
+    refreshMetadata: 'メタデータを更新',
+
+    addSmartGroup: 'スマートグループを追加',
+    smartGroupName: 'スマートグループ名',
+    filterByStatus: 'ステータス: 0=読書中, 1=完了, 2=保留, 3=中断, 4=予定 (空欄=すべて)',
+    filterByTag: 'タグ (空欄=すべて)',
+    filterByFavorite: 'お気に入りのみ? yes / no (空欄=すべて)',
+    filterByMinRating: '最低評価 (空欄=すべて)',
+    smartGroupNoCriteria: 'スマートグループには少なくとも1つの条件が必要です',
+
+    clearLogsConfirm: 'すべてのログファイルを削除しますか?この操作は元に戻せません。',
+    importSettingsConfirm: 'インポートすると現在の設定が置き換えられます。続行しますか?',
+    settingsExported: '設定のエクスポート先:',
+    settingsImported: '設定が正常にインポートされました。',
 };

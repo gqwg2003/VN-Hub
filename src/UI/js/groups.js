@@ -1,15 +1,68 @@
 function initGroups() {
     state.groups = [];
     state.activeGroupId = null;
+    installSmartGroupHook();
 }
+
+function parseGroupFilter(group) {
+    if (!group || !group.filter) return null;
+    try {
+        const f = JSON.parse(group.filter);
+        return (f && typeof f === 'object') ? f : null;
+    } catch {
+        return null;
+    }
+}
+
+function vnMatchesFilter(entry, filter) {
+    if (!entry || !filter) return false;
+    if (typeof filter.status === 'number' && entry.status !== filter.status) return false;
+    if (typeof filter.isFavorite === 'boolean' && !!entry.isFavorite !== filter.isFavorite) return false;
+    if (typeof filter.minRating === 'number') {
+        const rating = (typeof entry.userRating === 'number') ? entry.userRating : entry.rating;
+        if (typeof rating !== 'number' || rating < filter.minRating) return false;
+    }
+    if (filter.tag) {
+        const tags = Array.isArray(entry.tags) ? entry.tags : parseTags(entry.tags);
+        const wanted = filter.tag.trim().toLowerCase();
+        if (!tags.some(t => String(t).trim().toLowerCase() === wanted)) return false;
+    }
+    return true;
+}
+
+function getActiveSmartGroup() {
+    if (!state.activeGroupId) return null;
+    const g = state.groups.find(x => x.id === state.activeGroupId);
+    return (g && g.filter) ? g : null;
+}
+
+function installSmartGroupHook() {
+    if (typeof refreshLibrary !== 'function' || refreshLibrary._smartWrapped) return;
+    const original = refreshLibrary;
+    refreshLibrary = function () {
+        const smart = getActiveSmartGroup();
+        if (smart) {
+            send('getSmartGroupLibrary', { id: smart.id });
+        } else {
+            original();
+        }
+    };
+    refreshLibrary._smartWrapped = true;
+}
+
 
 const GROUP_COLORS = ['#6366f1', '#f43f5e', '#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6',
                       '#ef4444', '#22c55e', '#06b6d4', '#a855f7', '#f97316', '#64748b', '#e11d48', '#0ea5e9'];
 
 function getGroupVnCount(groupId) {
     if (!state.entries) return 0;
+    const group = state.groups.find(g => g.id === groupId);
+    const filter = parseGroupFilter(group);
+    if (filter) return state.entries.filter(e => vnMatchesFilter(e, filter)).length;
     return state.entries.filter(e => e.groupId === groupId).length;
 }
+
+const SMART_GROUP_BADGE = '<svg class="group-smart-badge" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;opacity:.7;flex:none"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
 
 function renderGroupsSidebar() {
     let container = document.getElementById('groupList');
@@ -24,9 +77,10 @@ function renderGroupsSidebar() {
 
     state.groups.forEach(g => {
         const count = getGroupVnCount(g.id);
+        const smartBadge = g.filter ? SMART_GROUP_BADGE : '';
         html += `<div class="group-item${state.activeGroupId === g.id ? ' active' : ''}" data-group="${escapeAttr(g.id)}">
             <span class="group-dot" style="background:${escapeAttr(g.color)}"></span>
-            <span class="group-name">${escapeHTML(g.name)}</span>
+            <span class="group-name">${escapeHTML(g.name)}</span>${smartBadge}
             <span class="group-count">${count}</span>
             <button class="group-edit-btn" data-gid="${escapeAttr(g.id)}" title="${t('renameGroup')}">✎</button>
             <button class="group-color-btn" data-gid="${escapeAttr(g.id)}" title="${t('groupColor')}">
@@ -39,6 +93,11 @@ function renderGroupsSidebar() {
     html += `<div class="group-add" id="groupAddBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span>${t('addGroup')}</span>
+    </div>`;
+
+    html += `<div class="group-add" id="smartGroupAddBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>${t('addSmartGroup') || 'Add smart group'}</span>
     </div>`;
 
     container.innerHTML = html;
@@ -75,7 +134,7 @@ function renderGroupsSidebar() {
             if (!group) return;
             const newName = await showPromptModal(t('renameGroup'), group.name);
             if (newName && newName !== group.name) {
-                send('updateGroup', { id: group.id, name: newName, color: group.color });
+                send('updateGroup', { id: group.id, name: newName, color: group.color, filter: group.filter || null, sortOrder: group.sortOrder || 0 });
             }
         });
     });
@@ -91,6 +150,7 @@ function renderGroupsSidebar() {
     });
 
     document.getElementById('groupAddBtn')?.addEventListener('click', promptAddGroup);
+    document.getElementById('smartGroupAddBtn')?.addEventListener('click', promptAddSmartGroup);
 }
 
 async function promptAddGroup() {
@@ -100,6 +160,42 @@ async function promptAddGroup() {
     const color = GROUP_COLORS[state.groups.length % GROUP_COLORS.length];
 
     send('addGroup', { name, color });
+}
+
+async function promptAddSmartGroup() {
+    const name = await showPromptModal(t('smartGroupName') || 'Smart group name');
+    if (!name) return;
+
+    const statusRaw = await showPromptModal(
+        t('filterByStatus') || 'Status: 0=Reading, 1=Completed, 2=On Hold, 3=Dropped, 4=Plan to Read (blank = any)');
+    const tagRaw = await showPromptModal(t('filterByTag') || 'Tag (blank = any)');
+    const favRaw = await showPromptModal(t('filterByFavorite') || 'Favorites only? yes / no (blank = any)');
+    const ratingRaw = await showPromptModal(t('filterByMinRating') || 'Minimum rating (blank = any)');
+
+    const filter = {};
+
+    if (statusRaw != null && statusRaw !== '') {
+        const s = parseInt(statusRaw, 10);
+        if (Number.isInteger(s) && s >= 0 && s <= 4) filter.status = s;
+    }
+    if (tagRaw) filter.tag = tagRaw.trim();
+    if (favRaw) {
+        const v = favRaw.trim().toLowerCase();
+        if (v === 'yes' || v === 'y' || v === 'true') filter.isFavorite = true;
+        else if (v === 'no' || v === 'n' || v === 'false') filter.isFavorite = false;
+    }
+    if (ratingRaw != null && ratingRaw !== '') {
+        const r = parseFloat(ratingRaw);
+        if (!Number.isNaN(r)) filter.minRating = r;
+    }
+
+    if (Object.keys(filter).length === 0) {
+        showToast(t('smartGroupNoCriteria') || 'A smart group needs at least one criterion', 'warning');
+        return;
+    }
+
+    const color = GROUP_COLORS[state.groups.length % GROUP_COLORS.length];
+    send('addGroup', { name, color, filter: JSON.stringify(filter) });
 }
 
 function showGroupColorPicker(anchor, group) {
@@ -114,13 +210,13 @@ function showGroupColorPicker(anchor, group) {
     picker.querySelectorAll('.gcp-swatch').forEach(sw => {
         sw.addEventListener('click', (e) => {
             e.stopPropagation();
-            send('updateGroup', { id: group.id, name: group.name, color: sw.dataset.color });
+            send('updateGroup', { id: group.id, name: group.name, color: sw.dataset.color, filter: group.filter || null, sortOrder: group.sortOrder || 0 });
             picker.remove();
         });
     });
     picker.querySelector('.gcp-custom').addEventListener('input', (e) => {
         e.stopPropagation();
-        send('updateGroup', { id: group.id, name: group.name, color: e.target.value });
+        send('updateGroup', { id: group.id, name: group.name, color: e.target.value, filter: group.filter || null, sortOrder: group.sortOrder || 0 });
         picker.remove();
     });
 

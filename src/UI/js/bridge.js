@@ -223,6 +223,15 @@ Object.assign(bridgeHandlers, {
     exportDone(data) {
         if (data?.path) showToast(t('exportDone') + ' ' + data.path, 'success');
     },
+    statsExported(data) {
+        showToast((t('statsExported') || 'Statistics exported') + (data?.path ? ' ' + data.path : ''), 'success');
+    },
+    settingsExported(data) {
+        showToast((t('settingsExported') || 'Settings exported') + (data?.path ? ' ' + data.path : ''), 'success');
+    },
+    settingsImported() {
+        showToast(t('settingsImported') || 'Settings imported successfully.', 'success');
+    },
     importDone(data) {
         if (data?.count >= 0) {
             showToast(t('importDone').replace('{0}', data.count), 'success');
@@ -300,6 +309,24 @@ Object.assign(bridgeHandlers, {
     },
     logsCleaned(data) {
         if (data) showToast(t('logsClearedMsg').replace('{0}', data.count || 0), 'success');
+    },
+    logsLoaded(data) {
+        const viewer = document.getElementById('logViewer');
+        if (!viewer) return;
+        const content = (data && data.content) || '';
+        if (!content.trim()) {
+            viewer.innerHTML = '<span class="log-line log-empty">' + (t('logsEmpty') || 'Log is empty.') + '</span>';
+        } else {
+            const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            viewer.innerHTML = content.split('\n').map((line) => {
+                let cls = 'log-info';
+                if (/\[ERROR\]/.test(line)) cls = 'log-error';
+                else if (/\[WARN\]/.test(line)) cls = 'log-warn';
+                return '<span class="log-line ' + cls + '">' + esc(line) + '</span>';
+            }).join('');
+        }
+        viewer.hidden = false;
+        viewer.scrollTop = viewer.scrollHeight;
     },
     scanResults(data) {
         if (!data) return;

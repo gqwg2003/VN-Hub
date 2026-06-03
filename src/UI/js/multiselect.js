@@ -68,6 +68,7 @@ function updateBulkBar() {
             ${groupOptions}
         </select>
         <button class="bulk-bar-btn" id="bulkAddTag">${t('addTag') || '+ Tag'}</button>
+        <button class="bulk-bar-btn" id="bulkRemoveTag">${t('removeTag') || '- Tag'}</button>
         <button class="bulk-bar-btn danger" id="bulkDelete">${t('delete')}</button>
         <button class="bulk-bar-close" id="bulkClose">&times;</button>
     `;
@@ -77,6 +78,7 @@ function updateBulkBar() {
     bar.querySelector('#bulkStatus').addEventListener('change', bulkSetStatus);
     bar.querySelector('#bulkGroup').addEventListener('change', bulkSetGroup);
     bar.querySelector('#bulkAddTag').addEventListener('click', bulkAddTag);
+    bar.querySelector('#bulkRemoveTag').addEventListener('click', bulkRemoveTag);
     bar.querySelector('#bulkDelete').addEventListener('click', bulkDelete);
     bar.querySelector('#bulkClose').addEventListener('click', clearSelection);
 
@@ -84,12 +86,16 @@ function updateBulkBar() {
 }
 
 function bulkToggleFavorite() {
-    state.selectedIds.forEach(id => send('toggleFavorite', { id }));
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
+    send('bulkSetFavorite', { ids, value: true });
     clearSelection();
 }
 
 function bulkTogglePin() {
-    state.selectedIds.forEach(id => send('togglePin', { id }));
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
+    send('bulkSetPin', { ids, value: true });
     clearSelection();
 }
 
@@ -97,7 +103,9 @@ function bulkSetStatus() {
     const select = document.getElementById('bulkStatus');
     const status = parseInt(select.value, 10);
     if (isNaN(status)) return;
-    state.selectedIds.forEach(id => send('setStatus', { id, status }));
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
+    send('bulkSetStatus', { ids, status });
     clearSelection();
 }
 function bulkSetGroup() {
@@ -105,24 +113,27 @@ function bulkSetGroup() {
     const val = select.value;
     if (!val) return;
     const groupId = val === '__none__' ? null : val;
-    state.selectedIds.forEach(id => send('setVnGroup', { id, groupId }));
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
+    send('bulkSetGroup', { ids, groupId });
     clearSelection();
 }
 
 async function bulkAddTag() {
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
     const tag = await showPromptModal(t('bulkTagPrompt') || 'Enter tag to add:');
     if (!tag || !tag.trim()) return;
-    const trimmed = tag.trim();
-    state.selectedIds.forEach(id => {
-        const entry = state.entries.find(e => e.id === id);
-        if (!entry) return;
-        const tags = parseTags(entry.tags);
-        if (!tags.some(t => t.toLowerCase() === trimmed.toLowerCase())) {
-            tags.push(trimmed);
-            entry.tags = JSON.stringify(tags);
-            send('updateVn', entry);
-        }
-    });
+    send('bulkAddTag', { ids, tag: tag.trim() });
+    clearSelection();
+}
+
+async function bulkRemoveTag() {
+    const ids = [...state.selectedIds];
+    if (ids.length === 0) return;
+    const tag = await showPromptModal(t('bulkRemoveTagPrompt') || 'Enter tag to remove:');
+    if (!tag || !tag.trim()) return;
+    send('bulkRemoveTag', { ids, tag: tag.trim() });
     clearSelection();
 }
 
@@ -143,7 +154,8 @@ function bulkDelete() {
         cancelBtn.removeEventListener('click', onCancel);
     };
     const onConfirm = () => {
-        state.selectedIds.forEach(id => send('deleteVn', { id }));
+        const ids = [...state.selectedIds];
+        if (ids.length > 0) send('bulkDelete', { ids });
         clearSelection();
         cleanup();
     };

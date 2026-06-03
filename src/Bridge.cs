@@ -32,7 +32,9 @@ public static class Bridge
             "getLibrary", "addVn", "updateVn", "deleteVn",
             "toggleFavorite", "togglePin", "setStatus",
             "launchVn", "getRunningGames",
-            "searchVn", "getTags"
+            "searchVn", "getTags",
+            "bulkDelete", "bulkSetStatus", "bulkSetFavorite",
+            "bulkSetPin", "bulkSetGroup", "bulkAddTag", "bulkRemoveTag"
         }, LibraryHandler.Handle);
 
         Register(new[]
@@ -41,22 +43,23 @@ public static class Bridge
             "setCover", "extractIcon", "openFolder"
         }, MediaHandler.Handle);
 
-        Register(new[] { "getSessions", "getPlayStats", "getStats" }, SessionHandler.Handle);
+        Register(new[] { "getSessions", "getPlayStats", "getStats", "exportStats" }, SessionHandler.Handle);
         Register(new[] { "scanFolder", "bulkAddScanned" }, ScanHandler.Handle);
-        Register(new[] { "getGroups", "addGroup", "updateGroup", "deleteGroup", "setVnGroup" },
+        Register(new[] { "getGroups", "addGroup", "updateGroup", "deleteGroup", "setVnGroup", "getSmartGroupLibrary" },
             GroupHandler.Handle);
 
         Register(new[]
         {
             "getSettings", "saveSettings",
-            "openDbFolder", "openCoversFolder", "openLogsFolder", "clearLogs",
+            "openDbFolder", "openCoversFolder", "openLogsFolder", "clearLogs", "readLogs",
             "exportLibrary", "importLibrary",
             "setAutoStart",
             "getBackups", "backupNow", "restoreBackup",
-            "exportCsv", "exportHtml"
+            "exportCsv", "exportHtml", "exportJson",
+            "exportSettings", "importSettings"
         }, SettingsHandler.Handle);
 
-        Register(new[] { "fetchVndb" }, MetadataHandler.Handle);
+        Register(new[] { "fetchVndb", "refreshMetadata" }, MetadataHandler.Handle);
 
         Register(new[]
         {

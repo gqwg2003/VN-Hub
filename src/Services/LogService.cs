@@ -51,6 +51,24 @@ public static class LogService
 
     public static string GetLogDir() => LogDir;
 
+    public static string ReadRecentLog(int maxLines = 500)
+    {
+        try
+        {
+            lock (_lock)
+            {
+                if (!File.Exists(_logPath)) return string.Empty;
+                var lines = File.ReadAllLines(_logPath);
+                if (lines.Length <= maxLines) return string.Join('\n', lines);
+                return string.Join('\n', lines[^maxLines..]);
+            }
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
     public static int ClearLogs()
     {
         int count = 0;

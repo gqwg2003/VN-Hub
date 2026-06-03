@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Data.Sqlite;
 using VnHub.Models;
 
@@ -264,6 +265,172 @@ public static class VnRepository
         cmd.Parameters.AddWithValue("@now", DateTime.UtcNow.ToString("o"));
         cmd.ExecuteNonQuery();
     }
+
+    private static string BuildIdInClause(SqliteCommand cmd, IReadOnlyList<string> ids)
+    {
+        var placeholders = new string[ids.Count];
+        for (int i = 0; i < ids.Count; i++)
+        {
+            var param = "@id" + i;
+            placeholders[i] = param;
+            cmd.Parameters.AddWithValue(param, ids[i]);
+        }
+        return string.Join(", ", placeholders);
+    }
+
+    public static List<VnEntry> GetByIds(IReadOnlyList<string> ids)
+    {
+        if (ids.Count == 0) return new List<VnEntry>();
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        cmd.CommandText = $"SELECT * FROM vn_entries WHERE id IN ({inClause})";
+        return ReadEntries(cmd);
+    }
+
+    public static void BulkDelete(IReadOnlyList<string> ids)
+    {
+        if (ids.Count == 0) return;
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        cmd.CommandText = $"DELETE FROM vn_entries WHERE id IN ({inClause})";
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void BulkSetStatus(IReadOnlyList<string> ids, VnStatus status)
+    {
+        if (ids.Count == 0) return;
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        if (status == VnStatus.Completed)
+        {
+            cmd.CommandText = $"UPDATE vn_entries SET status = @s, completed_at = COALESCE(completed_at, @now) WHERE id IN ({inClause})";
+            cmd.Parameters.AddWithValue("@now", DateTime.UtcNow.ToString("o"));
+        }
+        else
+        {
+            cmd.CommandText = $"UPDATE vn_entries SET status = @s WHERE id IN ({inClause})";
+        }
+        cmd.Parameters.AddWithValue("@s", (int)status);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void BulkSetFavorite(IReadOnlyList<string> ids, bool value)
+    {
+        if (ids.Count == 0) return;
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        cmd.CommandText = $"UPDATE vn_entries SET is_favorite = @v WHERE id IN ({inClause})";
+        cmd.Parameters.AddWithValue("@v", value ? 1 : 0);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void BulkSetPin(IReadOnlyList<string> ids, bool value)
+    {
+        if (ids.Count == 0) return;
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        cmd.CommandText = $"UPDATE vn_entries SET is_pinned = @v WHERE id IN ({inClause})";
+        cmd.Parameters.AddWithValue("@v", value ? 1 : 0);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void BulkSetGroup(IReadOnlyList<string> ids, string? groupId)
+    {
+        if (ids.Count == 0) return;
+        using var conn = AppDb.Open();
+        var cmd = conn.CreateCommand();
+        var inClause = BuildIdInClause(cmd, ids);
+        cmd.CommandText = $"UPDATE vn_entries SET group_id = @g WHERE id IN ({inClause})";
+        cmd.Parameters.AddWithValue("@g", (object?)groupId ?? DBNull.Value);
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void BulkAddTag(IReadOnlyList<string> ids, string tag)
+    {
+        if (ids.Count == 0 || string.IsNullOrWhiteSpace(tag)) return;
+        var trimmed = tag.Trim();
+        UpdateTags(ids, current =>
+        {
+            if (current.Any(x => string.Equals(x, trimmed, StringComparison.OrdinalIgnoreCase)))
+                return current;
+            current.Add(trimmed);
+            return current;
+        });
+    }
+
+    public static void BulkRemoveTag(IReadOnlyList<string> ids, string tag)
+    {
+        if (ids.Count == 0 || string.IsNullOrWhiteSpace(tag)) return;
+        var trimmed = tag.Trim();
+        UpdateTags(ids, current =>
+            current.Where(x => !string.Equals(x, trimmed, StringComparison.OrdinalIgnoreCase)).ToList());
+    }
+
+    private static void UpdateTags(IReadOnlyList<string> ids, Func<List<string>, List<string>> transform)
+    {
+        using var conn = AppDb.Open();
+        using var transaction = conn.BeginTransaction();
+        try
+        {
+            using var selectCmd = conn.CreateCommand();
+            selectCmd.Transaction = transaction;
+            var inClause = BuildIdInClause(selectCmd, ids);
+            selectCmd.CommandText = $"SELECT id, tags FROM vn_entries WHERE id IN ({inClause})";
+
+            var current = new List<(string Id, string Tags)>();
+            using (var reader = selectCmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var id = reader.GetString(0);
+                    var tags = reader.IsDBNull(1) ? "[]" : reader.GetString(1);
+                    current.Add((id, tags));
+                }
+            }
+
+            foreach (var (id, tagsJson) in current)
+            {
+                var list = ParseTags(tagsJson);
+                var updated = transform(list);
+                var json = JsonSerializer.Serialize(updated);
+
+                using var updateCmd = conn.CreateCommand();
+                updateCmd.Transaction = transaction;
+                updateCmd.CommandText = "UPDATE vn_entries SET tags = @tags WHERE id = @id";
+                updateCmd.Parameters.AddWithValue("@tags", json);
+                updateCmd.Parameters.AddWithValue("@id", id);
+                updateCmd.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+    }
+
+    private static List<string> ParseTags(string tagsJson)
+    {
+        if (string.IsNullOrWhiteSpace(tagsJson)) return new List<string>();
+        try
+        {
+            var parsed = JsonSerializer.Deserialize<List<string>>(tagsJson);
+            if (parsed == null) return new List<string>();
+            return parsed.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()).ToList();
+        }
+        catch (JsonException)
+        {
+            return new List<string>();
+        }
+    }
+
 
     private static readonly Dictionary<string, string> SortColumnMap = new(StringComparer.OrdinalIgnoreCase)
     {

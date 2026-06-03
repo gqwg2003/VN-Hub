@@ -56,7 +56,7 @@ public static class SessionRepository
         if (days <= 0)
         {
             cmd.CommandText = """
-                SELECT date(started_at) as day, SUM(seconds) as total
+                SELECT date(started_at, 'localtime') as day, SUM(seconds) as total
                 FROM play_sessions
                 GROUP BY day ORDER BY day
                 """;
@@ -64,7 +64,7 @@ public static class SessionRepository
         else
         {
             cmd.CommandText = $"""
-                SELECT date(started_at) as day, SUM(seconds) as total
+                SELECT date(started_at, 'localtime') as day, SUM(seconds) as total
                 FROM play_sessions
                 WHERE started_at >= date('now', '-{days} days')
                 GROUP BY day ORDER BY day

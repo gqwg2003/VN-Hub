@@ -23,7 +23,7 @@ function renderStats(data) {
     const statusLabels = getStatusLabels();
     const statusColors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)', 'var(--status-plan)'];
 
-    const icons = { library: ICONS.book, clock: ICONS.clock, check: ICONS.check, book: ICONS.books, heart: ICONS.heart, star: ICONS.star, target: ICONS.target };
+    const icons = { library: ICONS.book, clock: ICONS.clock, check: ICONS.check, book: ICONS.books, heart: ICONS.heart, star: ICONS.star, target: ICONS.target, flame: ICONS.flame };
     const cardsEl = document.getElementById('statsCards');
     cardsEl.innerHTML = `
         <div class="stat-card stat-card-accent">
@@ -75,7 +75,23 @@ function renderStats(data) {
                 <div class="stat-card-label">${t('statsAvgCompletion')}</div>
             </div>
         </div>
+        <div class="stat-card">
+            <div class="stat-card-icon">${icons.flame}</div>
+            <div class="stat-card-body">
+                <div class="stat-card-value">${data.streak?.current || 0}</div>
+                <div class="stat-card-label">${t('statsCurrentStreak') || 'Current Streak'}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-icon">${icons.flame}</div>
+            <div class="stat-card-body">
+                <div class="stat-card-value">${data.streak?.longest || 0}</div>
+                <div class="stat-card-label">${t('statsLongestStreak') || 'Longest Streak'}</div>
+            </div>
+        </div>
     `;
+
+    renderHeatmap(data.heatmap);
 
     renderRanking('statsTopPlayed', data.topPlayed, 'playTime');
     renderRanking('statsTopRated', data.topRated, 'userRating');
@@ -127,6 +143,76 @@ function renderStats(data) {
     renderTopTags(data.topTags);
     renderCategoryRatings(data.categoryAvgs);
     initStatsTabs();
+    initStatsExport();
+}
+
+function initStatsExport() {
+    const btn = document.getElementById('statsExportBtn');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', () => send('exportStats'));
+}
+
+function renderHeatmap(cells) {
+    const el = document.getElementById('statsHeatmap');
+    if (!el) return;
+
+    const map = {};
+    (cells || []).forEach(c => { map[c.day] = c.seconds || 0; });
+
+    const weeks = 53;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(today);
+    start.setDate(start.getDate() - (weeks * 7 - 1));
+    start.setDate(start.getDate() - start.getDay());
+
+    const toLocalIso = dt => {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const day = String(dt.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    const maxSec = Math.max(...Object.values(map), 1);
+    const level = sec => {
+        if (sec <= 0) return 0;
+        const r = sec / maxSec;
+        if (r > 0.66) return 4;
+        if (r > 0.33) return 3;
+        if (r > 0.1) return 2;
+        return 1;
+    };
+
+    let cols = '';
+    const cursor = new Date(start);
+    for (let w = 0; w < weeks; w++) {
+        let days = '';
+        for (let d = 0; d < 7; d++) {
+            const iso = toLocalIso(cursor);
+            const future = cursor > today;
+            const sec = map[iso] || 0;
+            const lvl = future ? -1 : level(sec);
+            const title = future ? '' : `${iso} — ${formatPlayTime(sec)}`;
+            days += `<div class="heatmap-cell" data-level="${lvl}" title="${title}"></div>`;
+            cursor.setDate(cursor.getDate() + 1);
+        }
+        cols += `<div class="heatmap-col">${days}</div>`;
+    }
+
+    const less = t('statsHeatmapLess') || 'Less';
+    const more = t('statsHeatmapMore') || 'More';
+    el.innerHTML = `
+        <div class="heatmap-grid">${cols}</div>
+        <div class="heatmap-legend">
+            <span>${less}</span>
+            <div class="heatmap-cell" data-level="0"></div>
+            <div class="heatmap-cell" data-level="1"></div>
+            <div class="heatmap-cell" data-level="2"></div>
+            <div class="heatmap-cell" data-level="3"></div>
+            <div class="heatmap-cell" data-level="4"></div>
+            <span>${more}</span>
+        </div>`;
 }
 
 function renderRanking(elId, items, mode) {
@@ -318,6 +404,15 @@ function renderAchievements(data) {
         const dateStr = a.unlockedAt ? new Date(a.unlockedAt).toLocaleDateString() : '';
         const flavorText = a.unlocked ? escapeHTML(t(a.key + 'Flavor')) : '???';
         const flavorClass = a.unlocked ? 'achievement-flavor' : 'achievement-flavor achievement-flavor-locked';
+        const showProgress = !a.unlocked && a.target > 1;
+        const pct = showProgress ? Math.min(100, (a.progress || 0) / a.target * 100).toFixed(1) : 0;
+        const progressHTML = showProgress ? `
+                    <div class="achievement-progress">
+                        <div class="achievement-progress-track">
+                            <div class="achievement-progress-fill" style="width: ${pct}%;"></div>
+                        </div>
+                        <span class="achievement-progress-text">${a.progress || 0}/${a.target}</span>
+                    </div>` : '';
         return `
         <div class="achievement${a.unlocked ? ' unlocked' : ''}" data-key="${escapeAttr(a.key)}">
             <div class="achievement-header">
@@ -326,6 +421,7 @@ function renderAchievements(data) {
                     <span class="achievement-title">${escapeHTML(t(a.key))}</span>
                     <span class="achievement-desc">${escapeHTML(t(a.key + 'Desc'))}</span>
                     ${dateStr ? `<span class="achievement-date">${dateStr}</span>` : ''}
+                    ${progressHTML}
                 </div>
                 <button class="achievement-expand-btn" aria-label="expand">${svg.chevron}</button>
             </div>

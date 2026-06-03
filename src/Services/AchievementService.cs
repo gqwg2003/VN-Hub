@@ -7,7 +7,8 @@ public static class AchievementService
     public class Definition
     {
         public string Key { get; init; } = "";
-        public Func<StatsContext, bool> Check { get; init; } = _ => false;
+        public int Target { get; init; } = 1;
+        public Func<StatsContext, int> Current { get; init; } = _ => 0;
     }
 
     public class StatsContext
@@ -25,95 +26,103 @@ public static class AchievementService
         public string Key { get; set; } = "";
         public string? UnlockedAt { get; set; }
         public bool Unlocked { get; set; }
+        public int Progress { get; set; }
+        public int Target { get; set; }
     }
 
     private static int TagCount(StatsContext ctx, params string[] aliases)
         => aliases.Max(a => ctx.TagCounts.TryGetValue(a, out var c) ? c : 0);
 
+    private static Definition Def(string key, int target, Func<StatsContext, int> current)
+        => new() { Key = key, Target = target, Current = current };
+
+    private static Definition Tag(string key, int target, params string[] aliases)
+        => new() { Key = key, Target = target, Current = c => TagCount(c, aliases) };
+
     private static readonly List<Definition> Defs = new()
     {
         // --Library size 
-        new() { Key = "achFirstVn",       Check = c => c.TotalVn >= 1 },
-        new() { Key = "ach10Vn",          Check = c => c.TotalVn >= 10 },
-        new() { Key = "ach50Vn",          Check = c => c.TotalVn >= 50 },
-        new() { Key = "ach100Vn",         Check = c => c.TotalVn >= 100 },
+        Def("achFirstVn",       1,   c => c.TotalVn),
+        Def("ach10Vn",          10,  c => c.TotalVn),
+        Def("ach50Vn",          50,  c => c.TotalVn),
+        Def("ach100Vn",         100, c => c.TotalVn),
         // -- Completions 
-        new() { Key = "achFirstComplete", Check = c => c.Completed >= 1 },
-        new() { Key = "ach10Complete",    Check = c => c.Completed >= 10 },
-        new() { Key = "ach25Complete",    Check = c => c.Completed >= 25 },
+        Def("achFirstComplete", 1,   c => c.Completed),
+        Def("ach10Complete",    10,  c => c.Completed),
+        Def("ach25Complete",    25,  c => c.Completed),
         // -- Play time
-        new() { Key = "ach10Hours",       Check = c => c.TotalHours >= 10 },
-        new() { Key = "ach100Hours",      Check = c => c.TotalHours >= 100 },
-        new() { Key = "ach500Hours",      Check = c => c.TotalHours >= 500 },
+        Def("ach10Hours",       10,  c => (int)c.TotalHours),
+        Def("ach100Hours",      100, c => (int)c.TotalHours),
+        Def("ach500Hours",      500, c => (int)c.TotalHours),
         // -- Engagement
-        new() { Key = "achFirstFav",      Check = c => c.FavCount >= 1 },
-        new() { Key = "achFirstRating",   Check = c => c.HasRating },
+        Def("achFirstFav",      1,   c => c.FavCount),
+        Def("achFirstRating",   1,   c => c.HasRating ? 1 : 0),
         // -- Tag: milf
-        new() { Key = "tagMilf5",         Check = c => TagCount(c, "milf", "mature woman") >= 5 },
-        new() { Key = "tagMilf10",        Check = c => TagCount(c, "milf", "mature woman") >= 10 },
-        new() { Key = "tagMilf25",        Check = c => TagCount(c, "milf", "mature woman") >= 25 },
+        Tag("tagMilf5",         5,   "milf", "mature woman"),
+        Tag("tagMilf10",        10,  "milf", "mature woman"),
+        Tag("tagMilf25",        25,  "milf", "mature woman"),
         // -- Tag: harem
-        new() { Key = "tagHarem5",        Check = c => TagCount(c, "harem") >= 5 },
-        new() { Key = "tagHarem10",       Check = c => TagCount(c, "harem") >= 10 },
-        new() { Key = "tagHarem25",       Check = c => TagCount(c, "harem") >= 25 },
+        Tag("tagHarem5",        5,   "harem"),
+        Tag("tagHarem10",       10,  "harem"),
+        Tag("tagHarem25",       25,  "harem"),
         // -- Tag: yuri
-        new() { Key = "tagYuri5",         Check = c => TagCount(c, "yuri", "girl's love", "girls love") >= 5 },
-        new() { Key = "tagYuri25",        Check = c => TagCount(c, "yuri", "girl's love", "girls love") >= 25 },
+        Tag("tagYuri5",         5,   "yuri", "girl's love", "girls love"),
+        Tag("tagYuri25",        25,  "yuri", "girl's love", "girls love"),
         // -- Tag: school
-        new() { Key = "tagSchool5",       Check = c => TagCount(c, "school", "school life", "school setting") >= 5 },
-        new() { Key = "tagSchool25",      Check = c => TagCount(c, "school", "school life", "school setting") >= 25 },
+        Tag("tagSchool5",       5,   "school", "school life", "school setting"),
+        Tag("tagSchool25",      25,  "school", "school life", "school setting"),
         // -- Tag: fantasy
-        new() { Key = "tagFantasy5",      Check = c => TagCount(c, "fantasy") >= 5 },
-        new() { Key = "tagFantasy25",     Check = c => TagCount(c, "fantasy") >= 25 },
+        Tag("tagFantasy5",      5,   "fantasy"),
+        Tag("tagFantasy25",     25,  "fantasy"),
         // -- Tag: tsundere
-        new() { Key = "tagTsundere5",     Check = c => TagCount(c, "tsundere") >= 5 },
-        new() { Key = "tagTsundere10",    Check = c => TagCount(c, "tsundere") >= 10 },
+        Tag("tagTsundere5",     5,   "tsundere"),
+        Tag("tagTsundere10",    10,  "tsundere"),
         // -- Tag: moege
-        new() { Key = "tagMoege5",        Check = c => TagCount(c, "moege", "moe") >= 5 },
-        new() { Key = "tagMoege25",       Check = c => TagCount(c, "moege", "moe") >= 25 },
+        Tag("tagMoege5",        5,   "moege", "moe"),
+        Tag("tagMoege25",       25,  "moege", "moe"),
         // -- Tag: romance
-        new() { Key = "tagRomance5",      Check = c => TagCount(c, "romance") >= 5 },
-        new() { Key = "tagRomance25",     Check = c => TagCount(c, "romance") >= 25 },
+        Tag("tagRomance5",      5,   "romance"),
+        Tag("tagRomance25",     25,  "romance"),
         // -- Tag: incest
-        new() { Key = "tagIncest5",       Check = c => TagCount(c, "incest") >= 5 },
-        new() { Key = "tagIncest10",      Check = c => TagCount(c, "incest") >= 10 },
-        new() { Key = "tagIncest25",      Check = c => TagCount(c, "incest") >= 25 },
+        Tag("tagIncest5",       5,   "incest"),
+        Tag("tagIncest10",      10,  "incest"),
+        Tag("tagIncest25",      25,  "incest"),
         // -- Tag: ahegao
-        new() { Key = "tagAhegao5",       Check = c => TagCount(c, "ahegao") >= 5 },
-        new() { Key = "tagAhegao25",      Check = c => TagCount(c, "ahegao") >= 25 },
+        Tag("tagAhegao5",       5,   "ahegao"),
+        Tag("tagAhegao25",      25,  "ahegao"),
         // -- Tag: exhibitionism
-        new() { Key = "tagExhibit5",      Check = c => TagCount(c, "exhibitionism", "exhibitionist") >= 5 },
-        new() { Key = "tagExhibit25",     Check = c => TagCount(c, "exhibitionism", "exhibitionist") >= 25 },
+        Tag("tagExhibit5",      5,   "exhibitionism", "exhibitionist"),
+        Tag("tagExhibit25",     25,  "exhibitionism", "exhibitionist"),
         // -- Tag: creampie
-        new() { Key = "tagCreampie5",     Check = c => TagCount(c, "creampie") >= 5 },
-        new() { Key = "tagCreampie25",    Check = c => TagCount(c, "creampie") >= 25 },
+        Tag("tagCreampie5",     5,   "creampie"),
+        Tag("tagCreampie25",    25,  "creampie"),
         // -- Tag: pregnancy
-        new() { Key = "tagPregnancy5",    Check = c => TagCount(c, "pregnancy", "pregnant") >= 5 },
-        new() { Key = "tagPregnancy25",   Check = c => TagCount(c, "pregnancy", "pregnant") >= 25 },
+        Tag("tagPregnancy5",    5,   "pregnancy", "pregnant"),
+        Tag("tagPregnancy25",   25,  "pregnancy", "pregnant"),
         // -- Tag: bdsm
-        new() { Key = "tagBdsm5",         Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 5 },
-        new() { Key = "tagBdsm10",        Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 10 },
-        new() { Key = "tagBdsm25",        Check = c => TagCount(c, "bdsm", "bondage", "s&m") >= 25 },
+        Tag("tagBdsm5",         5,   "bdsm", "bondage", "s&m"),
+        Tag("tagBdsm10",        10,  "bdsm", "bondage", "s&m"),
+        Tag("tagBdsm25",        25,  "bdsm", "bondage", "s&m"),
         // -- Tag: grandmother-grandson
-        new() { Key = "tagGrandma5",      Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 5 },
-        new() { Key = "tagGrandma10",     Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 10 },
-        new() { Key = "tagGrandma25",     Check = c => TagCount(c, "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild") >= 25 },
+        Tag("tagGrandma5",      5,   "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild"),
+        Tag("tagGrandma10",     10,  "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild"),
+        Tag("tagGrandma25",     25,  "grandmother-grandson", "grandmother/grandson", "grandparent-grandchild"),
         // -- Tag: mother-son
-        new() { Key = "tagMotherSon5",    Check = c => TagCount(c, "mother-son", "mother/son") >= 5 },
-        new() { Key = "tagMotherSon10",   Check = c => TagCount(c, "mother-son", "mother/son") >= 10 },
-        new() { Key = "tagMotherSon25",   Check = c => TagCount(c, "mother-son", "mother/son") >= 25 },
+        Tag("tagMotherSon5",    5,   "mother-son", "mother/son"),
+        Tag("tagMotherSon10",   10,  "mother-son", "mother/son"),
+        Tag("tagMotherSon25",   25,  "mother-son", "mother/son"),
         // -- Tag: aunt-nephew
-        new() { Key = "tagAunt5",         Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 5 },
-        new() { Key = "tagAunt10",        Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 10 },
-        new() { Key = "tagAunt25",        Check = c => TagCount(c, "aunt-nephew", "aunt/nephew") >= 25 },
+        Tag("tagAunt5",         5,   "aunt-nephew", "aunt/nephew"),
+        Tag("tagAunt10",        10,  "aunt-nephew", "aunt/nephew"),
+        Tag("tagAunt25",        25,  "aunt-nephew", "aunt/nephew"),
         // -- Tag: brother-sister
-        new() { Key = "tagSiblings5",     Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 5 },
-        new() { Key = "tagSiblings10",    Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 10 },
-        new() { Key = "tagSiblings25",    Check = c => TagCount(c, "brother-sister", "siblings", "sister-brother") >= 25 },
+        Tag("tagSiblings5",     5,   "brother-sister", "siblings", "sister-brother"),
+        Tag("tagSiblings10",    10,  "brother-sister", "siblings", "sister-brother"),
+        Tag("tagSiblings25",    25,  "brother-sister", "siblings", "sister-brother"),
         // -- Tag: cousin
-        new() { Key = "tagCousin5",       Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 5 },
-        new() { Key = "tagCousin10",      Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 10 },
-        new() { Key = "tagCousin25",      Check = c => TagCount(c, "cousin", "cousins", "female cousin-male cousin") >= 25 },
+        Tag("tagCousin5",       5,   "cousin", "cousins", "female cousin-male cousin"),
+        Tag("tagCousin10",      10,  "cousin", "cousins", "female cousin-male cousin"),
+        Tag("tagCousin25",      25,  "cousin", "cousins", "female cousin-male cousin"),
     };
 
     public static (List<UnlockedAchievement> All, List<string> NewlyUnlocked) Evaluate(StatsContext ctx)
@@ -124,7 +133,7 @@ public static class AchievementService
 
         foreach (var def in Defs)
         {
-            if (def.Check(ctx) && !stored.ContainsKey(def.Key))
+            if (def.Current(ctx) >= def.Target && !stored.ContainsKey(def.Key))
             {
                 AchievementRepository.Unlock(def.Key, nowIso);
                 stored[def.Key] = nowIso;
@@ -136,7 +145,9 @@ public static class AchievementService
         {
             Key = d.Key,
             Unlocked = stored.ContainsKey(d.Key),
-            UnlockedAt = stored.TryGetValue(d.Key, out var ts) ? ts : null
+            UnlockedAt = stored.TryGetValue(d.Key, out var ts) ? ts : null,
+            Progress = Math.Min(d.Current(ctx), d.Target),
+            Target = d.Target
         }).ToList();
 
         return (all, newlyUnlocked);

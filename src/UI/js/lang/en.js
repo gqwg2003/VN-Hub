@@ -182,6 +182,8 @@ const LANG_EN = {
     maxBackups: 'Max Backups',
     logs: 'Logs',
     openLogsFolder: 'Open Logs Folder',
+    viewLogs: 'View Logs',
+    logsEmpty: 'Log is empty.',
     clearLogs: 'Clear Logs',
     logsClearedMsg: '{0} log files cleared.',
     shortcutHint: 'Click a shortcut button and press a new key combination to rebind.',
@@ -613,4 +615,30 @@ const LANG_EN = {
     sidebarWidth: 'Sidebar Width',
     cardRadius: 'Corner Radius',
     customColorsHint: 'Click the reset button next to a color to restore its default.',
+
+    statsExport: 'Export Stats',
+    statsExported: 'Statistics exported to:',
+    statsCurrentStreak: 'Current Streak',
+    statsLongestStreak: 'Longest Streak',
+    statsHeatmap: 'Activity Heatmap',
+    statsHeatmapLess: 'Less',
+    statsHeatmapMore: 'More',
+
+    removeTag: '- Tag',
+    bulkRemoveTagPrompt: 'Enter tag to remove:',
+
+    refreshMetadata: 'Refresh Metadata',
+
+    addSmartGroup: 'Add smart group',
+    smartGroupName: 'Smart group name',
+    filterByStatus: 'Status: 0=Reading, 1=Completed, 2=On Hold, 3=Dropped, 4=Plan to Read (blank = any)',
+    filterByTag: 'Tag (blank = any)',
+    filterByFavorite: 'Favorites only? yes / no (blank = any)',
+    filterByMinRating: 'Minimum rating (blank = any)',
+    smartGroupNoCriteria: 'A smart group needs at least one criterion',
+
+    clearLogsConfirm: 'Delete all log files? This cannot be undone.',
+    importSettingsConfirm: 'Importing will replace your current settings. Continue?',
+    settingsExported: 'Settings exported to:',
+    settingsImported: 'Settings imported successfully.',
 };
