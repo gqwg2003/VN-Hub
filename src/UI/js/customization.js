@@ -99,6 +99,19 @@ function colorDefaultFor(key) {
     return CUSTOM_COLOR_DEFAULTS[key]?.[theme] || '';
 }
 
+function applyBgVars(root, prefix, image, opacity, blur) {
+    if (image) {
+        const url = 'https://bg.vnhub.local/' + encodeURIComponent(image);
+        root.style.setProperty(`--${prefix}-image`, `url('${url}')`);
+        root.style.setProperty(`--${prefix}-opacity`, String(opacity));
+        root.style.setProperty(`--${prefix}-blur`, `${blur}px`);
+    } else {
+        root.style.removeProperty(`--${prefix}-image`);
+        root.style.setProperty(`--${prefix}-opacity`, '0');
+        root.style.setProperty(`--${prefix}-blur`, '0px');
+    }
+}
+
 function applyCustomization() {
     const c = ensureCustomization();
     let style = document.getElementById('custom-theme-style');
@@ -131,38 +144,9 @@ function applyCustomization() {
     style.textContent = css;
 
     const root = document.documentElement;
-    if (c.backgroundImage) {
-        const bgUrl = 'https://bg.vnhub.local/' + encodeURIComponent(c.backgroundImage);
-        root.style.setProperty('--custom-bg-image', `url('${bgUrl}')`);
-        root.style.setProperty('--custom-bg-opacity', String(c.backgroundOpacity));
-        root.style.setProperty('--custom-bg-blur', `${c.backgroundBlur}px`);
-    } else {
-        root.style.removeProperty('--custom-bg-image');
-        root.style.setProperty('--custom-bg-opacity', '0');
-        root.style.setProperty('--custom-bg-blur', '0px');
-    }
-
-    if (c.sidebarBackgroundImage) {
-        const url = 'https://bg.vnhub.local/' + encodeURIComponent(c.sidebarBackgroundImage);
-        root.style.setProperty('--sidebar-bg-image', `url('${url}')`);
-        root.style.setProperty('--sidebar-bg-opacity', String(c.sidebarBackgroundOpacity));
-        root.style.setProperty('--sidebar-bg-blur', `${c.sidebarBackgroundBlur}px`);
-    } else {
-        root.style.removeProperty('--sidebar-bg-image');
-        root.style.setProperty('--sidebar-bg-opacity', '0');
-        root.style.setProperty('--sidebar-bg-blur', '0px');
-    }
-
-    if (c.topbarBackgroundImage) {
-        const url = 'https://bg.vnhub.local/' + encodeURIComponent(c.topbarBackgroundImage);
-        root.style.setProperty('--topbar-bg-image', `url('${url}')`);
-        root.style.setProperty('--topbar-bg-opacity', String(c.topbarBackgroundOpacity));
-        root.style.setProperty('--topbar-bg-blur', `${c.topbarBackgroundBlur}px`);
-    } else {
-        root.style.removeProperty('--topbar-bg-image');
-        root.style.setProperty('--topbar-bg-opacity', '0');
-        root.style.setProperty('--topbar-bg-blur', '0px');
-    }
+    applyBgVars(root, 'custom-bg', c.backgroundImage, c.backgroundOpacity, c.backgroundBlur);
+    applyBgVars(root, 'sidebar-bg', c.sidebarBackgroundImage, c.sidebarBackgroundOpacity, c.sidebarBackgroundBlur);
+    applyBgVars(root, 'topbar-bg', c.topbarBackgroundImage, c.topbarBackgroundOpacity, c.topbarBackgroundBlur);
 
     root.style.setProperty('--panel-surface-opacity', String(c.panelSurfaceOpacity));
     root.dataset.sidebarConfiguredWidth = `${c.sidebarWidth}px`;
@@ -371,161 +355,66 @@ function resetCustomizationSection(section) {
     debouncedSaveCustomization();
 }
 
+function bindOnce(el, ev, fn) {
+    if (el && !el.dataset.bound) {
+        el.dataset.bound = '1';
+        el.addEventListener(ev, fn);
+    }
+}
+
+function bindCustomPick(btnId, action) {
+    bindOnce(document.getElementById(btnId), 'click', () => send(action));
+}
+
+function bindCustomClear(btnId, prop, action) {
+    bindOnce(document.getElementById(btnId), 'click', () => {
+        ensureCustomization()[prop] = '';
+        send(action);
+    });
+}
+
+// suffix '%' stores value/100 and displays the raw slider value;
+// suffix 'px' stores the parsed value and displays it with the px unit.
+function bindCustomSlider(inputId, valueId, prop, suffix) {
+    bindOnce(document.getElementById(inputId), 'input', e => {
+        const raw = parseInt(e.target.value, 10);
+        const c = ensureCustomization();
+        if (suffix === '%') {
+            c[prop] = raw / 100;
+            document.getElementById(valueId).textContent = e.target.value + '%';
+        } else {
+            c[prop] = raw;
+            document.getElementById(valueId).textContent = raw + 'px';
+        }
+        applyCustomization();
+        debouncedSaveCustomization();
+    });
+}
+
 function initCustomization() {
-    const addBtn = document.getElementById('btnAddFont');
-    if (addBtn && !addBtn.dataset.bound) { addBtn.dataset.bound = '1'; addBtn.addEventListener('click', () => send('pickFont')); }
+    bindCustomPick('btnAddFont', 'pickFont');
 
-    const pickBg = document.getElementById('btnPickBackground');
-    if (pickBg && !pickBg.dataset.bound) { pickBg.dataset.bound = '1'; pickBg.addEventListener('click', () => send('pickBackground')); }
+    bindCustomPick('btnPickBackground', 'pickBackground');
+    bindCustomClear('btnClearBackground', 'backgroundImage', 'clearBackground');
+    bindCustomSlider('settingsBgOpacity', 'bgOpacityValue', 'backgroundOpacity', '%');
+    bindCustomSlider('settingsBgBlur', 'bgBlurValue', 'backgroundBlur', 'px');
 
-    const clearBg = document.getElementById('btnClearBackground');
-    if (clearBg && !clearBg.dataset.bound) {
-        clearBg.dataset.bound = '1';
-        clearBg.addEventListener('click', () => {
-            ensureCustomization().backgroundImage = '';
-            send('clearBackground');
-        });
-    }
+    bindCustomPick('btnPickSidebarBackground', 'pickSidebarBackground');
+    bindCustomClear('btnClearSidebarBackground', 'sidebarBackgroundImage', 'clearSidebarBackground');
+    bindCustomSlider('settingsSidebarBgOpacity', 'sidebarBgOpacityValue', 'sidebarBackgroundOpacity', '%');
+    bindCustomSlider('settingsSidebarBgBlur', 'sidebarBgBlurValue', 'sidebarBackgroundBlur', 'px');
 
-    const op = document.getElementById('settingsBgOpacity');
-    if (op && !op.dataset.bound) {
-        op.dataset.bound = '1';
-        op.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10) / 100;
-            ensureCustomization().backgroundOpacity = v;
-            document.getElementById('bgOpacityValue').textContent = e.target.value + '%';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
+    bindCustomPick('btnPickTopbarBackground', 'pickTopbarBackground');
+    bindCustomClear('btnClearTopbarBackground', 'topbarBackgroundImage', 'clearTopbarBackground');
+    bindCustomSlider('settingsTopbarBgOpacity', 'topbarBgOpacityValue', 'topbarBackgroundOpacity', '%');
+    bindCustomSlider('settingsTopbarBgBlur', 'topbarBgBlurValue', 'topbarBackgroundBlur', 'px');
 
-    const bl = document.getElementById('settingsBgBlur');
-    if (bl && !bl.dataset.bound) {
-        bl.dataset.bound = '1';
-        bl.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10);
-            ensureCustomization().backgroundBlur = v;
-            document.getElementById('bgBlurValue').textContent = v + 'px';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const pickSidebar = document.getElementById('btnPickSidebarBackground');
-    if (pickSidebar && !pickSidebar.dataset.bound) { pickSidebar.dataset.bound = '1'; pickSidebar.addEventListener('click', () => send('pickSidebarBackground')); }
-
-    const clearSidebar = document.getElementById('btnClearSidebarBackground');
-    if (clearSidebar && !clearSidebar.dataset.bound) {
-        clearSidebar.dataset.bound = '1';
-        clearSidebar.addEventListener('click', () => {
-            ensureCustomization().sidebarBackgroundImage = '';
-            send('clearSidebarBackground');
-        });
-    }
-
-    const sidebarOp = document.getElementById('settingsSidebarBgOpacity');
-    if (sidebarOp && !sidebarOp.dataset.bound) {
-        sidebarOp.dataset.bound = '1';
-        sidebarOp.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10) / 100;
-            ensureCustomization().sidebarBackgroundOpacity = v;
-            document.getElementById('sidebarBgOpacityValue').textContent = e.target.value + '%';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const sidebarBl = document.getElementById('settingsSidebarBgBlur');
-    if (sidebarBl && !sidebarBl.dataset.bound) {
-        sidebarBl.dataset.bound = '1';
-        sidebarBl.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10);
-            ensureCustomization().sidebarBackgroundBlur = v;
-            document.getElementById('sidebarBgBlurValue').textContent = v + 'px';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const pickTopbar = document.getElementById('btnPickTopbarBackground');
-    if (pickTopbar && !pickTopbar.dataset.bound) { pickTopbar.dataset.bound = '1'; pickTopbar.addEventListener('click', () => send('pickTopbarBackground')); }
-
-    const clearTopbar = document.getElementById('btnClearTopbarBackground');
-    if (clearTopbar && !clearTopbar.dataset.bound) {
-        clearTopbar.dataset.bound = '1';
-        clearTopbar.addEventListener('click', () => {
-            ensureCustomization().topbarBackgroundImage = '';
-            send('clearTopbarBackground');
-        });
-    }
-
-    const topbarOp = document.getElementById('settingsTopbarBgOpacity');
-    if (topbarOp && !topbarOp.dataset.bound) {
-        topbarOp.dataset.bound = '1';
-        topbarOp.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10) / 100;
-            ensureCustomization().topbarBackgroundOpacity = v;
-            document.getElementById('topbarBgOpacityValue').textContent = e.target.value + '%';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const topbarBl = document.getElementById('settingsTopbarBgBlur');
-    if (topbarBl && !topbarBl.dataset.bound) {
-        topbarBl.dataset.bound = '1';
-        topbarBl.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10);
-            ensureCustomization().topbarBackgroundBlur = v;
-            document.getElementById('topbarBgBlurValue').textContent = v + 'px';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const panelOp = document.getElementById('settingsPanelSurfaceOpacity');
-    if (panelOp && !panelOp.dataset.bound) {
-        panelOp.dataset.bound = '1';
-        panelOp.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10) / 100;
-            ensureCustomization().panelSurfaceOpacity = v;
-            document.getElementById('panelSurfaceOpacityValue').textContent = e.target.value + '%';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const sidebarW = document.getElementById('settingsSidebarWidth');
-    if (sidebarW && !sidebarW.dataset.bound) {
-        sidebarW.dataset.bound = '1';
-        sidebarW.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10);
-            ensureCustomization().sidebarWidth = v;
-            document.getElementById('sidebarWidthValue').textContent = v + 'px';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
-
-    const cardR = document.getElementById('settingsCardRadius');
-    if (cardR && !cardR.dataset.bound) {
-        cardR.dataset.bound = '1';
-        cardR.addEventListener('input', e => {
-            const v = parseInt(e.target.value, 10);
-            ensureCustomization().cardRadius = v;
-            document.getElementById('cardRadiusValue').textContent = v + 'px';
-            applyCustomization();
-            debouncedSaveCustomization();
-        });
-    }
+    bindCustomSlider('settingsPanelSurfaceOpacity', 'panelSurfaceOpacityValue', 'panelSurfaceOpacity', '%');
+    bindCustomSlider('settingsSidebarWidth', 'sidebarWidthValue', 'sidebarWidth', 'px');
+    bindCustomSlider('settingsCardRadius', 'cardRadiusValue', 'cardRadius', 'px');
 
     document.querySelectorAll('[data-customization-reset]').forEach(btn => {
-        if (!btn.dataset.bound) {
-            btn.dataset.bound = '1';
-            btn.addEventListener('click', () => {
-                resetCustomizationSection(btn.dataset.customizationReset);
-            });
-        }
+        bindOnce(btn, 'click', () => resetCustomizationSection(btn.dataset.customizationReset));
     });
 
     renderCustomization();

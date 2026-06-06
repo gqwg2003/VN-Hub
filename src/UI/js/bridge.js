@@ -18,6 +18,27 @@ window.chrome.webview.addEventListener('message', (event) => {
     }
 });
 
+function makeBackgroundHandlers(prop, render) {
+    return {
+        picked(data) {
+            ensureCustomization()[prop] = data?.fileName || '';
+            applyCustomization();
+            render();
+            showToast(t('backgroundSetToast'), 'success');
+        },
+        cleared() {
+            ensureCustomization()[prop] = '';
+            applyCustomization();
+            render();
+            showToast(t('backgroundClearedToast'), 'success');
+        }
+    };
+}
+
+const _bgHandlers = makeBackgroundHandlers('backgroundImage', () => renderCustomBackground());
+const _sidebarBgHandlers = makeBackgroundHandlers('sidebarBackgroundImage', () => renderSidebarBackground());
+const _topbarBgHandlers = makeBackgroundHandlers('topbarBackgroundImage', () => renderTopbarBackground());
+
 Object.assign(bridgeHandlers, {
     receiveLibrary(entries) {
         state.entries = entries || [];
@@ -171,48 +192,12 @@ Object.assign(bridgeHandlers, {
         c.fonts = data?.fonts || [];
         renderCustomFontList();
     },
-    backgroundPicked(data) {
-        const c = ensureCustomization();
-        c.backgroundImage = data?.fileName || '';
-        applyCustomization();
-        renderCustomBackground();
-        showToast(t('backgroundSetToast'), 'success');
-    },
-    backgroundCleared() {
-        const c = ensureCustomization();
-        c.backgroundImage = '';
-        applyCustomization();
-        renderCustomBackground();
-        showToast(t('backgroundClearedToast'), 'success');
-    },
-    sidebarBackgroundPicked(data) {
-        const c = ensureCustomization();
-        c.sidebarBackgroundImage = data?.fileName || '';
-        applyCustomization();
-        renderSidebarBackground();
-        showToast(t('backgroundSetToast'), 'success');
-    },
-    sidebarBackgroundCleared() {
-        const c = ensureCustomization();
-        c.sidebarBackgroundImage = '';
-        applyCustomization();
-        renderSidebarBackground();
-        showToast(t('backgroundClearedToast'), 'success');
-    },
-    topbarBackgroundPicked(data) {
-        const c = ensureCustomization();
-        c.topbarBackgroundImage = data?.fileName || '';
-        applyCustomization();
-        renderTopbarBackground();
-        showToast(t('backgroundSetToast'), 'success');
-    },
-    topbarBackgroundCleared() {
-        const c = ensureCustomization();
-        c.topbarBackgroundImage = '';
-        applyCustomization();
-        renderTopbarBackground();
-        showToast(t('backgroundClearedToast'), 'success');
-    },
+    backgroundPicked: _bgHandlers.picked,
+    backgroundCleared: _bgHandlers.cleared,
+    sidebarBackgroundPicked: _sidebarBgHandlers.picked,
+    sidebarBackgroundCleared: _sidebarBgHandlers.cleared,
+    topbarBackgroundPicked: _topbarBgHandlers.picked,
+    topbarBackgroundCleared: _topbarBgHandlers.cleared,
     settingsSaved(data) {
         if (data && typeof data.proxyAddress === 'string' && state.settings) {
             state.settings.proxyAddress = data.proxyAddress;
@@ -317,12 +302,11 @@ Object.assign(bridgeHandlers, {
         if (!content.trim()) {
             viewer.innerHTML = '<span class="log-line log-empty">' + (t('logsEmpty') || 'Log is empty.') + '</span>';
         } else {
-            const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             viewer.innerHTML = content.split('\n').map((line) => {
                 let cls = 'log-info';
                 if (/\[ERROR\]/.test(line)) cls = 'log-error';
                 else if (/\[WARN\]/.test(line)) cls = 'log-warn';
-                return '<span class="log-line ' + cls + '">' + esc(line) + '</span>';
+                return '<span class="log-line ' + cls + '">' + escapeHTML(line) + '</span>';
             }).join('');
         }
         viewer.hidden = false;

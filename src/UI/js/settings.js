@@ -1,11 +1,4 @@
 function initSettings() {
-    const bindOnce = (el, ev, fn) => {
-        if (el && !el.dataset.bound) {
-            el.dataset.bound = '1';
-            el.addEventListener(ev, fn);
-        }
-    };
-
     document.querySelectorAll('.settings-tab').forEach(tab => {
         if (tab.dataset.bound) return;
         tab.dataset.bound = '1';
