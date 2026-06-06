@@ -17,7 +17,8 @@ VnHub is a native Windows desktop application built on .NET 8 and WebView2. The 
 backend handles data, files, and integrations, while the UI is a self-contained web
 front end (HTML / CSS / JavaScript) communicating through a lightweight message bridge.
 
-## Features
+<details>
+<summary><strong>Features</strong></summary>
 
 ### Library
 - Organize visual novels with custom **groups** and **tags**
@@ -48,6 +49,8 @@ front end (HTML / CSS / JavaScript) communicating through a lightweight message 
 - Light and dark themes
 - Localized in **English**, **Russian**, and **Japanese**
 - System tray support and configurable keyboard shortcuts
+
+</details>
 
 ## Technology Stack
 
