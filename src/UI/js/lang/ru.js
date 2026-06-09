@@ -640,6 +640,7 @@ const LANG_RU = {
     filterByMinRating: 'Минимальный рейтинг (пусто = любой)',
     smartGroupNoCriteria: 'Умной группе нужен хотя бы один критерий',
 
+    importSettings: 'Импорт настроек',
     clearLogsConfirm: 'Удалить все файлы журналов? Это действие необратимо.',
     importSettingsConfirm: 'Импорт заменит текущие настройки. Продолжить?',
     settingsExported: 'Настройки экспортированы в:',

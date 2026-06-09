@@ -52,6 +52,75 @@ front end (HTML / CSS / JavaScript) communicating through a lightweight message 
 
 </details>
 
+## Screenshots
+
+<details>
+<summary><strong>Library & Reading</strong></summary>
+
+**Library** — browse your collection with cover cards, status badges, and quick filters.
+
+![Library](Screenshots/Library.png)
+
+**Marked** — entries flagged as favorite or priority in one place.
+
+![Marked](Screenshots/Marked.png)
+
+**Reading** — titles currently in progress, grouped by session state.
+
+![Reading](Screenshots/Reading.png)
+
+</details>
+
+<details>
+<summary><strong>Statistics</strong></summary>
+
+**Overview** — play-time totals, streaks, ratings, and an activity heatmap.
+
+![Statistics Overview](Screenshots/Statistics.png)
+
+**Achievements** — milestone tracker showing unlocked and in-progress achievements.
+
+![Statistics Achievements](Screenshots/Achievements.png)
+
+</details>
+
+<details>
+<summary><strong>Settings</strong></summary>
+
+**General** — theme, language, and system tray options.
+
+![Settings — General](Screenshots/Settings0.png)
+
+**Customization** — colors, surface opacity, sidebar width, corner radius, and status palette.
+
+![Settings — Customization](Screenshots/Settings1.png)
+
+**Library** — default folder, JSON export / import, CSV and HTML export.
+
+![Settings — Library](Screenshots/Settings2.png)
+
+**Data Sources** — metadata provider selection and API credentials.
+
+![Settings — Data Sources](Screenshots/Settings3.png)
+
+**Data** — database and covers location, backup management and scheduling.
+
+![Settings — Data](Screenshots/Settings4.png)
+
+**Scan** — executable and directory blacklists, sort order, and scan options.
+
+![Settings — Scan](Screenshots/Settings5.png)
+
+**Shortcuts** — rebindable keyboard shortcuts.
+
+![Settings — Shortcuts](Screenshots/Settings6.png)
+
+**About** — version info, log viewer, and danger-zone actions.
+
+![Settings — About](Screenshots/Settings7.png)
+
+</details>
+
 ## Technology Stack
 
 | Layer        | Technology                                  |

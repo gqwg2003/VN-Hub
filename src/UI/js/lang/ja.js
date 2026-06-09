@@ -640,6 +640,7 @@ const LANG_JA = {
     filterByMinRating: '最低評価 (空欄=すべて)',
     smartGroupNoCriteria: 'スマートグループには少なくとも1つの条件が必要です',
 
+    importSettings: '設定のインポート',
     clearLogsConfirm: 'すべてのログファイルを削除しますか?この操作は元に戻せません。',
     importSettingsConfirm: 'インポートすると現在の設定が置き換えられます。続行しますか?',
     settingsExported: '設定のエクスポート先:',

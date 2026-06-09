@@ -637,6 +637,7 @@ const LANG_EN = {
     filterByMinRating: 'Minimum rating (blank = any)',
     smartGroupNoCriteria: 'A smart group needs at least one criterion',
 
+    importSettings: 'Import Settings',
     clearLogsConfirm: 'Delete all log files? This cannot be undone.',
     importSettingsConfirm: 'Importing will replace your current settings. Continue?',
     settingsExported: 'Settings exported to:',

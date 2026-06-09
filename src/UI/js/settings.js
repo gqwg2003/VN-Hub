@@ -73,8 +73,9 @@ function initSettings() {
         send('exportSettings');
     });
 
-    bindOnce(document.getElementById('btnImportSettings'), 'click', () => {
-        if (!confirm(t('importSettingsConfirm'))) return;
+    bindOnce(document.getElementById('btnImportSettings'), 'click', async () => {
+        const ok = await showConfirmModal(t('importSettings'), t('importSettingsConfirm'));
+        if (!ok) return;
         send('importSettings');
     });
 
@@ -162,8 +163,9 @@ function initSettings() {
         send('readLogs');
     });
 
-    bindOnce(document.getElementById('btnClearLogs'), 'click', () => {
-        if (!confirm(t('clearLogsConfirm'))) return;
+    bindOnce(document.getElementById('btnClearLogs'), 'click', async () => {
+        const ok = await showConfirmModal(t('clearLogs'), t('clearLogsConfirm'), t('delete') || 'Delete');
+        if (!ok) return;
         send('clearLogs');
     });
 
@@ -192,8 +194,9 @@ function initSettings() {
         saveSettingsFromUI();
     });
 
-    bindOnce(document.getElementById('btnResetSettings'), 'click', () => {
-        if (!confirm(t('resetSettingsConfirm'))) return;
+    bindOnce(document.getElementById('btnResetSettings'), 'click', async () => {
+        const ok = await showConfirmModal(t('resetSettings'), t('resetSettingsConfirm'));
+        if (!ok) return;
         const preserved = {
             dbPath: state.settings.dbPath,
             coversPath: state.settings.coversPath,
