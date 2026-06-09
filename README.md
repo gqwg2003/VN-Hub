@@ -143,7 +143,7 @@ front end (HTML / CSS / JavaScript) communicating through a lightweight message 
 ### Build & Run
 
 ```bash
-git clone https://github.com/gqwg2003/Vn-Hub.git
+git clone https://github.com/gqwg2003/VN-Hub.git
 cd VN-Hub
 dotnet run
 ```
