@@ -188,8 +188,7 @@ returned to the UI as named callbacks.
 
 ## License
 
-No license has been specified for this project yet. Until one is added, all rights
-are reserved by the author.
+GNU General Public License v3.0
 
 ## Author
 
