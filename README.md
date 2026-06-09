@@ -144,7 +144,7 @@ front end (HTML / CSS / JavaScript) communicating through a lightweight message 
 
 ```bash
 git clone https://github.com/gqwg2003/Vn-Hub.git
-cd Vn-Hub
+cd VN-Hub
 dotnet run
 ```
 
@@ -192,4 +192,4 @@ GNU General Public License v3.0
 
 ## Author
 
-**gqwg2003** — [github.com/gqwg2003/Vn-Hub](https://github.com/gqwg2003/Vn-Hub)
+**gqwg2003** — [github.com/gqwg2003/VN-Hub](https://github.com/gqwg2003/VN-Hub)
