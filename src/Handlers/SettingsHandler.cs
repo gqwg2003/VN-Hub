@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using Microsoft.Win32;
 using VnHub.Common;
@@ -158,7 +159,9 @@ public static class SettingsHandler
             settings.IgdbClientSecret,
             settings.RawgApiKey,
             coversPath = coversDir,
-            logsPath = LogService.GetLogDir()
+            logsPath = LogService.GetLogDir(),
+            appVersion = typeof(SettingsHandler).Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "1.0.0"
         });
     }
 }

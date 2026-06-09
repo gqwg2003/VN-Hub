@@ -200,7 +200,7 @@ function renderGrid() {
 function renderEmptyState(el) {
     let title = t('emptyTitle');
     let hint = t('emptyHint');
-    const svgBook = '<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
+    const svgBook = ICONS.book;
 
     if (state.activeTag) {
         title = t('emptyTagTitle');
@@ -339,17 +339,15 @@ function cardHTML(entry) {
     const coverEl = coverSrc
         ? `<img class="vn-card-cover" src="${escapeAttr(coverSrc)}?t=${entry.coverPath}" alt="" loading="lazy">`
         : `<div class="vn-card-cover-placeholder">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            ${ICONS.imagePlaceholder}
            </div>`;
 
     const icons = [];
-    if (isRunning) icons.push('<span class="vn-card-icon running"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>');
-    if (entry.isFavorite) icons.push('<span class="vn-card-icon heart"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>');
-    if (entry.isPinned) icons.push('<span class="vn-card-icon star"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>');
+    if (isRunning) icons.push(`<span class="vn-card-icon running">${ICONS.playFill}</span>`);
+    if (entry.isFavorite) icons.push(`<span class="vn-card-icon heart">${ICONS.heartFill}</span>`);
+    if (entry.isPinned) icons.push(`<span class="vn-card-icon star">${ICONS.starFill}</span>`);
 
-    const playSvg = isRunning
-        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`
-        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+    const playSvg = isRunning ? ICONS.pauseFill : ICONS.playFill;
 
     const playBtn = entry.exePath
         ? `<button class="vn-card-play${isRunning ? ' is-running' : ''}" data-id="${escapeAttr(entry.id)}" title="${isRunning ? t('running') : t('launch')}">
@@ -405,9 +403,9 @@ function renderReadingStrip(entries) {
         ? Math.round(withProgress.reduce((s, e) => s + e.readingProgress, 0) / withProgress.length)
         : 0;
 
-    const svgBook = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
-    const svgClock = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-    const svgTarget = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>';
+    const svgBook  = ICONS.books;
+    const svgClock  = ICONS.clock;
+    const svgTarget = ICONS.target;
 
     strip.innerHTML = `
         <span class="reading-strip-stat">${svgBook} <strong>${entries.length}</strong> ${t('readingStripInProgress') || 'in progress'}</span>

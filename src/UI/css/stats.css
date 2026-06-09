@@ -459,6 +459,8 @@
     gap: 12px;
 }
 .stats-empty-state svg {
+    width: 48px;
+    height: 48px;
     opacity: 0.3;
 }
 .stats-empty-state p {

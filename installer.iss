@@ -1,5 +1,7 @@
 #define MyAppName "VnHub"
-#define MyAppVersion "1.0.0"
+#ifndef MyAppVersion
+  #define MyAppVersion "1.0.0"
+#endif
 #define MyAppPublisher "VnHub"
 #define MyAppExeName "VnHub.exe"
 #define MyAppIcon "publish\win-x64\src\UI\Assets\app.ico"

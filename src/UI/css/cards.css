@@ -112,6 +112,7 @@
     background: var(--bg-elevated);
     color: var(--text-secondary);
 }
+.vn-card-cover-placeholder svg { width: 40px; height: 40px; }
 
 .vn-card-info {
     padding: 10px 12px;
@@ -187,6 +188,7 @@
     z-index: 5;
     box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
+.vn-card-play svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 .vn-card:hover .vn-card-play {
     opacity: 1;
@@ -235,6 +237,7 @@
     color: var(--text-secondary);
     text-align: center;
 }
+.empty-state svg { width: 64px; height: 64px; opacity: 0.15; }
 
 .empty-state h3 {
     font-size: 18px;

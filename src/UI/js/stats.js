@@ -99,7 +99,7 @@ function renderStats(data) {
     const barsEl = document.getElementById('statsStatusBars');
     const totalByStatus = Object.values(data.byStatus || {}).reduce((s, v) => s + v, 0);
     if (totalByStatus === 0) {
-        barsEl.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><p>${t('statsNoStatus')}</p></div>`;
+        barsEl.innerHTML = `<div class="stats-empty-state">${ICONS.gridFour}<p>${t('statsNoStatus')}</p></div>`;
     } else {
         const maxCount = Math.max(...Object.values(data.byStatus || {}), 1);
         let barsHTML = '';
@@ -122,7 +122,7 @@ function renderStats(data) {
     const months = data.monthlyAdds || {};
     const sortedMonths = Object.keys(months).sort();
     if (sortedMonths.length === 0) {
-        chartEl.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg><p>${t('statsNoMonthly')}</p></div>`;
+        chartEl.innerHTML = `<div class="stats-empty-state">${ICONS.tableGrid}<p>${t('statsNoMonthly')}</p></div>`;
     } else {
         const maxMonth = Math.max(...Object.values(months), 1);
         let chartHTML = '<div class="stats-chart-bars">';
@@ -219,7 +219,7 @@ function renderRanking(elId, items, mode) {
     const el = document.getElementById(elId);
     if (!el) return;
     if (!items || items.length === 0) {
-        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg><p>${t('statsNoRanking')}</p></div>`;
+        el.innerHTML = `<div class="stats-empty-state">${ICONS.barChart}<p>${t('statsNoRanking')}</p></div>`;
         return;
     }
     el.innerHTML = items.map((item, i) => {
@@ -282,7 +282,7 @@ function renderPlayTimeChart(elId, dayData, days) {
     const el = document.getElementById(elId);
     if (!el) return;
     if (!dayData || dayData.length === 0) {
-        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg><p>${t('statsNoPlayData')}</p></div>`;
+        el.innerHTML = `<div class="stats-empty-state">${ICONS.tableGrid}<p>${t('statsNoPlayData')}</p></div>`;
         return;
     }
     const map = {};
@@ -454,7 +454,7 @@ function renderRatingDistribution(byRating) {
     if (!el) return;
     const total = Object.values(byRating || {}).reduce((s, v) => s + v, 0);
     if (total === 0) {
-        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><p>${t('statsNoRatingData')}</p></div>`;
+        el.innerHTML = `<div class="stats-empty-state">${ICONS.star}<p>${t('statsNoRatingData')}</p></div>`;
         return;
     }
     const maxCount = Math.max(...Object.values(byRating), 1);
@@ -478,7 +478,7 @@ function renderTopTags(topTags) {
     const el = document.getElementById('statsTopTags');
     if (!el) return;
     if (!topTags || topTags.length === 0) {
-        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><p>${t('statsNoTagData')}</p></div>`;
+        el.innerHTML = `<div class="stats-empty-state">${ICONS.tag}<p>${t('statsNoTagData')}</p></div>`;
         return;
     }
     const maxCount = topTags[0].count || 1;
@@ -505,7 +505,7 @@ function renderCategoryRatings(categoryAvgs) {
         { label: t('characterRating'), val: categoryAvgs?.character },
     ];
     if (!cats.some(c => c.val != null)) {
-        el.innerHTML = `<div class="stats-empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>${t('statsNoCategoryData')}</p></div>`;
+        el.innerHTML = `<div class="stats-empty-state">${ICONS.barChart3}<p>${t('statsNoCategoryData')}</p></div>`;
         return;
     }
     const colors = ['var(--status-reading)', 'var(--status-completed)', 'var(--status-onhold)', 'var(--status-dropped)'];

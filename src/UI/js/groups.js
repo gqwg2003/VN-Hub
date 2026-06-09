@@ -62,7 +62,7 @@ function getGroupVnCount(groupId) {
     return state.entries.filter(e => e.groupId === groupId).length;
 }
 
-const SMART_GROUP_BADGE = '<svg class="group-smart-badge" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;opacity:.7;flex:none"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>';
+const SMART_GROUP_BADGE = `<span class="group-smart-badge">${ICONS.filter}</span>`;
 
 function renderGroupsSidebar() {
     let container = document.getElementById('groupList');
@@ -91,12 +91,12 @@ function renderGroupsSidebar() {
     });
 
     html += `<div class="group-add" id="groupAddBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        ${ICONS.plus}
         <span>${t('addGroup')}</span>
     </div>`;
 
     html += `<div class="group-add" id="smartGroupAddBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        ${ICONS.filter}
         <span>${t('addSmartGroup') || 'Add smart group'}</span>
     </div>`;
 

@@ -324,7 +324,9 @@
 .link-chip-icon {
     flex-shrink: 0;
     opacity: 0.5;
+    display: inline-flex;
 }
+.link-chip-icon svg { width: 14px; height: 14px; }
 
 .link-chip-text {
     color: var(--accent);

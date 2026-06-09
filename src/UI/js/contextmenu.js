@@ -11,7 +11,7 @@ function showContextMenu(x, y, entry) {
 
     menu.appendChild(ctxItem(
         isRunning ? t('running') : t('launch'),
-        '<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+        ICONS.play,
         () => { if (!isRunning) send('launchVn', { id: entry.id }); },
         isRunning ? 'disabled' : ''
     ));
@@ -20,13 +20,13 @@ function showContextMenu(x, y, entry) {
 
     menu.appendChild(ctxItem(
         t('favorite') + (entry.isFavorite ? ' ✓' : ''),
-        '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+        ICONS.heart,
         () => { send('toggleFavorite', { id: entry.id }); }
     ));
 
     menu.appendChild(ctxItem(
         t('pin') + (entry.isPinned ? ' ✓' : ''),
-        '<svg viewBox="0 0 24 24"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.89A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.89A2 2 0 0 0 5 15.24z"/></svg>',
+        ICONS.pin,
         () => { send('togglePin', { id: entry.id }); }
     ));
 
@@ -38,7 +38,7 @@ function showContextMenu(x, y, entry) {
     const statusTrigger = document.createElement('div');
     statusTrigger.className = 'ctx-menu-item';
     statusTrigger.innerHTML = `
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        ${ICONS.clock}
         <span>${t('status')}</span>
         <span style="margin-left:auto;opacity:0.5">▸</span>
     `;
@@ -64,7 +64,7 @@ function showContextMenu(x, y, entry) {
         const groupTrigger = document.createElement('div');
         groupTrigger.className = 'ctx-menu-item';
         groupTrigger.innerHTML = `
-            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            ${ICONS.folder}
             <span>${t('setGroup')}</span>
             <span style="margin-left:auto;opacity:0.5">▸</span>
         `;
@@ -97,7 +97,7 @@ function showContextMenu(x, y, entry) {
     if (state.settings?.vndbEnabled !== false) {
         menu.appendChild(ctxItem(
             t('refreshMetadata') || 'Refresh Metadata',
-            '<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
+            ICONS.refresh,
             () => { send('refreshMetadata', { id: entry.id }); }
         ));
     }
@@ -105,14 +105,14 @@ function showContextMenu(x, y, entry) {
     if (entry.exePath) {
         menu.appendChild(ctxItem(
             t('openFolder'),
-            '<svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+            ICONS.folder,
             () => { send('openFolder', { id: entry.id }); }
         ));
     }
 
     menu.appendChild(ctxItem(
         t('delete'),
-        '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+        ICONS.trash,
         () => {
             openDetail(entry);
             document.getElementById('deleteModal').style.display = '';

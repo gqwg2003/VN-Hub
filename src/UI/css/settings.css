@@ -226,6 +226,7 @@
     align-items: center;
     transition: color var(--transition), background var(--transition);
 }
+.custom-font-item-remove svg { width: 14px; height: 14px; }
 
 .custom-font-item-remove:hover {
     color: var(--danger);

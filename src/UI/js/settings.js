@@ -282,6 +282,8 @@ function renderSettings() {
     document.getElementById('settingsScanRecursive').checked = s.scanRecursive === true;
     renderShortcutButtons();
     if (typeof renderCustomization === 'function') renderCustomization();
+    const verEl = document.getElementById('appVersionDisplay');
+    if (verEl && s.appVersion) verEl.textContent = s.appVersion;
 }
 
 function applyTheme(theme) {
