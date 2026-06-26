@@ -85,14 +85,12 @@ public static class StatsService
             }
             if (!string.IsNullOrEmpty(e.DateAdded))
             {
-                try
+                if (DateTime.TryParse(e.DateAdded, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var d))
                 {
-                    var d = DateTime.Parse(e.DateAdded, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                     var key = d.ToString("yyyy-MM");
                     a.MonthlyAdds.TryGetValue(key, out int c);
                     a.MonthlyAdds[key] = c + 1;
                 }
-                catch { }
             }
             if (e.Status == VnStatus.Completed && e.PlayTimeSeconds > 0)
             {

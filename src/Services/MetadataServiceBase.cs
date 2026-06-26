@@ -22,7 +22,9 @@ public abstract class MetadataServiceBase : IMetadataProvider
         var addr = proxyAddress?.Trim() ?? "";
         if (addr == CurrentProxy) return;
         CurrentProxy = addr;
+        var old = Http;
         Http = BuildClient(addr);
+        old?.Dispose();
         OnProxyChanged();
     }
 

@@ -44,7 +44,7 @@ public static class LibraryService
     {
         Validation.Normalize(entry);
         VnRepository.Update(entry);
-        return VnRepository.GetById(entry.Id);
+        return entry;
     }
 
     public static void DeleteVn(string id) => VnRepository.Delete(id);

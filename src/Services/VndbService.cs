@@ -21,7 +21,9 @@ public static class VndbService
         var addr = proxyAddress?.Trim() ?? "";
         if (addr == _currentProxy) return;
         _currentProxy = addr;
+        var old = Http;
         Http = CreateClient(addr);
+        old?.Dispose();
     }
 
     private static HttpClient CreateClient(string? proxyAddress)
@@ -156,12 +158,17 @@ public static class VndbService
         }
     }
 
+    private static readonly System.Text.RegularExpressions.Regex VndbUrlTagRegex =
+        new(@"\[url=[^\]]*\]([^\[]*)\[/url\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex VndbTagRegex =
+        new(@"\[/?[a-zA-Z]+[^\]]*\]", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     private static string? CleanDescription(string? desc)
     {
         if (string.IsNullOrEmpty(desc)) return null;
 
-        desc = System.Text.RegularExpressions.Regex.Replace(desc, @"\[url=[^\]]*\]([^\[]*)\[/url\]", "$1");
-        desc = System.Text.RegularExpressions.Regex.Replace(desc, @"\[/?[a-zA-Z]+[^\]]*\]", "");
+        desc = VndbUrlTagRegex.Replace(desc, "$1");
+        desc = VndbTagRegex.Replace(desc, "");
 
         return desc.Trim();
     }

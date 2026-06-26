@@ -71,18 +71,22 @@ public static class SettingsService
     };
 
     private static readonly object Gate = new();
+    private static AppSettings? _cached;
 
     public static AppSettings Load()
     {
         lock (Gate)
         {
+            if (_cached != null) return _cached;
+
             if (!File.Exists(SettingsPath))
                 return new AppSettings();
 
             try
             {
                 var json = File.ReadAllText(SettingsPath);
-                return JsonSerializer.Deserialize<AppSettings>(json, JsonOpts) ?? new AppSettings();
+                _cached = JsonSerializer.Deserialize<AppSettings>(json, JsonOpts) ?? new AppSettings();
+                return _cached;
             }
             catch (Exception ex)
             {
@@ -96,6 +100,7 @@ public static class SettingsService
     {
         lock (Gate)
         {
+            _cached = null;
             Directory.CreateDirectory(SettingsDir);
             var json = JsonSerializer.Serialize(settings, JsonOpts);
 

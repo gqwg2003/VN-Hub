@@ -16,6 +16,16 @@ public static class AppDb
         Directory.CreateDirectory(folder);
 
         _dbPath = Path.Combine(folder, "vnhub.db");
+
+        // WAL mode persists on the db file — activate once at startup
+        using (var setupConn = new SqliteConnection($"Data Source={_dbPath}"))
+        {
+            setupConn.Open();
+            using var walCmd = setupConn.CreateCommand();
+            walCmd.CommandText = "PRAGMA journal_mode=WAL;";
+            walCmd.ExecuteNonQuery();
+        }
+
         RunMigrations();
     }
 
@@ -25,7 +35,7 @@ public static class AppDb
         conn.Open();
 
         using var pragma = conn.CreateCommand();
-        pragma.CommandText = "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;";
+        pragma.CommandText = "PRAGMA foreign_keys=ON;";
         pragma.ExecuteNonQuery();
 
         return conn;

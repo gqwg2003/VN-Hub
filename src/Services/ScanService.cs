@@ -62,7 +62,7 @@ public static class ScanService
                 {
                     var subName = Path.GetFileName(sub);
                     if (string.IsNullOrEmpty(subName) || subName.StartsWith('.') || subName.StartsWith('_')) continue;
-                    if (blacklistDirs.Any(bd => subName.Equals(bd, StringComparison.OrdinalIgnoreCase))) continue;
+                    if (blacklistDirs.Contains(subName)) continue;
 
                     var subExes = FindExecutables(sub, blacklistExe, blacklistDirs);
                     if (subExes.Count == 0) continue;
