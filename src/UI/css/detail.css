@@ -21,13 +21,14 @@
     max-width: 100vw;
     height: 100vh;
     background: var(--bg-surface);
-    border-left: 1px solid rgba(255,255,255,0.05);
+    border-left: 1px solid rgba(124,58,237,0.10);
     transform: translateX(100%);
     transition: transform var(--transition-slow);
     z-index: 100;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.4);
 }
 
 @media (max-width: 800px) {
@@ -67,29 +68,43 @@
 }
 
 .detail-body {
-    padding: 0 24px 24px;
+    padding: 0 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
 }
 
 .detail-cover-wrap {
     position: relative;
-    width: 100%;
-    max-height: 300px;
-    border-radius: var(--radius);
+    width: calc(100% + 40px);
+    margin-left: -20px;
+    margin-right: -20px;
     overflow: hidden;
     background: var(--bg-elevated);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 200px;
+    min-height: 220px;
+    max-height: 320px;
+}
+
+.detail-cover-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--bg-surface));
+    pointer-events: none;
+    z-index: 1;
 }
 
 .detail-cover {
     width: 100%;
-    max-height: 300px;
+    max-height: 320px;
     object-fit: cover;
+    display: block;
 }
 
 .btn-cover-change {
@@ -103,6 +118,7 @@
     color: white;
     font-size: 12px;
     cursor: pointer;
+    z-index: 2;
     opacity: 0;
     transition: opacity var(--transition);
 }
@@ -127,18 +143,19 @@
 
 .detail-input, .detail-select, .detail-textarea {
     padding: 8px 12px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(124,58,237,0.15);
     border-radius: var(--radius);
     background: var(--bg-elevated);
     color: var(--text-primary);
     font-size: 14px;
     font-family: inherit;
     outline: none;
-    transition: border-color var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
 .detail-input:focus, .detail-select:focus, .detail-textarea:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
 }
 
 .detail-textarea {
@@ -168,7 +185,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(124,58,237,0.15);
     border-radius: var(--radius);
     background: var(--bg-elevated);
     color: var(--text-secondary);
@@ -179,13 +196,14 @@
 }
 
 .detail-toggle:hover {
-    border-color: rgba(255,255,255,0.15);
+    border-color: rgba(124,58,237,0.35);
+    background: rgba(124,58,237,0.05);
 }
 
 .detail-toggle.active-heart {
     color: var(--heart);
-    border-color: var(--heart);
-    background: rgba(224,80,128,0.1);
+    border-color: rgba(236,72,153,0.4);
+    background: rgba(236,72,153,0.1);
 }
 
 .detail-toggle.active-heart svg {
@@ -194,8 +212,8 @@
 
 .detail-toggle.active-star {
     color: var(--star);
-    border-color: var(--star);
-    background: rgba(240,180,41,0.1);
+    border-color: rgba(245,158,11,0.4);
+    background: rgba(245,158,11,0.1);
 }
 
 .detail-toggle.active-star svg {
@@ -221,10 +239,11 @@
 .detail-danger {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(124,58,237,0.08);
     display: flex;
     gap: 8px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .detail-description {
@@ -315,7 +334,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: var(--bg-tertiary);
+    background: var(--bg-elevated);
     border-radius: 12px;
     padding: 3px 8px 3px 6px;
     font-size: 0.82rem;

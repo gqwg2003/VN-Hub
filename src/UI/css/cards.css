@@ -1,4 +1,4 @@
-.card-grid {
+﻿.card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     gap: 16px;
@@ -11,6 +11,7 @@
 .card-grid.grid-small .vn-card-info { padding: 6px 8px; }
 .card-grid.grid-small .vn-card-title { font-size: 11px; }
 .card-grid.grid-small .vn-card-playtime { display: none; }
+.card-grid.grid-small .vn-card-vndb { display: none; }
 
 .card-grid.grid-medium {
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -32,22 +33,43 @@
     display: flex;
     flex-direction: row;
     border-radius: var(--radius);
-    height: 56px;
+    height: 60px;
+    transform: none !important;
+}
+.card-grid.grid-list .vn-card:hover {
+    transform: none !important;
+    box-shadow: 0 0 0 1px rgba(124,58,237,0.3), 0 4px 16px rgba(0,0,0,0.3) !important;
+}
+.card-grid.grid-list .vn-card-cover-wrap {
+    width: 42px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: var(--radius) 0 0 var(--radius);
+    overflow: hidden;
 }
 .card-grid.grid-list .vn-card-cover {
-    width: 40px;
-    height: 56px;
+    width: 42px;
+    height: 60px;
     aspect-ratio: unset;
-    border-radius: var(--radius) 0 0 var(--radius);
-    flex-shrink: 0;
+    border-radius: 0;
+    object-fit: cover;
+    filter: none !important;
 }
 .card-grid.grid-list .vn-card-cover-placeholder {
-    width: 40px;
-    height: 56px;
+    width: 42px;
+    height: 60px;
     aspect-ratio: unset;
     flex-shrink: 0;
 }
 .card-grid.grid-list .vn-card-cover-placeholder svg { width: 20px; height: 20px; }
+.card-grid.grid-list .vn-card-overlay { display: none; }
+.card-grid.grid-list .vn-card-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 2px;
+}
 .card-grid.grid-list .vn-card-info {
     display: flex;
     align-items: center;
@@ -64,35 +86,33 @@
     margin-top: 0;
     flex-shrink: 0;
 }
-.card-grid.grid-list .vn-card-play {
-    position: static;
-    opacity: 1;
-    transform: none;
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    margin-right: 8px;
-}
 .card-grid.grid-list .vn-card-icons {
-    position: static;
-    flex-shrink: 0;
-    margin-right: 8px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
 }
 
+/* ===== Base Card ===== */
 .vn-card {
     background: var(--bg-surface);
-    border-radius: var(--radius-lg);
+    border-radius: var(--card-radius);
     overflow: hidden;
     cursor: pointer;
-    transition: transform var(--transition), box-shadow var(--transition);
-    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    border: 1px solid rgba(124,58,237,0.07);
     position: relative;
 }
 
 .vn-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    border-color: var(--accent-soft);
+    transform: translateY(-5px);
+    box-shadow: 0 0 0 1px rgba(124,58,237,0.35), 0 16px 48px rgba(0,0,0,0.55), 0 0 30px rgba(124,58,237,0.12);
+    border-color: transparent;
+}
+
+/* ===== Cover Wrapper & Overlay ===== */
+.vn-card-cover-wrap {
+    position: relative;
+    overflow: hidden;
 }
 
 .vn-card-cover {
@@ -101,6 +121,11 @@
     object-fit: cover;
     display: block;
     background: var(--bg-elevated);
+    transition: filter 220ms ease;
+}
+
+.vn-card:hover .vn-card-cover {
+    filter: brightness(0.72);
 }
 
 .vn-card-cover-placeholder {
@@ -109,86 +134,46 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-elevated);
+    background: linear-gradient(160deg, var(--bg-elevated) 0%, var(--bg-hover) 100%);
     color: var(--text-secondary);
 }
-.vn-card-cover-placeholder svg { width: 40px; height: 40px; }
+.vn-card-cover-placeholder svg { width: 40px; height: 40px; opacity: 0.3; }
 
-.vn-card-info {
-    padding: 10px 12px;
-}
-
-.vn-card-title {
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.vn-card-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 4px;
-}
-
-.status-badge {
-    font-size: 11px;
-    padding: 1px 8px;
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-.status-badge[data-status="0"] { background: var(--status-reading); color: #000; }
-.status-badge[data-status="1"] { background: var(--status-completed); color: #000; }
-.status-badge[data-status="2"] { background: var(--status-onhold); color: #000; }
-.status-badge[data-status="3"] { background: var(--status-dropped); color: #000; }
-.status-badge[data-status="4"] { background: var(--status-plan); color: #000; }
-
-.vn-card-icons {
+.vn-card-overlay {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    display: flex;
-    gap: 4px;
-}
-
-.vn-card-icon {
-    width: 22px;
-    height: 22px;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.25) 45%, transparent 100%);
+    opacity: 0;
+    transition: opacity 220ms ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
+    z-index: 3;
 }
 
-.vn-card-icon.heart svg { stroke: var(--heart); fill: var(--heart); width: 12px; height: 12px; }
-.vn-card-icon.star svg { stroke: var(--star); fill: var(--star); width: 12px; height: 12px; }
+.vn-card:hover .vn-card-overlay {
+    opacity: 1;
+}
 
+/* ===== Play Button (inside overlay) ===== */
 .vn-card-play {
-    position: absolute;
-    bottom: 52px;
-    right: 8px;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     border: none;
-    background: var(--accent);
-    color: white;
+    background: rgba(255,255,255,0.92);
+    color: #1a0a2e;
     cursor: pointer;
     opacity: 0;
-    transform: scale(0.8);
-    transition: opacity var(--transition), transform var(--transition), background var(--transition);
+    transform: scale(0.75);
+    transition: opacity 220ms ease, transform 220ms ease, background 150ms ease, box-shadow 150ms ease;
     z-index: 5;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
-.vn-card-play svg { width: 18px; height: 18px; flex-shrink: 0; }
+.vn-card-play svg { width: 22px; height: 22px; flex-shrink: 0; }
 
 .vn-card:hover .vn-card-play {
     opacity: 1;
@@ -196,14 +181,15 @@
 }
 
 .vn-card-play:hover {
-    background: var(--accent-hover);
-    transform: scale(1.1);
+    background: #fff;
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 32px rgba(124,58,237,0.4);
 }
 
 /* Running game indicator */
 .vn-card.is-running {
-    border-color: var(--status-reading);
-    box-shadow: 0 0 14px rgba(74, 222, 128, 0.3);
+    border-color: rgba(52,211,153,0.5);
+    box-shadow: 0 0 20px rgba(52,211,153,0.2);
 }
 
 .vn-card-play.is-running {
@@ -224,7 +210,130 @@
     height: 10px;
 }
 
+/* ===== Status Icons (top-right of cover) ===== */
+.vn-card-icons {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    display: flex;
+    gap: 4px;
+    z-index: 4;
+}
 
+.vn-card-icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+}
+
+.vn-card-icon.heart svg { stroke: var(--heart); fill: var(--heart); width: 12px; height: 12px; }
+.vn-card-icon.star svg { stroke: var(--star); fill: var(--star); width: 12px; height: 12px; }
+
+/* ===== Progress Bar (bottom of cover) ===== */
+.vn-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    z-index: 4;
+}
+
+.vn-card-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    transition: width 0.3s ease;
+}
+
+/* ===== Card Info (below cover) ===== */
+.vn-card-info {
+    padding: 9px 12px 10px;
+}
+
+.vn-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+    letter-spacing: -0.1px;
+}
+
+.vn-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+/* ===== Status Badges ===== */
+.status-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.status-badge[data-status="0"] {
+    background: rgba(52,211,153,0.12);
+    border-color: rgba(52,211,153,0.35);
+    color: #34D399;
+}
+.status-badge[data-status="1"] {
+    background: rgba(96,165,250,0.12);
+    border-color: rgba(96,165,250,0.35);
+    color: #60A5FA;
+}
+.status-badge[data-status="2"] {
+    background: rgba(251,191,36,0.12);
+    border-color: rgba(251,191,36,0.35);
+    color: #FBBF24;
+}
+.status-badge[data-status="3"] {
+    background: rgba(248,113,113,0.12);
+    border-color: rgba(248,113,113,0.35);
+    color: #F87171;
+}
+.status-badge[data-status="4"] {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.35);
+    color: #A78BFA;
+}
+
+/* Play time / last played labels */
+.vn-card-playtime {
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.vn-card-lastplayed {
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0.75;
+}
+
+/* VNDB indicator badge */
+.vn-card-vndb {
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(124,58,237,0.6);
+    padding: 0 5px;
+    border-radius: 6px;
+    line-height: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
 
 /* ===== Empty State ===== */
 .empty-state {
@@ -237,58 +346,11 @@
     color: var(--text-secondary);
     text-align: center;
 }
-.empty-state svg { width: 64px; height: 64px; opacity: 0.15; }
+.empty-state svg { width: 64px; height: 64px; opacity: 0.12; }
 
 .empty-state h3 {
     font-size: 18px;
     color: var(--text-primary);
-}
-
-/* Play time label on card */
-.vn-card-playtime {
-    font-size: 10px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-}
-
-/* Last-played label on card (Reading tab only) */
-.vn-card-lastplayed {
-    font-size: 10px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    opacity: 0.75;
-}
-
-/* Progress bar at bottom of card */
-.vn-card-progress {
-    height: 3px;
-    background: var(--bg-elevated);
-    position: relative;
-    flex-shrink: 0;
-}
-
-.vn-card-progress-fill {
-    height: 100%;
-    background: var(--status-reading);
-    transition: width 0.3s ease;
-}
-
-.card-grid.grid-list .vn-card-progress {
-    height: 2px;
-    margin-top: 4px;
-}
-
-/* VNDB indicator badge */
-.vn-card-vndb {
-    font-size: 9px;
-    font-weight: 700;
-    color: #fff;
-    background: #2a6bba;
-    padding: 0 5px;
-    border-radius: 6px;
-    line-height: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
 }
 
 /* ===== Skeleton Loading ===== */
@@ -297,8 +359,8 @@
 }
 .skeleton-cover {
     width: 100%;
-    aspect-ratio: 2/3;
-    border-radius: var(--radius) var(--radius) 0 0;
+    aspect-ratio: 3/4;
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
     background: var(--bg-elevated);
 }
 .skeleton-title {
@@ -315,17 +377,15 @@
     background: var(--bg-elevated);
 }
 
-
-.card-grid.grid-small .vn-card-vndb { display: none; }
-
 /* Active tag filter badge */
 .active-tag-badge {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     padding: 2px 10px;
-    background: var(--accent-soft);
-    color: var(--text-primary);
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: var(--accent-hover);
     border-radius: 12px;
     font-size: 12px;
     font-weight: 500;
@@ -352,8 +412,8 @@
 }
 
 .vn-card-title mark {
-    background: var(--accent-soft);
-    color: var(--accent);
+    background: rgba(124,58,237,0.2);
+    color: var(--accent-hover);
     border-radius: 2px;
     padding: 0 1px;
 }

@@ -2,22 +2,25 @@
     padding: 6px 14px;
     border: none;
     border-radius: var(--radius);
-    background: var(--accent);
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
     color: white;
     font-size: 13px;
     font-family: inherit;
     font-weight: 500;
     cursor: pointer;
-    transition: background var(--transition);
+    transition: all var(--transition);
+    box-shadow: 0 2px 12px rgba(124,58,237,0.3);
 }
 
 .btn-accent:hover {
-    background: var(--accent-hover);
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.45);
+    transform: translateY(-1px);
 }
 
 .btn-secondary {
     padding: 6px 14px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(124,58,237,0.15);
     border-radius: var(--radius);
     background: var(--bg-elevated);
     color: var(--text-primary);
@@ -28,13 +31,14 @@
 }
 
 .btn-secondary:hover {
-    border-color: rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.05);
+    border-color: rgba(124,58,237,0.35);
+    background: rgba(124,58,237,0.05);
+    color: var(--text-primary);
 }
 
 .btn-danger {
     padding: 8px 16px;
-    border: 1px solid var(--danger);
+    border: 1px solid rgba(239,68,68,0.5);
     border-radius: var(--radius);
     background: transparent;
     color: var(--danger);
@@ -47,11 +51,13 @@
 
 .btn-danger:hover {
     background: var(--danger);
+    border-color: var(--danger);
     color: white;
+    box-shadow: 0 4px 16px rgba(239,68,68,0.3);
 }
 
 .btn-small {
-    padding: 6px 10px;
+    padding: 4px 10px;
     font-size: 12px;
     white-space: nowrap;
 }

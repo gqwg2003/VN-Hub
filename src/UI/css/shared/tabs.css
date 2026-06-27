@@ -1,9 +1,9 @@
 .settings-tabs,
 .stats-tabs {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(124,58,237,0.12);
 }
 
 .settings-tab,
@@ -19,20 +19,23 @@
     cursor: pointer;
     border-bottom: 2px solid transparent;
     margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
+    border-radius: var(--radius) var(--radius) 0 0;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 
 .settings-tab:hover,
 .stats-tab:hover,
 .marked-tab:hover {
     color: var(--text-primary);
+    background: rgba(124,58,237,0.05);
 }
 
 .settings-tab.active,
 .stats-tab.active,
 .marked-tab.active {
-    color: var(--accent);
+    color: var(--accent-hover);
     border-bottom-color: var(--accent);
+    background: rgba(124,58,237,0.06);
 }
 
 .settings-tab-content,

@@ -3,9 +3,9 @@
     z-index: 9000;
     min-width: 180px;
     background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    border: 1px solid rgba(124,58,237,0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.05);
     padding: 4px 0;
     font-size: 13px;
     color: var(--text-primary);
@@ -22,7 +22,7 @@
 }
 
 .ctx-menu-item:hover {
-    background: var(--bg-hover);
+    background: rgba(124,58,237,0.08);
 }
 
 .ctx-menu-item svg {
@@ -36,7 +36,7 @@
 
 .ctx-menu-sep {
     height: 1px;
-    background: var(--border);
+    background: rgba(124,58,237,0.08);
     margin: 4px 0;
 }
 
@@ -53,9 +53,9 @@
     top: -4px;
     min-width: 160px;
     background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    border: 1px solid rgba(124,58,237,0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     padding: 4px 0;
 }
 

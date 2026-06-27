@@ -53,7 +53,7 @@ front end (HTML / CSS / JavaScript) communicating through a lightweight message 
 </details>
 
 ## Screenshots
-
+## Outdated screenshots, interface has been updated
 <details>
 <summary><strong>Library & Reading</strong></summary>
 

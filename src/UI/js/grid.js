@@ -373,9 +373,14 @@ function cardHTML(entry) {
 
     return `
     <div class="vn-card${isRunning ? ' is-running' : ''}" data-id="${escapeAttr(entry.id)}">
-        ${icons.length ? `<div class="vn-card-icons">${icons.join('')}</div>` : ''}
-        ${coverEl}
-        ${playBtn}
+        <div class="vn-card-cover-wrap">
+            ${coverEl}
+            <div class="vn-card-overlay">
+                ${playBtn}
+            </div>
+            ${icons.length ? `<div class="vn-card-icons">${icons.join('')}</div>` : ''}
+            ${progressBar}
+        </div>
         <div class="vn-card-info">
             <div class="vn-card-title" title="${escapeAttr(entry.title)}">${highlightText(entry.title, state.searchQuery)}</div>
             <div class="vn-card-meta">
@@ -385,7 +390,6 @@ function cardHTML(entry) {
                 ${vndbBadge}
             </div>
         </div>
-        ${progressBar}
     </div>`;
 }
 

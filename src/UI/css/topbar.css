@@ -11,7 +11,7 @@
     gap: 4px;
     padding: 0 24px;
     background: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(124,58,237,0.08);
 }
 
 .marked-tab {
@@ -26,10 +26,10 @@
     min-height: var(--topbar-height);
     display: flex;
     align-items: center;
-    padding: 0 24px;
-    gap: 16px;
+    padding: 0 20px;
+    gap: 10px;
     background: color-mix(in srgb, var(--bg-surface) calc(var(--panel-surface-opacity) * 100%), transparent);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(124,58,237,0.07);
 }
 
 .topbar::before {
@@ -54,14 +54,26 @@
 
 .topbar-search {
     flex: 1;
-    max-width: 480px;
+    max-width: 400px;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 0 14px;
+    height: 38px;
     background: var(--bg-elevated);
-    border-radius: var(--radius);
+    border-radius: 24px;
+    border: 1px solid rgba(124,58,237,0.12);
     color: var(--text-secondary);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.topbar-search:focus-within {
+    border-color: rgba(124,58,237,0.5);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+}
+
+.topbar-search:focus-within svg {
+    color: var(--accent-hover);
 }
 
 .topbar-search input {
@@ -85,34 +97,38 @@
     padding: 8px 16px;
     border: none;
     border-radius: var(--radius);
-    background: var(--accent);
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
     color: white;
-    font-size: 14px;
+    font-size: 13.5px;
     font-family: inherit;
     font-weight: 500;
     cursor: pointer;
-    transition: background var(--transition);
+    transition: all var(--transition);
     margin-left: auto;
+    box-shadow: 0 2px 12px rgba(124,58,237,0.35);
+    white-space: nowrap;
 }
 
 .btn-add:hover {
-    background: var(--accent-hover);
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.5);
+    transform: translateY(-1px);
 }
 
 /* ===== Sort & Grid Controls ===== */
 .topbar-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .topbar-select {
     padding: 6px 10px;
     padding-right: 28px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(124,58,237,0.12);
     border-radius: var(--radius);
     background-color: var(--bg-elevated);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090B0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237B72A8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 12px;
@@ -123,17 +139,20 @@
     outline: none;
     appearance: none;
     -webkit-appearance: none;
+    transition: border-color var(--transition);
 }
 
 .topbar-select:focus {
-    border-color: var(--accent);
+    border-color: rgba(124,58,237,0.5);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.10);
 }
 
 .grid-toggle {
     display: flex;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(124,58,237,0.12);
     border-radius: var(--radius);
     overflow: hidden;
+    background: var(--bg-elevated);
 }
 
 .grid-toggle-btn {
@@ -143,20 +162,21 @@
     width: 32px;
     height: 32px;
     border: none;
-    background: var(--bg-elevated);
+    background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
     transition: background var(--transition), color var(--transition);
 }
 
 .grid-toggle-btn:hover {
-    background: var(--bg-surface);
+    background: rgba(124,58,237,0.08);
     color: var(--text-primary);
 }
 
 .grid-toggle-btn.active {
     background: var(--accent);
     color: white;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.25);
 }
 
 /* ===== Tags Dropdown ===== */
@@ -169,7 +189,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(124,58,237,0.12);
     border-radius: var(--radius);
     background: var(--bg-elevated);
     color: var(--text-secondary);
@@ -178,11 +198,13 @@
     cursor: pointer;
     transition: all var(--transition);
     white-space: nowrap;
+    height: 34px;
 }
 
 .btn-tags:hover {
     color: var(--text-primary);
-    border-color: var(--accent);
+    border-color: rgba(124,58,237,0.4);
+    background: rgba(124,58,237,0.06);
 }
 
 .tag-dropdown {
@@ -195,9 +217,9 @@
     max-height: 360px;
     overflow-y: auto;
     background: var(--bg-surface);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(124,58,237,0.15);
     border-radius: var(--radius-lg);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.05);
     z-index: 80;
     padding: 6px;
 }
@@ -225,11 +247,11 @@
 }
 
 .tag-dropdown-item:hover {
-    background: var(--bg-hover);
+    background: rgba(124,58,237,0.08);
 }
 
 .tag-dropdown-item.active {
-    background: var(--accent-soft);
+    background: rgba(124,58,237,0.12);
     color: var(--accent-hover);
 }
 
@@ -298,24 +320,25 @@
     }
 }
 
-/* ===== Sort Direction Button ===== */
 .btn-sort-dir {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid rgba(255,255,255,0.1);
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(124,58,237,0.12);
     border-radius: var(--radius);
     background: var(--bg-elevated);
     color: var(--text-secondary);
     cursor: pointer;
     transition: all var(--transition);
+    flex-shrink: 0;
 }
 
 .btn-sort-dir:hover {
+    border-color: rgba(124,58,237,0.4);
+    background: rgba(124,58,237,0.08);
     color: var(--text-primary);
-    border-color: var(--accent);
 }
 
 .btn-sort-dir.sort-desc svg {
