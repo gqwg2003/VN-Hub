@@ -70,7 +70,7 @@ function updateBulkBar() {
         <button class="bulk-bar-btn" id="bulkAddTag">${t('addTag') || '+ Tag'}</button>
         <button class="bulk-bar-btn" id="bulkRemoveTag">${t('removeTag') || '- Tag'}</button>
         <button class="bulk-bar-btn danger" id="bulkDelete">${t('delete')}</button>
-        <button class="bulk-bar-close" id="bulkClose">&times;</button>
+        <button class="bulk-bar-close" id="bulkClose">${ICONS.close}</button>
     `;
 
     bar.querySelector('#bulkFav').addEventListener('click', bulkToggleFavorite);

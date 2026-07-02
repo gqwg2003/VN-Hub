@@ -1,5 +1,5 @@
 .btn-accent {
-    padding: 6px 14px;
+    padding: 8px 16px;
     border: none;
     border-radius: var(--radius);
     background: linear-gradient(135deg, #7C3AED, #6D28D9);
@@ -19,7 +19,7 @@
 }
 
 .btn-secondary {
-    padding: 6px 14px;
+    padding: 8px 16px;
     border: 1px solid rgba(124,58,237,0.15);
     border-radius: var(--radius);
     background: var(--bg-elevated);

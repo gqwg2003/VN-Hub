@@ -37,26 +37,53 @@
 
 .group-delete-btn {
     display: none;
+    align-items: center;
+    justify-content: center;
     margin-left: auto;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
     background: none;
     border: none;
+    border-radius: 50%;
     color: var(--text-secondary);
-    font-size: 14px;
     cursor: pointer;
-    padding: 0 2px;
-    line-height: 1;
+    padding: 0;
+    transition: color var(--transition), background var(--transition);
 }
 
 .group-edit-btn,
 .group-color-btn {
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
     background: none;
     border: none;
+    border-radius: 50%;
     color: var(--text-secondary);
-    font-size: 12px;
     cursor: pointer;
-    padding: 0 2px;
-    line-height: 1;
+    padding: 0;
+    transition: color var(--transition), background var(--transition);
+}
+
+.group-delete-btn svg,
+.group-edit-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.group-delete-btn:hover,
+.group-edit-btn:hover,
+.group-color-btn:hover {
+    color: var(--accent-hover);
+    background: rgba(124,58,237,0.12);
+}
+
+.group-delete-btn:hover {
+    color: var(--danger);
 }
 
 .group-color-swatch {
@@ -70,15 +97,7 @@
 .group-item:hover .group-delete-btn,
 .group-item:hover .group-edit-btn,
 .group-item:hover .group-color-btn {
-    display: block;
-}
-
-.group-edit-btn:hover {
-    color: var(--accent);
-}
-
-.group-color-btn:hover {
-    color: var(--accent);
+    display: flex;
 }
 
 .group-name {

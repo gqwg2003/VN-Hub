@@ -82,11 +82,11 @@ function renderGroupsSidebar() {
             <span class="group-dot" style="background:${escapeAttr(g.color)}"></span>
             <span class="group-name">${escapeHTML(g.name)}</span>${smartBadge}
             <span class="group-count">${count}</span>
-            <button class="group-edit-btn" data-gid="${escapeAttr(g.id)}" title="${t('renameGroup')}">✎</button>
+            <button class="group-edit-btn" data-gid="${escapeAttr(g.id)}" title="${t('renameGroup')}">${ICONS.edit}</button>
             <button class="group-color-btn" data-gid="${escapeAttr(g.id)}" title="${t('groupColor')}">
                 <span class="group-color-swatch" style="background:${escapeAttr(g.color)}"></span>
             </button>
-            <button class="group-delete-btn" data-gid="${escapeAttr(g.id)}" title="${t('deleteGroup')}">&times;</button>
+            <button class="group-delete-btn" data-gid="${escapeAttr(g.id)}" title="${t('deleteGroup')}">${ICONS.close}</button>
         </div>`;
     });
 
